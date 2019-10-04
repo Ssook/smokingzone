@@ -1,4 +1,4 @@
-package com.example.openquick.demos.runtimePermissions;
+package com.example.zone.runtimePermissions;
 
 /**
  * Created by kris.shin on 11/13/15.
