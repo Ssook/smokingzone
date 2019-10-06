@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
-    android:background="@drawable/ic_launcher_background"
+    android:background="@drawable/custom_callout_balloon"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -35,7 +35,8 @@
                 android:text="Custom Marker"
                 android:textColor="#ff000000"
                 android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                />
 
             <TextView
                 android:id="@+id/desc"
@@ -47,6 +48,16 @@
                 android:text="custom marker desc."
                 android:textColor="#ff7f7f7f"
                 android:textSize="14sp" />
+            <TextView
+                android:id="@+id/star"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:drawableLeft="@android:drawable/star_big_on"
+                android:drawablePadding="5dip"
+                />
         </LinearLayout>
     </LinearLayout>
 

@@ -30,20 +30,28 @@ import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapReverseGeoCoder;
 import net.daum.mf.map.api.MapView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 import static net.daum.mf.map.api.MapPoint.mapPointWithGeoCoord;
 
 public class MapActivity extends AppCompatActivity
-        implements MapView.MapViewEventListener, MapView.POIItemEventListener, MapView.CurrentLocationEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener,NavigationView.OnNavigationItemSelectedListener {
+        implements MapView.MapViewEventListener, MapView.POIItemEventListener, MapView.CurrentLocationEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener, NavigationView.OnNavigationItemSelectedListener {
     MapPoint center;
     double curlat;
     double curlng;
+    private MapPOIItem smokeMarker;
+    ArrayList<MapPOIItem> smokeMarkerlist = new ArrayList<MapPOIItem>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        toolbar.setTitle("                       여기서펴");
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,10 +68,9 @@ public class MapActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
         MapView mapView = new MapView(this);
+
         mapView.setDaumMapApiKey("dccc7c0ddbd4beddfdaf5655ef4463ce");
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
-        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(37.556, 125.951949155);
-        mapView.setMapCenterPoint(mapPoint, true);
         mapViewContainer.addView(mapView);
 
         mapView.setMapViewEventListener(this);
@@ -75,7 +82,8 @@ public class MapActivity extends AppCompatActivity
         center = mapPointWithGeoCoord(curlat, curlng);
         mapView.setMapCenterPointAndZoomLevel(center, 0, true);
 
-
+        createSmokeAreaMarker(mapView);
+        mapView.addPOIItems(smokeMarkerlist.toArray(new MapPOIItem[smokeMarkerlist.size()]));
     }
 
     @Override
@@ -141,6 +149,7 @@ public class MapActivity extends AppCompatActivity
         onFinishReverseGeoCoding(s);
 
     }
+
     private void onFinishReverseGeoCoding(String result) {
     }
 
@@ -155,7 +164,7 @@ public class MapActivity extends AppCompatActivity
         MapPoint.GeoCoordinate mapPointGeo = currentLocation.getMapPointGeoCoord();
         curlat = mapPointGeo.latitude;
         curlng = mapPointGeo.longitude;
-
+        System.out.println(curlat + "ddd" + curlng);
     }
 
     @Override
@@ -205,6 +214,7 @@ public class MapActivity extends AppCompatActivity
 
     @Override
     public void onMapViewDragStarted(MapView mapView, MapPoint mapPoint) {
+        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
 
     }
 
@@ -237,24 +247,45 @@ public class MapActivity extends AppCompatActivity
     public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
 
     }
+
     class CustomCalloutBalloonAdapter implements CalloutBalloonAdapter {
 
-        private final View mCalloutBalloon;
+        private final View calloutBalloon;
 
         public CustomCalloutBalloonAdapter() {
-            mCalloutBalloon = getLayoutInflater().inflate(R.layout.custom_callout_balloon, null);
+            calloutBalloon = getLayoutInflater().inflate(R.layout.custom_callout_balloon, null);
         }
 
         @Override
         public View getCalloutBalloon(MapPOIItem poiItem) {
-
-            return mCalloutBalloon;
+            ((TextView) calloutBalloon.findViewById(R.id.star)).setText("5.5");
+            return calloutBalloon;
         }
 
 
         @Override
         public View getPressedCalloutBalloon(MapPOIItem poiItem) {
             return null;
+        }
+    }
+
+    private void createSmokeAreaMarker(MapView mapView) {
+        double ex = 0.1;
+        for (int i = 0; i < 40; i++) {
+            smokeMarker = new MapPOIItem();
+            smokeMarker.setItemName(i + "장소");
+            smokeMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(37.5034294128418 + ex, 127.02376556396484 + ex));
+            smokeMarker.setMarkerType(MapPOIItem.MarkerType.BluePin);
+
+
+            smokeMarker.setCustomImageResourceId(R.drawable.ic_menu_camera);
+            smokeMarker.setLeftSideButtonResourceIdOnCalloutBalloon(R.drawable.ic_menu_manage);
+            smokeMarker.setLeftSideButtonResourceIdOnCalloutBalloon(3);
+            smokeMarker.setCustomImageAutoscale(false);
+            smokeMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
+            smokeMarkerlist.add(smokeMarker);
+
+            ex = ex + 0.1;
         }
     }
 
