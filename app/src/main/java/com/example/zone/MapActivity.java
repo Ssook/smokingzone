@@ -1,5 +1,6 @@
 package com.example.zone;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -131,6 +132,8 @@ public class MapActivity extends AppCompatActivity
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_tools) {
+            Intent intent = new Intent(MapActivity.this, BoardActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_share) {
 
