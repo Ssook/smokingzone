@@ -11,12 +11,27 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    packagingOptions {
+        exclude "lib/arm64-v8a/librealm-jni.so"
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'x86_64', 'armeabi-v7a', 'armeabi'
+            universalApk false
+        }
+    }
+
+
+
+
 }
 
 dependencies {
@@ -27,5 +42,8 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation files('libs\\libDaumMapAndroid.jar')
-    implementation files('libs\\libDaumMapAndroid.jar')
+    compile files('libs\\libDaumMapAndroid.jar')
+
+
+
 }
