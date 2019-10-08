@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.zone">
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
-    <meta-data android:name="com.kakao.sdk.AppKey" android:value="dccc7c0ddbd4beddfdaf5655ef4463ce"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <meta-data
+        android:name="com.kakao.sdk.AppKey"
+        android:value="dccc7c0ddbd4beddfdaf5655ef4463ce" />
 
     <application
         android:allowBackup="true"
@@ -12,12 +16,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MapActivity"
+            android:label="@string/title_activity_map"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
     </application>
 
