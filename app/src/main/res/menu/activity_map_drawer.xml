@@ -6,7 +6,9 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
+            android:height="20dp"
+            android:width="20dp"
+            android:icon="@drawable/custom_poi_marker"
             android:title="지도" />
         <item
             android:id="@+id/nav_gallery"
@@ -18,7 +20,7 @@
             android:title="커뮤니티" />
         <item
             android:id="@+id/nav_tools"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/pinicon"
             android:title="게시판" />
     </group>
 

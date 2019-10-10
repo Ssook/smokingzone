@@ -73,6 +73,7 @@ public class BoardActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            System.out.println("눌름");
             return true;
         }
 
