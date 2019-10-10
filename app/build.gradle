@@ -5,14 +5,18 @@ android {
     buildToolsVersion "29.0.1"
     defaultConfig {
         applicationId "com.example.zone"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     packagingOptions {
-        exclude "lib/arm64-v8a/librealm-jni.so"
+        exclude "jniLibs/arm64-v8a/libDaumMapEngineApi.so"
+        exclude "jniLibs/armeabi-v7a/libDaumMapEngineApi.so"
+        exclude "jniLibs/armebai/libDaumMapEngineApi.so"
+        exclude "jniLibs/x86/libDaumMapEngineApi.so"
+
     }
     buildTypes {
         release {
@@ -24,7 +28,7 @@ android {
         abi {
             enable true
             reset()
-            include 'x86', 'x86_64', 'armeabi-v7a', 'armeabi'
+            include 'x86', 'x86_64', 'armeabi-v7a', 'armeabi','arm64-v8a'
             universalApk false
         }
     }
@@ -43,8 +47,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation files('libs\\libDaumMapAndroid.jar')
-    compile files('libs\\libDaumMapAndroid.jar')
+    implementation files('C:\\appdev\\smokingzone\\app\\libs')
+
+
+
 
 
 

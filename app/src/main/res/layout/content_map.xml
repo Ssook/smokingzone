@@ -11,11 +11,8 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/roadnavi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="596dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:src="@drawable/custom_poi_marker"
         app:borderWidth="0dp"
         app:fabSize="mini"
