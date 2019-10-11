@@ -82,8 +82,8 @@ public class MapActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 //길찾기 버튼 눌렀을 때
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(MapActivity.this,AddSmokingAreaActivity.class);
+                startActivity(intent);
             }
         });
 

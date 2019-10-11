@@ -17,9 +17,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".AddSmokingAreaActivity"
+            android:label="@string/title_activity_add_smoking_area"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".BoardActivity"
             android:label="@string/title_activity_board_acitivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MapActivity"
             android:label="@string/title_activity_map"
