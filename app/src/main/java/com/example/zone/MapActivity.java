@@ -75,8 +75,15 @@ public class MapActivity extends AppCompatActivity
                 String url = "daummaps://route?sp="+"37.537229,127.005515&ep=37.4979502,127.0276368&by=FOOT";//여기에 좌표값 넣어주면 됨
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
-
-
+            }
+        });
+        FloatingActionButton addarea = findViewById(R.id.ad);
+        addarea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //길찾기 버튼 눌렀을 때
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
         });
 
