@@ -35,6 +35,7 @@ import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapReverseGeoCoder;
 import net.daum.mf.map.api.MapView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,6 +50,8 @@ public class MapActivity extends AppCompatActivity
     double curlng;
     private MapPOIItem smokeMarker;
     ArrayList<MapPOIItem> smokeMarkerlist = new ArrayList<MapPOIItem>();
+    String smokeareainfo = "[{\"no\":\"1\",\"lng\":\"127.072949\",\"bench\":\"F\",\"reg_user\":\"reg_user\",\"loof\":\"T\",\"type\":\"2\",\"point\":\"3.3\",\"img_src\":\"C:Users\",\"vtl\":\"T\",\"reg_date\":\"2019-10-12\",\"name\":\"name\",\"report\":\"3\",\"lat\":\"37.551293\",\"desc\":\"second block\"}," +
+            "{\"no\":\"2\",\"lng\":\"127.082949\",\"bench\":\"F\",\"reg_user\":\"reg_user\",\"loof\":\"T\",\"type\":\"2\",\"point\":\"4.4\",\"img_src\":\"C:Users\",\"vtl\":\"T\",\"reg_date\":\"2019-10-12\",\"name\":\"세종대학교\",\"report\":\"3\",\"lat\":\"37.539293\",\"desc\":\"여기는 흡연장소입니다.\"}]";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +75,7 @@ public class MapActivity extends AppCompatActivity
                 //길찾기 버튼 눌렀을 때
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                String url = "daummaps://route?sp="+"37.537229,127.005515&ep=37.4979502,127.0276368&by=FOOT";//여기에 좌표값 넣어주면 됨
+                String url = "daummaps://route?sp=" + "37.537229,127.005515&ep=37.4979502,127.0276368&by=FOOT";//여기에 좌표값 넣어주면 됨
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
             }
@@ -82,7 +85,7 @@ public class MapActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 //길찾기 버튼 눌렀을 때
-                Intent intent = new Intent(MapActivity.this,AddSmokingAreaActivity.class);
+                Intent intent = new Intent(MapActivity.this, AddSmokingAreaActivity.class);
                 startActivity(intent);
             }
         });
@@ -109,7 +112,11 @@ public class MapActivity extends AppCompatActivity
         center = mapPointWithGeoCoord(curlat, curlng);
         mapView.setMapCenterPointAndZoomLevel(center, 0, true);
 
-        createSmokeAreaMarker(mapView);
+        try {
+            createSmokeAreaMarker(mapView);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         mapView.addPOIItems(smokeMarkerlist.toArray(new MapPOIItem[smokeMarkerlist.size()]));
     }
 
@@ -287,7 +294,11 @@ public class MapActivity extends AppCompatActivity
 
         @Override
         public View getCalloutBalloon(MapPOIItem poiItem) {
-            ((TextView) calloutBalloon.findViewById(R.id.star)).setText("5.5");
+            String[] arr = poiItem.getItemName().split(",");
+            System.out.println(arr[0] + "??" + arr[1] + arr[2] + arr[3] + arr[4]);
+            ((TextView) calloutBalloon.findViewById(R.id.title)).setText(arr[3]);
+            ((TextView) calloutBalloon.findViewById(R.id.desc)).setText(arr[4]);
+            ((TextView) calloutBalloon.findViewById(R.id.star)).setText(arr[5]);
             return calloutBalloon;
         }
 
@@ -298,14 +309,19 @@ public class MapActivity extends AppCompatActivity
         }
     }
 
-    private void createSmokeAreaMarker(MapView mapView) {
+    private void createSmokeAreaMarker(MapView mapView) throws JSONException {
         double ex = 0.1;
-        for (int i = 0; i < 40; i++) {
-            smokeMarker = new MapPOIItem();
-            smokeMarker.setItemName(i + "장소");
-            smokeMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(37.5034294128418 + ex, 127.02376556396484 + ex));
-            smokeMarker.setMarkerType(MapPOIItem.MarkerType.BluePin);
+        JSONArray ja = null;
 
+
+        ja = new JSONArray(smokeareainfo);
+        for (int i = 0; i < ja.length(); i++) {
+
+            smokeMarker = new MapPOIItem();
+            smokeMarker.setItemName((((JSONObject) (ja.get(i))).get("bench").toString()) + "," + (((JSONObject) (ja.get(i))).get("loof").toString()) + "," + (((JSONObject) (ja.get(i))).get("vtl").toString()) + "," + (((JSONObject) (ja.get(i))).get("name").toString()) + "," + (((JSONObject) (ja.get(i))).get("desc").toString()) + "," + (((JSONObject) (ja.get(i))).get("point").toString()));
+            System.out.println("장소" + (((JSONObject) (ja.get(i))).get("reg_user").toString()));
+            smokeMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(Double.parseDouble(((JSONObject) (ja.get(i))).get("lat").toString()), Double.parseDouble(((JSONObject) (ja.get(i))).get("lng").toString())));
+            smokeMarker.setMarkerType(MapPOIItem.MarkerType.BluePin);
 
             smokeMarker.setCustomImageResourceId(R.drawable.ic_menu_camera);
             smokeMarker.setLeftSideButtonResourceIdOnCalloutBalloon(R.drawable.ic_menu_manage);
@@ -313,12 +329,12 @@ public class MapActivity extends AppCompatActivity
             smokeMarker.setCustomImageAutoscale(false);
             smokeMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
             smokeMarkerlist.add(smokeMarker);
-
-            ex = ex + 0.1;
         }
+
     }
+
     public void onRoadButtonClick(View v) {
-        System.out.println("tlqkf?");
+
 
     }
 
