@@ -9,6 +9,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.provider.MediaStore;
+import android.view.KeyEvent;
 import android.view.View;
 
 import androidx.core.view.GravityCompat;
@@ -24,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import java.io.InputStream;
@@ -48,6 +50,8 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
+
+        Button btngps=(Button)findViewById(R.id.btngps);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -127,6 +131,12 @@ public class AddSmokingAreaActivity extends AppCompatActivity
 
     }
 
+    public void gps(View view){
+        Intent intent = new Intent(AddSmokingAreaActivity.this, getMapGpsActivity.class);
+        startActivity(intent);
+
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
@@ -147,5 +157,11 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         }
     }
 
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            finish();
+        }
+        return true;
+    }
 
 }
