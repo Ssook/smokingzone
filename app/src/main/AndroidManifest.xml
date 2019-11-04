@@ -24,7 +24,9 @@
         <activity
             android:name=".BoardActivity"
             android:label="@string/title_activity_board_acitivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+
+            android:theme="@style/AppTheme"></activity>
+
         <activity
             android:name=".MapActivity"
             android:label="@string/title_activity_map"
@@ -35,6 +37,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".NewActivity"
+            android:parentActivityName=".BoardActivity"/>
     </application>
 
 </manifest>
