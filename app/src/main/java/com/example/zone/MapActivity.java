@@ -3,11 +3,13 @@ package com.example.zone;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.widget.PopupMenu;
@@ -40,10 +42,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import org.xml.sax.Parser;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -60,7 +66,7 @@ public class MapActivity extends AppCompatActivity
     private MapPOIItem smokeMarker;
     ArrayList<MapPOIItem> smokeMarkerlist = new ArrayList<MapPOIItem>();
     String smokeareainfo = "[{\"no\":\"1\",\"lng\":\"127.072949\",\"bench\":\"F\",\"reg_user\":\"reg_user\",\"loof\":\"T\",\"type\":\"2\",\"point\":\"3.3\",\"img_src\":\"C:Users\",\"vtl\":\"T\",\"reg_date\":\"2019-10-12\",\"name\":\"name\",\"report\":\"3\",\"lat\":\"37.551293\",\"desc\":\"second block\"}," +
-          "{\"no\":\"2\",\"lng\":\"127.082949\",\"bench\":\"F\",\"reg_user\":\"reg_user\",\"loof\":\"T\",\"type\":\"2\",\"point\":\"4.4\",\"img_src\":\"C:Users\",\"vtl\":\"T\",\"reg_date\":\"2019-10-12\",\"name\":\"세종대학교\",\"report\":\"3\",\"lat\":\"37.539293\",\"desc\":\"여기는 흡연장소입니다.\"}]";
+            "{\"no\":\"2\",\"lng\":\"127.082949\",\"bench\":\"F\",\"reg_user\":\"reg_user\",\"loof\":\"T\",\"type\":\"2\",\"point\":\"4.4\",\"img_src\":\"C:Users\",\"vtl\":\"T\",\"reg_date\":\"2019-10-12\",\"name\":\"세종대학교\",\"report\":\"3\",\"lat\":\"37.539293\",\"desc\":\"여기는 흡연장소입니다.\"}]";
 
 
     @Override
@@ -78,14 +84,35 @@ public class MapActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
-        FloatingActionButton ib = findViewById(R.id.roadnavi);
-        ib.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton roadnavi = findViewById(R.id.roadnavi);
+        roadnavi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //길찾기 버튼 눌렀을 때
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                String url = "daummaps://route?sp=" + "37.537229,127.005515&ep=37.4979502,127.0276368&by=FOOT";//여기에 좌표값 넣어주면 됨
+                String strlat="";
+                String strlng="";
+
+
+                minDistanceThread t2 = new minDistanceThread();
+                     t2.start();
+
+                try {
+                    t2.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    JSONObject jo1=new JSONObject(receiveMsg);
+                    strlat = jo1.getString("lat");
+                    strlng = jo1.getString("lng");
+                    System.out.println(strlat+strlng+"tlqk");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+//                String url = "daummaps://route?sp=" + "37.537229,127.005515&ep=37.4979502,127.0276368&by=FOOT";//여기에 좌표값 넣어주면 됨
+                String url = "daummaps://route?sp=" + curlat+","+curlng+"&ep="+strlat+","+strlng+"&by=FOOT";//여기에 좌표값 넣어주면 됨
+//                String url ="daummaps://route?sp=" + "
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
             }
@@ -137,7 +164,6 @@ public class MapActivity extends AppCompatActivity
             e.printStackTrace();
         }
         mapView.addPOIItems(smokeMarkerlist.toArray(new MapPOIItem[smokeMarkerlist.size()]));
-
 
 
     }
@@ -318,9 +344,9 @@ public class MapActivity extends AppCompatActivity
         public View getCalloutBalloon(MapPOIItem poiItem) {
 
             String[] arr = poiItem.getItemName().split(",");
-            System.out.println(arr[0] + "??" + arr[1]+ "??" + arr[2]+ "??" + arr[3] + "??"+ arr[4]+ "??"+arr[5]+ "??"+arr[6]);
-            ImageView imgicon = (ImageView)calloutBalloon.findViewById(R.id.badge);
-            String urlStr = "http://172.16.12.136:8080/SmokingArea/img/"+arr[6]; // 웹서버에 프로필사진이 없을시 예외처리
+            System.out.println(arr[0] + "??" + arr[1] + "??" + arr[2] + "??" + arr[3] + "??" + arr[4] + "??" + arr[5] + "??" + arr[6]);
+            ImageView imgicon = (ImageView) calloutBalloon.findViewById(R.id.badge);
+            String urlStr = "http://172.16.12.136:8080/SmokingArea/img/" + arr[6]; // 웹서버에 프로필사진이 없을시 예외처리
 
             Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
             imgicon.setImageDrawable(draw);
@@ -347,7 +373,7 @@ public class MapActivity extends AppCompatActivity
         for (int i = 0; i < ja.length(); i++) {
 
             smokeMarker = new MapPOIItem();
-            smokeMarker.setItemName((((JSONObject) (ja.get(i))).get("bench").toString()) + "," + (((JSONObject) (ja.get(i))).get("roof").toString()) + "," + (((JSONObject) (ja.get(i))).get("vtl").toString()) + "," + (((JSONObject) (ja.get(i))).get("name").toString()) + "," + (((JSONObject) (ja.get(i))).get("desc").toString()) + "," + (((JSONObject) (ja.get(i))).get("point").toString()) + ","+(((JSONObject) (ja.get(i))).get("img_src").toString()));
+            smokeMarker.setItemName((((JSONObject) (ja.get(i))).get("bench").toString()) + "," + (((JSONObject) (ja.get(i))).get("roof").toString()) + "," + (((JSONObject) (ja.get(i))).get("vtl").toString()) + "," + (((JSONObject) (ja.get(i))).get("name").toString()) + "," + (((JSONObject) (ja.get(i))).get("desc").toString()) + "," + (((JSONObject) (ja.get(i))).get("point").toString()) + "," + (((JSONObject) (ja.get(i))).get("img_src").toString()));
             System.out.println("장소" + (((JSONObject) (ja.get(i))).get("reg_user").toString()));
             smokeMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(Double.parseDouble(((JSONObject) (ja.get(i))).get("lat").toString()), Double.parseDouble(((JSONObject) (ja.get(i))).get("lng").toString())));
             smokeMarker.setMarkerType(MapPOIItem.MarkerType.BluePin);
@@ -367,12 +393,23 @@ public class MapActivity extends AppCompatActivity
 
     }
 
+    public class minDistanceThread extends Thread {
+        @Override
+        public void run(){
+            try {
+                receiveMsg=sendCurrentLocation();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public class getThread extends Thread {
         @Override
         public void run() {
             try {
                 String str;
-                URL url = new URL("http://172.16.12.136:8080/SmokingArea/SmokingArea/smokingAreaList.jsp");
+                URL url = new URL("http://192.168.219.118:8080/SmokingArea/SmokingArea/smokingAreaList.jsp");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "Application/json");
                 conn.setRequestMethod("GET");
@@ -387,7 +424,7 @@ public class MapActivity extends AppCompatActivity
                         buffer.append(str);
                     }
                     smokeareainfo = buffer.toString();
-                    System.out.println(smokeareainfo+"결과");
+                    System.out.println(smokeareainfo + "결과");
                 } else {
                     System.out.println("에러 발생");
 
@@ -403,6 +440,7 @@ public class MapActivity extends AppCompatActivity
             }
         }
     }
+
     public Drawable loadDrawable(String urlStr) { // 웹서버의 사진을 가져와서 Drawable로 만들어준다.
         Drawable drawable = null;
 
@@ -417,7 +455,61 @@ public class MapActivity extends AppCompatActivity
         return drawable;
     }
 
+    public String sendCurrentLocation() throws JSONException {
+        String nearSmokingArea = "";
+        System.out.println();
+        JSONObject currentlocation = new JSONObject();
+        currentlocation.put("lat", curlat);
+        currentlocation.put("lng", curlng);
+        System.out.println("test"+curlat+curlng);
+        //현재 위치 데이터를 서버에 보내서 가까운 값 갖고오는거
+        try {
+            //--------------------------
+            //   URL 설정하고 접속하기
+            //--------------------------
+            URL url = new URL("http://192.168.219.118:8080/SmokingArea/SmokingArea/minDistance.jsp");
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
+            //--------------------------
+            //   전송 모드 설정 - 기본적인 설정이다
+            //--------------------------
+            http.setDefaultUseCaches(false);
+            http.setDoInput(true);                         // 서버에서 읽기 모드 지정
+            http.setDoOutput(true);                       // 서버로 쓰기 모드 지정
+            http.setRequestMethod("POST");         // 전송 방식은 POST
 
+            // 서버에게 웹에서 <Form>으로 값이 넘어온 것과 같은 방식으로 처리하라는 걸 알려준다
+            http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");            //--------------------------
+            //   서버로 값 전송
+            //--------------------------
+            StringBuffer buffer = new StringBuffer();
+            String currentlocationsend="currentlocation="+currentlocation.toString();
 
+            buffer.append(currentlocationsend);                 // php 변수에 값 대입
 
+            OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
+            PrintWriter writer = new PrintWriter(outStream);
+            writer.write(buffer.toString());
+            writer.flush();
+
+            //--------------------------
+            //   서버에서 전송받기
+            //--------------------------
+            InputStreamReader tmp = new InputStreamReader(http.getInputStream(), "UTF-8");
+            BufferedReader reader = new BufferedReader(tmp);
+            StringBuilder builder = new StringBuilder();
+            String str;
+            while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
+                builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
+            }
+            nearSmokingArea = builder.toString();
+        } catch (MalformedURLException e) {
+        } catch (IOException e) {
+        }
+        System.out.println(nearSmokingArea+"data");
+        return nearSmokingArea;
+    } // HttpPostDat
 }
+
+
+
+
