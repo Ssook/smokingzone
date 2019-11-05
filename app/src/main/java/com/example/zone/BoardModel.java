@@ -1,7 +1,7 @@
 package com.example.zone;
 
-//게시판 항목들을 가지고 있는 Model Class ( 게시판 번호, 태그, 등록날짜,등록유저, 제목, 내용, 아이콘 )
-public class Model {
+//게시판 항목들을 가지고 있는 BoardModel Class ( 게시판 번호, 태그, 등록날짜,등록유저, 제목, 내용, 아이콘 )
+public class BoardModel {
     int board_no;
     String tag;
     String reg_date;
@@ -14,7 +14,7 @@ public class Model {
 
 
 
-    public Model(String tag, String reg_date, String reg_user, String title, String desc, int icon)
+    public BoardModel(String tag, String reg_date, String reg_user, String title, String desc, int icon)
     {
         this.tag =tag;
         this.reg_date =reg_date;
@@ -22,6 +22,23 @@ public class Model {
         this.title = title;
         this.desc = desc;
         this.icon = icon;
+    }
+
+    public BoardModel(BoardModel boardModel){
+        this.tag = boardModel.tag;
+        this.reg_date = boardModel.reg_date;
+        this.reg_user = boardModel.reg_user;
+        this.title = boardModel.title;
+        this.desc = boardModel.desc;
+        this.icon = boardModel.icon;
+    }
+    public BoardModel(){
+        this.tag ="";
+        this.reg_date ="";
+        this.reg_user ="";
+        this.title = "";
+        this.desc = "";
+        this.icon = 0;
     }
 
     //getters

@@ -17,6 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".getMapGpsActivity"></activity>
+
         <activity
             android:name=".AddSmokingAreaActivity"
             android:label="@string/title_activity_add_smoking_area"
@@ -25,8 +26,19 @@
             android:name=".BoardActivity"
             android:label="@string/title_activity_board_acitivity"
 
-            android:theme="@style/AppTheme"></activity>
-
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MapActivity" />
+        </activity>
+        <activity
+            android:name=".BoardWriteActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+        >
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".BoardActivity" />
+        </activity>
         <activity
             android:name=".MapActivity"
             android:label="@string/title_activity_map"
@@ -37,7 +49,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NewActivity"
+        <activity android:name=".BoardDetailActivity"
             android:parentActivityName=".BoardActivity"/>
     </application>
 

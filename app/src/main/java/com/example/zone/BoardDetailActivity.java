@@ -7,12 +7,12 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class NewActivity extends AppCompatActivity {
+public class BoardDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new);
+        setContentView(R.layout.activity_board_detail);
 
         ActionBar actionBar = getSupportActionBar();
         TextView mDetailTv = findViewById(R.id.textView);
