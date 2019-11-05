@@ -188,6 +188,7 @@ public class BoardActivity extends AppCompatActivity {
     //옵션 메뉴들을 눌렀을 때 기능 명시
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         int id = item.getItemId();
 
         if (id == R.id.action_settings1) {

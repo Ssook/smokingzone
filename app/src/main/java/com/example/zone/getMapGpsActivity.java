@@ -9,16 +9,17 @@ import android.view.ViewGroup;
 import net.daum.mf.map.api.MapView;
 
 public class getMapGpsActivity extends AppCompatActivity {
+    MapView mapView;
+    ViewGroup mapViewContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_map_gps);
-        MapView mapView = new MapView(this);
+        mapView = (MapView) findViewById(R.id.map_view);
 
         mapView.setDaumMapApiKey("dccc7c0ddbd4beddfdaf5655ef4463ce");
-        ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
-        mapViewContainer.addView(mapView);
-    }
+        mapViewContainer = (ViewGroup) findViewById(R.id.getgps_map);
 
+    }
 }
