@@ -367,7 +367,7 @@ public class MapActivity extends AppCompatActivity
             String[] arr = poiItem.getItemName().split(",");
             System.out.println(arr[0] + "??" + arr[1] + "??" + arr[2] + "??" + arr[3] + "??" + arr[4] + "??" + arr[5] + "??" + arr[6]);
             ImageView imgicon = (ImageView) calloutBalloon.findViewById(R.id.badge);
-            String urlStr = "http://172.16.12.136:8080/SmokingArea/img/" + arr[6]; // 웹서버에 프로필사진이 없을시 예외처리
+            String urlStr = "http://18.222.175.17:8080/SmokingArea/img/" + arr[6]; // 웹서버에 프로필사진이 없을시 예외처리
 
             Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
             imgicon.setImageDrawable(draw);
@@ -389,7 +389,7 @@ public class MapActivity extends AppCompatActivity
     private void createSmokeAreaMarker(MapView mapView) throws JSONException {
         double ex = 0.1;
         JSONArray ja = null;
-
+   
         ja = new JSONArray(smokeareainfo);
         for (int i = 0; i < ja.length(); i++) {
 
@@ -430,7 +430,7 @@ public class MapActivity extends AppCompatActivity
         public void run() {
             try {
                 String str;
-                URL url = new URL("http://192.168.219.118:8080/SmokingArea/SmokingArea/smokingAreaList.jsp");
+                URL url = new URL("http://18.222.175.17:8080/SmokingArea/SmokingArea/smokingAreaList.jsp");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "Application/json");
                 conn.setRequestMethod("GET");
@@ -488,7 +488,7 @@ public class MapActivity extends AppCompatActivity
             //--------------------------
             //   URL 설정하고 접속하기
             //--------------------------
-            URL url = new URL("http://192.168.219.118:8080/SmokingArea/SmokingArea/minDistance.jsp");
+            URL url = new URL("http://18.222.175.17:8080/SmokingArea/SmokingArea/minDistance.jsp");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
             //--------------------------
             //   전송 모드 설정 - 기본적인 설정이다

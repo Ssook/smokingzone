@@ -85,7 +85,7 @@ public class BoardWriteActivity extends AppCompatActivity {
         //새 글 등록 메뉴를 클릭했을 때 이벤트
         if (id == R.id.newPost) {
             // URL 설정.
-            String url = "http://192.168.219.118:8080/SmokingArea/Board/insertBoard.jsp";
+            String url = "http://18.222.175.17:8080/SmokingArea/Board/insertBoard.jsp";
 
             //서버로 보낼 데이터를 ContentValues에 담아줌
             ContentValues values = new ContentValues();
@@ -127,7 +127,7 @@ public class BoardWriteActivity extends AppCompatActivity {
                 sbParams.append("{");
                 for (Map.Entry<String, Object> parameter : values.valueSet()) {
                     key = "\""+parameter.getKey()+"\"";
-                    value = parameter.getValue().toString();
+                    value = "\""+parameter.getValue().toString()+"\"";
 
                     // 파라미터가 두개 이상일때, 파라미터 사이에 &를 붙인다.
                     if (isAnd)
