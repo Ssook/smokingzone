@@ -6,7 +6,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/custom_poi_marker"
+            android:icon="@drawable/bus"
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_gallery"
@@ -18,7 +18,7 @@
             android:title="@string/menu_slideshow" />
         <item
             android:id="@+id/nav_tools"
-            android:icon="@drawable/custom_poi_marker"
+            android:icon="@drawable/bus"
             android:title="@string/menu_tools" />
     </group>
 

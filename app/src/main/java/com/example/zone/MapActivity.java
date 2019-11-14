@@ -125,14 +125,14 @@ public class MapActivity extends AppCompatActivity
 
                 try {
                     JSONObject jo1=new JSONObject(receiveMsg);
-                    strlat = jo1.getString("lat");
-                    strlng = jo1.getString("lng");
+                    strlat = jo1.getString("smoking_area_lat");
+                    strlng = jo1.getString("smoking_area_lng");
                     System.out.println(strlat+strlng+"tlqk");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 //                String url = "daummaps://route?sp=" + "37.537229,127.005515&ep=37.4979502,127.0276368&by=FOOT";//여기에 좌표값 넣어주면 됨
-                String url = "daummaps://route?sp=" + curlat+","+curlng+"&ep="+strlat+","+strlng+"&by=FOOT";//여기에 좌표값 넣어주면 됨
+                String url = "daummaps://route?sp=" + curlat+","+curlng+"&ep="+strlng+","+strlat+"&by=FOOT";//여기에 좌표값 넣어주면 됨
 //                String url ="daummaps://route?sp=" + "
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
