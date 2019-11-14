@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <meta-data
         android:name="com.kakao.sdk.AppKey"
@@ -16,6 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+<<<<<<< HEAD
         <activity
             android:name=".Main2Activity"
             android:label="@string/title_activity_main2"
@@ -27,6 +29,9 @@
             </intent-filter>
 
         </activity>
+=======
+        <activity android:name=".ReviewActivity"></activity>
+>>>>>>> e513be5ecbd98cc8bd5965f160cfc8b20d6e1ac3
         <activity android:name=".getMapGpsActivity" />
         <activity
             android:name=".AddSmokingAreaActivity"
