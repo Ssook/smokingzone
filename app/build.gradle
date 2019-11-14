@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.1"
+    buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.example.zone"
-        minSdkVersion 19
+        minSdkVersion 17
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -28,12 +28,10 @@ android {
         abi {
             enable true
             reset()
-            include 'x86', 'x86_64', 'armeabi-v7a', 'armeabi','arm64-v8a'
+            include 'x86', 'x86_64', 'armeabi-v7a', 'armeabi', 'arm64-v8a'
             universalApk false
         }
     }
-
-
 
 
 }
@@ -48,10 +46,6 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation files('C:\\appdev\\smokingzone\\app\\libs')
-
-
-
-
 
 
 }
