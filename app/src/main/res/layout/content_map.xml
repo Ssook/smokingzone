@@ -9,7 +9,7 @@
     tools:context=".MapActivity"
     tools:showIn="@layout/app_bar_map">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/roadnavi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
