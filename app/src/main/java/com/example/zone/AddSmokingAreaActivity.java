@@ -1,5 +1,6 @@
 package com.example.zone;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +13,7 @@ import android.provider.MediaStore;
 import android.view.KeyEvent;
 import android.view.View;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 
@@ -26,15 +28,39 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import static com.example.zone.runtimePermissions.AppPermissionHelper.REQUEST_CODE;
 
 public class AddSmokingAreaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     ImageView imageView;
+    double curlat, curlng;
+    EditText areaDesc;
+    EditText areaName;
+
+    CheckBox check_inside;
+    CheckBox check_aircondition;
+    CheckBox check_loop;
+    CheckBox check_bench;
+    RadioGroup area_type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,16 +68,40 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         setContentView(R.layout.activity_add_smoking_area);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        areaDesc = findViewById(R.id.smokingareadesc);
+        areaName = findViewById(R.id.smokingareaname);
+
+        check_inside = findViewById(R.id.check_inside);
+        check_aircondition = findViewById(R.id.check_aircondition);
+        check_loop = findViewById(R.id.check_loop);
+        check_bench = findViewById(R.id.check_bench);
+        area_type = findViewById(R.id.radioGroup);
+
+
+        Button btnadd = findViewById(R.id.btnadd);
+        btnadd.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(View view) {            //이거 누를 때 서버로 데이터를 전송
+//                sendDataToServer();
+                if (!checkNull(areaName.getText().toString())) {
+                    Snackbar.make(view, "흡연 장소의 이름을 입력해주세요.", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    return;
+
+                } else {
+                    networkThread t1 = new networkThread();
+                    t1.start();
+                    try {
+                        t1.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    show();//애는 임시
+                }
             }
         });
-
-        Button btngps=(Button)findViewById(R.id.btngps);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -63,6 +113,58 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         //이미지
         imageView = (ImageView) findViewById(R.id.areaimage);
 
+        curlat = getIntent().getDoubleExtra("curlat", 0.0);
+        curlng = getIntent().getDoubleExtra("curlng", 0.0);
+    }
+
+    public class networkThread extends Thread {
+        @Override
+        public void run() {
+            String response = "";
+            try {
+                //--------------------------
+                //   URL 설정하고 접속하기
+                //--------------------------
+                URL url = new URL("http://18.222.175.17:8080/SmokingArea/SmokingArea/insertSmokingArea.jsp");
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
+                //--------------------------
+                //   전송 모드 설정 - 기본적인 설정이다
+                //--------------------------
+                http.setDefaultUseCaches(false);
+                http.setDoInput(true);                         // 서버에서 읽기 모드 지정
+                http.setDoOutput(true);                       // 서버로 쓰기 모드 지정
+                http.setRequestMethod("POST");         // 전송 방식은 POST
+
+                // 서버에게 웹에서 <Form>으로 값이 넘어온 것과 같은 방식으로 처리하라는 걸 알려준다
+                http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");            //--------------------------
+                //   서버로 값 전송
+                //--------------------------
+                StringBuffer buffer = new StringBuffer();
+                String json_smokingAreaValue = "json_smokingAreaValue=" + makeJsonObject().toString();
+
+                buffer.append(json_smokingAreaValue);                 // php 변수에 값 대입
+
+                OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
+                PrintWriter writer = new PrintWriter(outStream);
+                writer.write(buffer.toString());
+                writer.flush();
+
+                //--------------------------
+                //   서버에서 전송받기
+                //--------------------------
+                InputStreamReader tmp = new InputStreamReader(http.getInputStream(), "UTF-8");
+                BufferedReader reader = new BufferedReader(tmp);
+                StringBuilder builder = new StringBuilder();
+                String str;
+                while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
+                    builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
+                }
+                response = builder.toString();
+            } catch (MalformedURLException e) {
+            } catch (IOException e) {
+            }
+            System.out.println(response + "data");
+        }
     }
 
     @Override
@@ -75,12 +177,6 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.add_smoking_area, menu);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -105,11 +201,15 @@ public class AddSmokingAreaActivity extends AppCompatActivity
 
         if (id == R.id.nav_home) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_map) {
+            Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+            startActivity(intent);
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_notice) {
 
-        } else if (id == R.id.nav_tools) {
+        } else if (id == R.id.nav_community) {
+            Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_share) {
 
@@ -131,11 +231,6 @@ public class AddSmokingAreaActivity extends AppCompatActivity
 
     }
 
-    public void gps(View view){
-        Intent intent = new Intent(AddSmokingAreaActivity.this, getMapGpsActivity.class);
-        startActivity(intent);
-
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -149,7 +244,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                     Bitmap img = BitmapFactory.decodeStream(in);
                     in.close();
                     // 이미지 표시
-                     imageView.setImageBitmap(img);
+                    imageView.setImageBitmap(img);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -157,11 +252,58 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         }
     }
 
+    public boolean checkNull(String smokingareaInfomation) {
+        if (smokingareaInfomation.equals("") || smokingareaInfomation == null) {
+            return false;
+        } else return true;
+    }
+
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             finish();
         }
         return true;
+    }
+
+    public JSONObject makeJsonObject() {
+        JSONObject smokingareainfo = new JSONObject();
+        try {
+            smokingareainfo.put("smoking_area_name", areaName.getText().toString());
+            smokingareainfo.put("smoking_area_lat", "\"" + curlat + "\"");
+            smokingareainfo.put("smoking_area_lng", "\"" + curlng + "\"");
+            smokingareainfo.put("smoking_area_reg_date", "0");
+            smokingareainfo.put("smoking_area_reg_user", "0");
+            smokingareainfo.put("smoking_area_point", "0");
+            smokingareainfo.put("smoking_area_report", "0");
+            smokingareainfo.put("smoking_area_roof", "\"" + checkboxresult(check_loop) + "\"");
+            smokingareainfo.put("smoking_area_vtl", "\"" + checkboxresult(check_aircondition) + "\"");
+            smokingareainfo.put("smoking_area_bench", "\"" + checkboxresult(check_bench) + "\"");
+            smokingareainfo.put("smoking_area_desc", areaDesc.getText().toString());
+            smokingareainfo.put("smoking_area_type", "0");
+            System.out.println(smokingareainfo + "eldyd");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return smokingareainfo;
+    }
+
+    public int checkboxresult(CheckBox chk) {
+        if (chk.isChecked()) {
+            return 1;
+        } else return 0;
+    }
+
+    public void show() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("AlertDialog Title");
+        builder.setMessage("AlertDialog Content");
+        builder.setPositiveButton("예",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+        builder.show();
     }
 
 }

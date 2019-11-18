@@ -35,6 +35,32 @@
         tools:ignore="MissingConstraints" />
 
     <TextView
+        android:id="@+id/text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:text="흡연장소 설명"
+        android:textSize="30sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/smokingareaname" />
+
+    <EditText
+        android:id="@+id/smokingareadesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:hint="흡연장소에 대한 설명을 입력해주세요.(20자 이내)"
+        android:maxLength="20"
+        android:singleLine="true"
+        android:textIsSelectable="true"
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text2"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
         android:id="@+id/detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,64 +69,83 @@
         android:text="세부 정보"
         android:textSize="30sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/smokingareaname" />
+        app:layout_constraintTop_toBottomOf="@id/smokingareadesc" />
 
     <TextView
         android:id="@+id/loop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="30dp"
         android:layout_marginTop="10dp"
         android:text="지붕    "
         android:textSize="20sp"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/check_loop"
         app:layout_constraintTop_toBottomOf="@id/detail" />
 
     <CheckBox
-        android:id="@+id/checkloop"
+        android:id="@+id/check_loop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:layout_constraintLeft_toRightOf="@+id/loop"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/detail" />
 
     <TextView
         android:id="@+id/aircondition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="30dp"
         android:layout_marginTop="10dp"
         android:text="환풍기"
         android:textSize="20sp"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/check_aircondition"
         app:layout_constraintTop_toBottomOf="@id/loop" />
 
     <CheckBox
-        android:id="@+id/checkaircondition"
+        android:id="@+id/check_aircondition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:layout_constraintLeft_toRightOf="@+id/aircondition"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loop" />
 
     <TextView
         android:id="@+id/inside"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="30dp"
         android:layout_marginTop="10dp"
         android:text="실내    "
         android:textSize="20sp"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/check_inside"
         app:layout_constraintTop_toBottomOf="@id/aircondition" />
 
     <CheckBox
-        android:id="@+id/checkinside"
+        android:id="@+id/check_inside"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:layout_constraintLeft_toRightOf="@+id/inside"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/aircondition" />
+
+    <TextView
+        android:id="@+id/bench"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="10dp"
+        android:text="벤치    "
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="@id/check_bench"
+        app:layout_constraintTop_toBottomOf="@id/inside" />
+
+    <CheckBox
+        android:id="@+id/check_bench"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inside" />
 
     <ImageView
         android:id="@+id/areaimage"
@@ -113,18 +158,8 @@
         android:src="@drawable/boardicon"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/checkinside" />
+        app:layout_constraintTop_toBottomOf="@id/check_bench" />
 
-
-    <Button
-        android:id="@+id/btngps"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="좌표등록"
-        android:onClick="gps"
-        app:layout_constraintLeft_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/areaimage" />
 
     <Button
         android:id="@+id/btnadd"
@@ -133,6 +168,45 @@
         android:layout_marginTop="8dp"
         android:text="등록"
         app:layout_constraintLeft_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btngps" />
+        app:layout_constraintTop_toBottomOf="@id/areaimage" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="100dp"
+        app:layout_constraintLeft_toRightOf="@id/aircondition"
+        app:layout_constraintTop_toBottomOf="@id/detail">
+
+        <RadioButton
+            android:id="@+id/rb_cafe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="카페" />
+
+        <RadioButton
+            android:id="@+id/rb_food"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="음식점" />
+        <RadioButton
+            android:id="@+id/rb_school"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="학교, 회사" />
+        <RadioButton
+            android:id="@+id/rb_other"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="여분이다" />
+
+    </RadioGroup>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
