@@ -82,6 +82,7 @@ public class LoginActivity extends Activity {
             });
 
         }
+
         // 세션 실패시
         @Override
         public void onSessionOpenFailed(KakaoException exception) {
@@ -89,6 +90,7 @@ public class LoginActivity extends Activity {
 
         }
     }
+
     public void requestMe() {
         //유저의 정보를 받아오는 함수
         UserManagement.requestMe(new MeResponseCallback() {
@@ -97,15 +99,18 @@ public class LoginActivity extends Activity {
                 Log.e(TAG, "error message=" + errorResult);
 //                super.onFailure(errorResult);
             }
+
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
                 Log.d(TAG, "onSessionClosed1 =" + errorResult);
             }
+
             @Override
             public void onNotSignedUp() {
                 //카카오톡 회원이 아닐시
                 Log.d(TAG, "onNotSignedUp ");
             }
+
             @Override
             public void onSuccess(UserProfile result) {
                 Log.e("UserProfile", result.toString());
@@ -115,7 +120,8 @@ public class LoginActivity extends Activity {
             }
         });
     }
-    private void saveShared( String id, String name) {
+
+    private void saveShared(String id, String name) {
         SharedPreferences pref = getSharedPreferences("profile", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("token", id);
@@ -128,6 +134,15 @@ public class LoginActivity extends Activity {
         SharedPreferences pref = getSharedPreferences("profile", MODE_PRIVATE);
         token = pref.getString("token", "");
         name = pref.getString("name", "");
+        if (token.equals("")) {
+            System.out.println("토큰" + token + "앙" + name + "뭐야");
+        }
+        if (!token.equals("")) {
+            System.out.println("토큰"+token+"앙22"+name+"뭐야");
+            Intent intent = new Intent(LoginActivity.this, MapActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
     }
 
 }
