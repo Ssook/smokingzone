@@ -431,7 +431,7 @@ public class MapActivity extends AppCompatActivity
         @Override
         public void run() {
             try {
-                receiveMsg = sendCurrentLocation();
+                receiveMsg = getNearestSmokingArea();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -443,7 +443,7 @@ public class MapActivity extends AppCompatActivity
         public void run() {
             try {
                 String str;
-                URL url = new URL("http://172.16.25.91:8080/SmokingArea/SmokingArea/smokingAreaList.jsp");
+                URL url = new URL("http://18.222.175.17:8080/SmokingArea/SmokingArea/smokingAreaList.jsp");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "Application/json");
                 conn.setRequestMethod("GET");
@@ -488,7 +488,7 @@ public class MapActivity extends AppCompatActivity
         return drawable;
     }
 
-    public String sendCurrentLocation() throws JSONException {
+    public String getNearestSmokingArea() throws JSONException {
         String nearSmokingArea = "";
         System.out.println();
         JSONObject currentlocation = new JSONObject();

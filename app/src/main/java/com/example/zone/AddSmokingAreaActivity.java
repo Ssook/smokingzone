@@ -124,7 +124,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                 //--------------------------
                 //   URL 설정하고 접속하기
                 //--------------------------
-                URL url = new URL("http://172.16.25.91:8080/SmokingArea/SmokingArea/insertSmokingArea.jsp");
+                URL url = new URL("http://18.222.175.17:8080/SmokingArea/SmokingArea/insertSmokingArea.jsp");
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
                 //--------------------------
                 //   전송 모드 설정 - 기본적인 설정이다
@@ -163,7 +163,6 @@ public class AddSmokingAreaActivity extends AppCompatActivity
             } catch (IOException e) {
             }
             System.out.println(response + "data");
-
         }
     }
 
@@ -189,7 +188,6 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
