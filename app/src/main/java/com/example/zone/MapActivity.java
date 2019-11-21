@@ -72,6 +72,7 @@ public class MapActivity extends AppCompatActivity
     MapPoint center;
     double curlat;
     double curlng;
+    MapView mapView;
     String receiveMsg;
     private MapPOIItem smokeMarker;
     ArrayList<MapPOIItem> smokeMarkerlist = new ArrayList<MapPOIItem>();
@@ -106,8 +107,6 @@ public class MapActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
-
-
 
         FloatingActionButton roadnavi = findViewById(R.id.roadnavi);
         roadnavi.setOnClickListener(new View.OnClickListener() {
@@ -165,7 +164,7 @@ public class MapActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-        final MapView mapView = new MapView(this);
+        mapView = new MapView(this);
 
         mapView.setDaumMapApiKey("dccc7c0ddbd4beddfdaf5655ef4463ce");
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
@@ -247,7 +246,7 @@ public class MapActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
             // Handle the camera action
         } else if (id == R.id.nav_map) {
-            
+
         } else if (id == R.id.nav_notice) {
 
         } else if (id == R.id.nav_community) {
@@ -366,7 +365,7 @@ public class MapActivity extends AppCompatActivity
         String[] arr = mapPOIItem.getItemName().split(",");
 
         Intent intent = new Intent(MapActivity.this, ReviewActivity.class);
-        intent.putExtra("arr",arr);
+        intent.putExtra("arr", arr);
         startActivity(intent);
     }
 
@@ -385,7 +384,6 @@ public class MapActivity extends AppCompatActivity
         }
 
 
-
         @Override
         public View getCalloutBalloon(MapPOIItem poiItem) {
 
@@ -401,7 +399,6 @@ public class MapActivity extends AppCompatActivity
             ((TextView) calloutBalloon.findViewById(R.id.title)).setText(arr[3]);
             ((TextView) calloutBalloon.findViewById(R.id.desc)).setText(arr[4]);
             ((TextView) calloutBalloon.findViewById(R.id.star)).setText(arr[5]);
-
 
 
             return calloutBalloon;
@@ -513,9 +510,9 @@ public class MapActivity extends AppCompatActivity
         String nearSmokingArea = "";
         System.out.println();
         JSONObject currentlocation = new JSONObject();
-        currentlocation.put("lat", ""+curlat+"");
-        currentlocation.put("lng", ""+curlng+"");
-        System.out.println("test" + currentlocation+ "dd");
+        currentlocation.put("lat", "" + curlat + "");
+        currentlocation.put("lng", "" + curlng + "");
+        System.out.println("test" + currentlocation + "dd");
         //현재 위치 데이터를 서버에 보내서 가까운 값 갖고오는거
         try {
             //--------------------------
@@ -563,8 +560,25 @@ public class MapActivity extends AppCompatActivity
         System.out.println(nearSmokingArea + "data");
         return nearSmokingArea;
     } // HttpPostDat
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapView.removeAllPOIItems();
+        getThread t1 = new getThread();
+        t1.start();
+        try {
+            t1.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            createSmokeAreaMarker(mapView);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mapView.addPOIItems(smokeMarkerlist.toArray(new MapPOIItem[smokeMarkerlist.size()]));
+
+    }
 }
-
-
-
-
