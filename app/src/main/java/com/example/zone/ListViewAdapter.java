@@ -1,6 +1,7 @@
 package com.example.zone;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,6 +98,7 @@ public class ListViewAdapter extends BaseAdapter {
                 // listview에 있는 item을 클릭했을 때의 이벤트를 Listen, 그 때의 작업
                 // 제목은 액션바에, 내용은 TextView에 출력
                 Intent intent = new Intent(mContext, BoardDetailActivity.class); //인탠트 객체는 액티비티 이동,데이터 입출력에 사용
+             //   Log.d("data", modellist.get(position).getTitle());
                 intent.putExtra("actionBarTitle", modellist.get(position).getTitle());
                 intent.putExtra("contentTv", modellist.get(position).getDesc());
                 mContext.startActivity(intent);

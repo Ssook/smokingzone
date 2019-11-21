@@ -85,7 +85,7 @@ public class BoardWriteActivity extends AppCompatActivity {
         //새 글 등록 메뉴를 클릭했을 때 이벤트
         if (id == R.id.newPost) {
             // URL 설정.
-            String url = "http://172.20.10.8:8080/SmokingArea/Board/insertBoard.jsp";
+            String url = "http://18.222.175.17:8080/SmokingArea/Board/insertBoard.jsp";
 
             //서버로 보낼 데이터를 ContentValues에 담아줌
             ContentValues values = new ContentValues();
@@ -202,7 +202,7 @@ public class BoardWriteActivity extends AppCompatActivity {
             //   URL 설정하고 접속하기
             //--------------------------
 
-            URL url = new URL("http://172.16.25.91:8080/SmokingArea/Board/insertBoard.jsp");
+            URL url = new URL("http://18.222.175.17:8080/SmokingArea/Board/insertBoard.jsp");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
             //--------------------------
             //   전송 모드 설정 - 기본적인 설정이다

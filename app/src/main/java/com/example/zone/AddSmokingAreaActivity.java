@@ -2,14 +2,17 @@ package com.example.zone;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -38,6 +41,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -267,7 +273,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         JSONObject smokingareainfo = new JSONObject();
         try {
             smokingareainfo.put("smoking_area_name", areaName.getText().toString());
-            smokingareainfo.put("smoking_area_lat",   ""+curlat + "");
+            smokingareainfo.put("smoking_area_lat", "" + curlat + "");
             smokingareainfo.put("smoking_area_lng", "" + curlng + "");
             smokingareainfo.put("smoking_area_reg_date", "0");
             smokingareainfo.put("smoking_area_reg_user", "0");
@@ -303,4 +309,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                 });
         builder.show();
     }
+
+
+
 }

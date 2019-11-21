@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class BoardDetailActivity extends AppCompatActivity {
 
@@ -13,6 +14,7 @@ public class BoardDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board_detail);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         ActionBar actionBar = getSupportActionBar();
         TextView mDetailTv = findViewById(R.id.textView);
@@ -23,11 +25,8 @@ public class BoardDetailActivity extends AppCompatActivity {
         String mContent = intent.getStringExtra("contentTv");
 
         //set actionbar title
-        actionBar.setTitle(mActionBarTitle);
+        toolbar.setTitle("ddd");
         //set text in textview
         mDetailTv.setText(mContent);
-
-
-
     }
 }

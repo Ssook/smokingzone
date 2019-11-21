@@ -63,7 +63,7 @@ public class ReviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
         //액션바 가져오기
-        actionBar = getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("리뷰 화면");
 
         //액션바 타이틀 가운데 정렬
@@ -91,7 +91,7 @@ public class ReviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // URL 설정.
-                String url = "http://172.20.10.8:8080/SmokingArea/Board/insertBoard.jsp";
+                String url = "http://18.222.175.17:8080/SmokingArea/Board/insertBoard.jsp";
 
                 //서버로 보낼 데이터를 ContentValues에 담아줌
                 ContentValues values = new ContentValues();

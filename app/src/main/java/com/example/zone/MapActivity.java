@@ -139,7 +139,7 @@ public class MapActivity extends AppCompatActivity
                 }
 //                String url = "daummaps://route?sp=" + "37.537229,127.005515&ep=37.4979502,127.0276368&by=FOOT";//여기에 좌표값 넣어주면 됨
 
-                String url = "daummaps://route?sp=" + curlat + "," + curlng + "&ep=" + strlng + "," + strlat + "&by=FOOT";//여기에 좌표값 넣어주면 됨
+                String url = "daummaps://route?sp=" + curlat + "," + curlng + "&ep=" + strlat + "," + strlng + "&by=FOOT";//여기에 좌표값 넣어주면 됨
 
 //                String url ="daummaps://route?sp=" + "
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -392,7 +392,7 @@ public class MapActivity extends AppCompatActivity
             String[] arr = poiItem.getItemName().split(",");
             System.out.println(arr[0] + "??" + arr[1] + "??" + arr[2] + "??" + arr[3] + "??" + arr[4] + "??" + arr[5] + "??" + arr[6]);
             ImageView imgicon = (ImageView) calloutBalloon.findViewById(R.id.badge);
-            String urlStr = "http://18.222.175.17:8080/SmokingArea/img/" + arr[6]; // 웹서버에 프로필사진이 없을시 예외처리
+            String urlStr = "http://172.16.25.91:8080/SmokingArea/img/" + arr[6]; // 웹서버에 프로필사진이 없을시 예외처리
 
             Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
             imgicon.setImageDrawable(draw);
@@ -513,15 +513,15 @@ public class MapActivity extends AppCompatActivity
         String nearSmokingArea = "";
         System.out.println();
         JSONObject currentlocation = new JSONObject();
-        currentlocation.put("lat", curlat);
-        currentlocation.put("lng", curlng);
-        System.out.println("test" + curlat + curlng);
+        currentlocation.put("lat", ""+curlat+"");
+        currentlocation.put("lng", ""+curlng+"");
+        System.out.println("test" + currentlocation+ "dd");
         //현재 위치 데이터를 서버에 보내서 가까운 값 갖고오는거
         try {
             //--------------------------
             //   URL 설정하고 접속하기
             //--------------------------
-            URL url = new URL("http://18.222.175.17:8080/SmokingArea/SmokingArea/minDistance.jsp");
+            URL url = new URL("http://172.16.25.91:8080/SmokingArea/SmokingArea/minDistance.jsp");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
             //--------------------------
             //   전송 모드 설정 - 기본적인 설정이다
@@ -556,6 +556,7 @@ public class MapActivity extends AppCompatActivity
                 builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
             }
             nearSmokingArea = builder.toString();
+
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         }
