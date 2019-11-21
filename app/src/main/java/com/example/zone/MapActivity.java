@@ -97,6 +97,7 @@ public class MapActivity extends AppCompatActivity
             e.printStackTrace();
         }
         toolbar.setTitle("                       여기서펴");
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +106,9 @@ public class MapActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
+
+
+
         FloatingActionButton roadnavi = findViewById(R.id.roadnavi);
         roadnavi.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,14 +129,18 @@ public class MapActivity extends AppCompatActivity
 
                 try {
                     JSONObject jo1 = new JSONObject(receiveMsg);
-                    strlat = jo1.getString("lat");
-                    strlng = jo1.getString("lng");
+
+                    strlat = jo1.getString("smoking_area_lat");
+                    strlng = jo1.getString("smoking_area_lng");
+
                     System.out.println(strlat + strlng + "tlqk");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 //                String url = "daummaps://route?sp=" + "37.537229,127.005515&ep=37.4979502,127.0276368&by=FOOT";//여기에 좌표값 넣어주면 됨
-                String url = "daummaps://route?sp=" + curlat + "," + curlng + "&ep=" + strlat + "," + strlng + "&by=FOOT";//여기에 좌표값 넣어주면 됨
+
+                String url = "daummaps://route?sp=" + curlat + "," + curlng + "&ep=" + strlng + "," + strlat + "&by=FOOT";//여기에 좌표값 넣어주면 됨
+
 //                String url ="daummaps://route?sp=" + "
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
@@ -144,6 +152,8 @@ public class MapActivity extends AppCompatActivity
             public void onClick(View view) {
                 //길찾기 버튼 눌렀을 때
                 Intent intent = new Intent(MapActivity.this, AddSmokingAreaActivity.class);
+                intent.putExtra("curlat", curlat);
+                intent.putExtra("curlng", curlng);
                 startActivity(intent);
             }
         });
@@ -155,7 +165,7 @@ public class MapActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-        MapView mapView = new MapView(this);
+        final MapView mapView = new MapView(this);
 
         mapView.setDaumMapApiKey("dccc7c0ddbd4beddfdaf5655ef4463ce");
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
@@ -170,7 +180,14 @@ public class MapActivity extends AppCompatActivity
         center = mapPointWithGeoCoord(curlat, curlng);
         mapView.setMapCenterPointAndZoomLevel(center, 0, true);
 
-
+        FloatingActionButton track = findViewById(R.id.track);
+        track.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                center = mapPointWithGeoCoord(curlat, curlng);
+                mapView.setMapCenterPointAndZoomLevel(center, 0, true);
+            }
+        });
         getThread t1 = new getThread();
         t1.start();
         try {
@@ -229,12 +246,12 @@ public class MapActivity extends AppCompatActivity
 
         if (id == R.id.nav_home) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_map) {
+            
+        } else if (id == R.id.nav_notice) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_tools) {
-            Intent intent = new Intent(MapActivity.this, BoardActivity.class);
+        } else if (id == R.id.nav_community) {
+            Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
             startActivity(intent);
 
         } else if (id == R.id.nav_share) {

@@ -9,19 +9,32 @@
     tools:context=".MapActivity"
     tools:showIn="@layout/app_bar_map">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/roadnavi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center"
         android:layout_marginStart="16dp"
         android:layout_marginTop="596dp"
-        android:src="@drawable/custom_poi_marker"
+        android:src="@drawable/bus"
         app:borderWidth="0dp"
         app:fabSize="mini"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/track"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="50dp"
+        android:backgroundTint="#000000"
+        android:src="@drawable/ic_return_btn"
+        app:borderWidth="0dp"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@id/roadnavi"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
