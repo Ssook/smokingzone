@@ -161,7 +161,7 @@ public class MapActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-        final MapView mapView = new MapView(this);
+        final MapView mapView = new MapView(this);u
 
         mapView.setDaumMapApiKey("dccc7c0ddbd4beddfdaf5655ef4463ce");
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
