@@ -54,7 +54,6 @@ public class BoardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.board_activity_main);
-        Toast.makeText(getApplicationContext(), "zzz", Toast.LENGTH_LONG).show();
         //액션바 가져오기
         actionBar = getSupportActionBar();
         //actionBar.setTitle("빠담 게시판");
