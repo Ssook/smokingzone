@@ -98,7 +98,6 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                     }
 
 
-                    show();//애는 임시
                 }
             }
         });
@@ -189,7 +188,6 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -269,15 +267,15 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         JSONObject smokingareainfo = new JSONObject();
         try {
             smokingareainfo.put("smoking_area_name", areaName.getText().toString());
-            smokingareainfo.put("smoking_area_lat", "\"" + curlat + "\"");
-            smokingareainfo.put("smoking_area_lng", "\"" + curlng + "\"");
+            smokingareainfo.put("smoking_area_lat",   ""+curlat + "");
+            smokingareainfo.put("smoking_area_lng", "" + curlng + "");
             smokingareainfo.put("smoking_area_reg_date", "0");
             smokingareainfo.put("smoking_area_reg_user", "0");
             smokingareainfo.put("smoking_area_point", "0");
             smokingareainfo.put("smoking_area_report", "0");
-            smokingareainfo.put("smoking_area_roof", "\"" + checkboxresult(check_loop) + "\"");
-            smokingareainfo.put("smoking_area_vtl", "\"" + checkboxresult(check_aircondition) + "\"");
-            smokingareainfo.put("smoking_area_bench", "\"" + checkboxresult(check_bench) + "\"");
+            smokingareainfo.put("smoking_area_roof", "" + checkboxresult(check_loop) + "");
+            smokingareainfo.put("smoking_area_vtl", "" + checkboxresult(check_aircondition) + "");
+            smokingareainfo.put("smoking_area_bench", "" + checkboxresult(check_bench) + "");
             smokingareainfo.put("smoking_area_desc", areaDesc.getText().toString());
             smokingareainfo.put("smoking_area_type", "0");
             System.out.println(smokingareainfo + "eldyd");
@@ -293,10 +291,10 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         } else return 0;
     }
 
-    public void show() {
+    public void show(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("AlertDialog Title");
-        builder.setMessage("AlertDialog Content");
+        builder.setTitle("알림");
+        builder.setMessage(message);
         builder.setPositiveButton("예",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -305,5 +303,4 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                 });
         builder.show();
     }
-
 }

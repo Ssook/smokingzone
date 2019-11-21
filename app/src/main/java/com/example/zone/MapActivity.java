@@ -407,7 +407,7 @@ public class MapActivity extends AppCompatActivity
         for (int i = 0; i < ja.length(); i++) {
 
             smokeMarker = new MapPOIItem();
-            smokeMarker.setItemName((((JSONObject) (ja.get(i))).get("bench").toString()) + "," + (((JSONObject) (ja.get(i))).get("roof").toString()) + "," + (((JSONObject) (ja.get(i))).get("vtl").toString()) + "," + (((JSONObject) (ja.get(i))).get("name").toString()) + "," + (((JSONObject) (ja.get(i))).get("desc").toString()) + "," + (((JSONObject) (ja.get(i))).get("point").toString()) + "," + (((JSONObject) (ja.get(i))).get("img_src").toString()));
+            smokeMarker.setItemName((((JSONObject) (ja.get(i))).get("bench").toString()) + "," + (((JSONObject) (ja.get(i))).get("roof").toString()) + "," + (((JSONObject) (ja.get(i))).get("vtl").toString()) + "," + (((JSONObject) (ja.get(i))).get("name").toString()) + "," + (((JSONObject) (ja.get(i))).get("desc").toString()) + "," + (((JSONObject) (ja.get(i))).get("point").toString()) + "," + (((JSONObject) (ja.get(i))).get("no").toString()));
             System.out.println("장소" + (((JSONObject) (ja.get(i))).get("reg_user").toString()));
             smokeMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(Double.parseDouble(((JSONObject) (ja.get(i))).get("lat").toString()), Double.parseDouble(((JSONObject) (ja.get(i))).get("lng").toString())));
             smokeMarker.setMarkerType(MapPOIItem.MarkerType.BluePin);
@@ -431,7 +431,7 @@ public class MapActivity extends AppCompatActivity
         @Override
         public void run() {
             try {
-                receiveMsg = sendCurrentLocation();
+                receiveMsg = getNearestSmokingArea();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -461,7 +461,6 @@ public class MapActivity extends AppCompatActivity
                     System.out.println(smokeareainfo + "결과");
                 } else {
                     System.out.println("에러 발생");
-
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -489,7 +488,7 @@ public class MapActivity extends AppCompatActivity
         return drawable;
     }
 
-    public String sendCurrentLocation() throws JSONException {
+    public String getNearestSmokingArea() throws JSONException {
         String nearSmokingArea = "";
         System.out.println();
         JSONObject currentlocation = new JSONObject();
