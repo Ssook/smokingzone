@@ -64,11 +64,10 @@ public class ReviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_review);
         //액션바 가져오기
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setCustomView(R.layout.custom_bar_review);
         actionBar.setTitle("리뷰 화면");
 
-        //액션바 타이틀 가운데 정렬
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        actionBar.setCustomView(R.layout.custom_bar);
+
 
         //메뉴바에 '<' 버튼이 생긴다.(두개는 항상 같이다닌다)
         actionBar.setDisplayHomeAsUpEnabled(true);

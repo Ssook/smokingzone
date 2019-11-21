@@ -14,9 +14,9 @@ public class BoardDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board_detail);
-        Toolbar toolbar = findViewById(R.id.toolbar);
 
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setCustomView(R.layout.custom_bar_detail);
         TextView mDetailTv = findViewById(R.id.textView);
 
         //get data from previous activity when item of listview is clicked using intent
@@ -25,7 +25,7 @@ public class BoardDetailActivity extends AppCompatActivity {
         String mContent = intent.getStringExtra("contentTv");
 
         //set actionbar title
-        toolbar.setTitle("ddd");
+        actionBar.setTitle(mActionBarTitle);
         //set text in textview
         mDetailTv.setText(mContent);
     }
