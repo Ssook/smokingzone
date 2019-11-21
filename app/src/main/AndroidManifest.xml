@@ -17,7 +17,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ReviewActivity"></activity>
+        <activity android:name=".ReviewActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MapActivity" />
+        </activity>
         <activity android:name=".getMapGpsActivity" />
         <activity
             android:name=".AddSmokingAreaActivity"
@@ -38,6 +42,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".BoardActivity" />
         </activity>
+
         <activity
             android:name=".MapActivity"
             android:label="@string/title_activity_map"

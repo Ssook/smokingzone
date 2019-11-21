@@ -110,12 +110,12 @@ public class MapActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 //길찾기 버튼 눌렀을 때
-                String strlat="";
-                String strlng="";
+                String strlat = "";
+                String strlng = "";
 
 
                 minDistanceThread t2 = new minDistanceThread();
-                     t2.start();
+                t2.start();
 
                 try {
                     t2.join();
@@ -124,15 +124,15 @@ public class MapActivity extends AppCompatActivity
                 }
 
                 try {
-                    JSONObject jo1=new JSONObject(receiveMsg);
+                    JSONObject jo1 = new JSONObject(receiveMsg);
                     strlat = jo1.getString("lat");
                     strlng = jo1.getString("lng");
-                    System.out.println(strlat+strlng+"tlqk");
+                    System.out.println(strlat + strlng + "tlqk");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 //                String url = "daummaps://route?sp=" + "37.537229,127.005515&ep=37.4979502,127.0276368&by=FOOT";//여기에 좌표값 넣어주면 됨
-                String url = "daummaps://route?sp=" + curlat+","+curlng+"&ep="+strlat+","+strlng+"&by=FOOT";//여기에 좌표값 넣어주면 됨
+                String url = "daummaps://route?sp=" + curlat + "," + curlng + "&ep=" + strlat + "," + strlng + "&by=FOOT";//여기에 좌표값 넣어주면 됨
 //                String url ="daummaps://route?sp=" + "
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
@@ -238,7 +238,8 @@ public class MapActivity extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.nav_share) {
-
+            Intent intent = new Intent(MapActivity.this, ReviewActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_send) {
 
         }
@@ -345,7 +346,11 @@ public class MapActivity extends AppCompatActivity
 
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
+        String[] arr = mapPOIItem.getItemName().split(",");
 
+        Intent intent = new Intent(MapActivity.this, ReviewActivity.class);
+        intent.putExtra("arr",arr);
+        startActivity(intent);
     }
 
     @Override
@@ -359,7 +364,10 @@ public class MapActivity extends AppCompatActivity
 
         public CustomCalloutBalloonAdapter() {
             calloutBalloon = getLayoutInflater().inflate(R.layout.custom_callout_balloon, null);
+
         }
+
+
 
         @Override
         public View getCalloutBalloon(MapPOIItem poiItem) {
@@ -376,20 +384,29 @@ public class MapActivity extends AppCompatActivity
             ((TextView) calloutBalloon.findViewById(R.id.title)).setText(arr[3]);
             ((TextView) calloutBalloon.findViewById(R.id.desc)).setText(arr[4]);
             ((TextView) calloutBalloon.findViewById(R.id.star)).setText(arr[5]);
+
+
+
             return calloutBalloon;
         }
 
+        public void change(View v) {
+            Intent intent = new Intent(MapActivity.this, ReviewActivity.class);
+            startActivity(intent);
+        }
 
         @Override
         public View getPressedCalloutBalloon(MapPOIItem poiItem) {
             return null;
         }
+
     }
+
 
     private void createSmokeAreaMarker(MapView mapView) throws JSONException {
         double ex = 0.1;
         JSONArray ja = null;
-   
+
         ja = new JSONArray(smokeareainfo);
         for (int i = 0; i < ja.length(); i++) {
 
@@ -416,9 +433,9 @@ public class MapActivity extends AppCompatActivity
 
     public class minDistanceThread extends Thread {
         @Override
-        public void run(){
+        public void run() {
             try {
-                receiveMsg=sendCurrentLocation();
+                receiveMsg = sendCurrentLocation();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -482,7 +499,7 @@ public class MapActivity extends AppCompatActivity
         JSONObject currentlocation = new JSONObject();
         currentlocation.put("lat", curlat);
         currentlocation.put("lng", curlng);
-        System.out.println("test"+curlat+curlng);
+        System.out.println("test" + curlat + curlng);
         //현재 위치 데이터를 서버에 보내서 가까운 값 갖고오는거
         try {
             //--------------------------
@@ -503,7 +520,7 @@ public class MapActivity extends AppCompatActivity
             //   서버로 값 전송
             //--------------------------
             StringBuffer buffer = new StringBuffer();
-            String currentlocationsend="currentlocation="+currentlocation.toString();
+            String currentlocationsend = "currentlocation=" + currentlocation.toString();
 
             buffer.append(currentlocationsend);                 // php 변수에 값 대입
 
@@ -526,7 +543,7 @@ public class MapActivity extends AppCompatActivity
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         }
-        System.out.println(nearSmokingArea+"data");
+        System.out.println(nearSmokingArea + "data");
         return nearSmokingArea;
     } // HttpPostDat
 }
