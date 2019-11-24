@@ -129,7 +129,7 @@ public class LoginActivity extends Activity {
                 //카카오톡 회원이 아닐시
                 Log.d(TAG, "onNotSignedUp ");
             }
- 
+
             @Override
             public void onSuccess(UserProfile result) {
                 Log.e("UserProfile", result.toString());

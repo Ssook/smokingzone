@@ -80,8 +80,7 @@ public class MapActivity extends AppCompatActivity
     String receiveMsg;
     private MapPOIItem smokeMarker;
     ArrayList<MapPOIItem> smokeMarkerlist = new ArrayList<MapPOIItem>();
-    String smokeareainfo = "[{\"no\":\"1\",\"lng\":\"127.072949\",\"bench\":\"F\",\"reg_user\":\"reg_user\",\"loof\":\"T\",\"type\":\"2\",\"point\":\"3.3\",\"img_src\":\"C:Users\",\"vtl\":\"T\",\"reg_date\":\"2019-10-12\",\"name\":\"name\",\"report\":\"3\",\"lat\":\"37.551293\",\"desc\":\"second block\"}," +
-            "{\"no\":\"2\",\"lng\":\"127.082949\",\"bench\":\"F\",\"reg_user\":\"reg_user\",\"loof\":\"T\",\"type\":\"2\",\"point\":\"4.4\",\"img_src\":\"C:Users\",\"vtl\":\"T\",\"reg_date\":\"2019-10-12\",\"name\":\"세종대학교\",\"report\":\"3\",\"lat\":\"37.539293\",\"desc\":\"여기는 흡연장소입니다.\"}]";
+    String smokeareainfo="";
     SharedPreferences sp;
 
     @Override
@@ -89,18 +88,18 @@ public class MapActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo("com.example.zone", PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            PackageInfo info = getPackageManager().getPackageInfo("com.example.zone", PackageManager.GET_SIGNATURES);
+//            for (Signature signature : info.signatures) {
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));            //해시키 추출용
+//            }
+//        } catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        }
         toolbar.setTitle("                       여기서펴");
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -119,7 +118,6 @@ public class MapActivity extends AppCompatActivity
                 //길찾기 버튼 눌렀을 때
                 String strlat = "";
                 String strlng = "";
-
 
                 minDistanceThread t2 = new minDistanceThread();
                 t2.start();
@@ -144,7 +142,7 @@ public class MapActivity extends AppCompatActivity
 
                 String url = "daummaps://route?sp=" + curlat + "," + curlng + "&ep=" + strlat + "," + strlng + "&by=FOOT";//여기에 좌표값 넣어주면 됨
 
-//                String url ="daummaps://route?sp=" + "
+
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
             }
@@ -255,6 +253,8 @@ public class MapActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_community) {
             Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
+            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
 
         } else if (id == R.id.nav_share) {
@@ -367,7 +367,7 @@ public class MapActivity extends AppCompatActivity
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
         String[] arr = mapPOIItem.getItemName().split(",");
-
+        Log.d("data","why");
         Intent intent = new Intent(MapActivity.this, ReviewActivity.class);
         intent.putExtra("arr", arr);
         startActivity(intent);
@@ -396,8 +396,8 @@ public class MapActivity extends AppCompatActivity
             ImageView imgicon = (ImageView) calloutBalloon.findViewById(R.id.badge);
             String urlStr = "http://18.222.175.17:8080/SmokingArea/img/" + arr[6]; // 웹서버에 프로필사진이 없을시 예외처리
 
-            Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
-            imgicon.setImageDrawable(draw);
+         //   Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
+          //  imgicon.setImageDrawable(draw);
 
 
             ((TextView) calloutBalloon.findViewById(R.id.title)).setText(arr[3]);
@@ -408,10 +408,6 @@ public class MapActivity extends AppCompatActivity
             return calloutBalloon;
         }
 
-        public void change(View v) {
-            Intent intent = new Intent(MapActivity.this, ReviewActivity.class);
-            startActivity(intent);
-        }
 
         @Override
         public View getPressedCalloutBalloon(MapPOIItem poiItem) {
@@ -422,12 +418,10 @@ public class MapActivity extends AppCompatActivity
 
 
     private void createSmokeAreaMarker(MapView mapView) throws JSONException {
-        double ex = 0.1;
         JSONArray ja = null;
 
         ja = new JSONArray(smokeareainfo);
         for (int i = 0; i < ja.length(); i++) {
-
             smokeMarker = new MapPOIItem();
             smokeMarker.setItemName((((JSONObject) (ja.get(i))).get("bench").toString()) + "," + (((JSONObject) (ja.get(i))).get("roof").toString()) + "," + (((JSONObject) (ja.get(i))).get("vtl").toString()) + "," + (((JSONObject) (ja.get(i))).get("name").toString()) + "," + (((JSONObject) (ja.get(i))).get("desc").toString()) + "," + (((JSONObject) (ja.get(i))).get("point").toString()) + "," + (((JSONObject) (ja.get(i))).get("no").toString()));
             System.out.println("장소" + (((JSONObject) (ja.get(i))).get("reg_user").toString()));
@@ -441,12 +435,6 @@ public class MapActivity extends AppCompatActivity
             smokeMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
             smokeMarkerlist.add(smokeMarker);
         }
-
-    }
-
-    public void onRoadButtonClick(View v) {
-
-
     }
 
     public class minDistanceThread extends Thread {
@@ -588,9 +576,10 @@ public class MapActivity extends AppCompatActivity
 
     private void onClickLogout() {//로그아웃인데..왜
         SharedPreferences pref = getSharedPreferences("profile", Activity.MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
+        sp=getSharedPreferences("profile",Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
         //editor.clear()는 auto에 들어있는 모든 정보를 기기에서 지웁니다.
-        pref.edit().clear().apply();
+        sp.edit().clear().apply();
         Toast.makeText(MapActivity.this, "로그아웃.", Toast.LENGTH_SHORT).show();
         finish();
     }
