@@ -385,7 +385,7 @@ public class ReviewActivity extends AppCompatActivity {
             //   URL 설정하고 접속하기
             //--------------------------
 
-            URL url = new URL("http://172.16.25.91:8080/SmokingArea/SmokingArea/insertSmokingReview.jsp");
+            URL url = new URL("http://18.222.175.17:8080/SmokingArea/SmokingArea/insertSmokingReview.jsp");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
             //--------------------------
             //   전송 모드 설정 - 기본적인 설정이다

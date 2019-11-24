@@ -16,5 +16,8 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="SplashTheme" parent="@android:style/Theme.NoTitleBar">
+        <item name="android:windowBackground">@drawable/ic_reload_btn1</item>
+    </style>
 
 </resources>

@@ -1,7 +1,9 @@
 package com.example.zone;
 
+import android.app.Activity;
 import android.content.Intent;
 
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -26,6 +28,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -78,7 +82,7 @@ public class MapActivity extends AppCompatActivity
     ArrayList<MapPOIItem> smokeMarkerlist = new ArrayList<MapPOIItem>();
     String smokeareainfo = "[{\"no\":\"1\",\"lng\":\"127.072949\",\"bench\":\"F\",\"reg_user\":\"reg_user\",\"loof\":\"T\",\"type\":\"2\",\"point\":\"3.3\",\"img_src\":\"C:Users\",\"vtl\":\"T\",\"reg_date\":\"2019-10-12\",\"name\":\"name\",\"report\":\"3\",\"lat\":\"37.551293\",\"desc\":\"second block\"}," +
             "{\"no\":\"2\",\"lng\":\"127.082949\",\"bench\":\"F\",\"reg_user\":\"reg_user\",\"loof\":\"T\",\"type\":\"2\",\"point\":\"4.4\",\"img_src\":\"C:Users\",\"vtl\":\"T\",\"reg_date\":\"2019-10-12\",\"name\":\"세종대학교\",\"report\":\"3\",\"lat\":\"37.539293\",\"desc\":\"여기는 흡연장소입니다.\"}]";
-
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -257,7 +261,7 @@ public class MapActivity extends AppCompatActivity
             Intent intent = new Intent(MapActivity.this, ReviewActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_send) {
-
+            onClickLogout();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -390,7 +394,7 @@ public class MapActivity extends AppCompatActivity
             String[] arr = poiItem.getItemName().split(",");
             System.out.println(arr[0] + "??" + arr[1] + "??" + arr[2] + "??" + arr[3] + "??" + arr[4] + "??" + arr[5] + "??" + arr[6]);
             ImageView imgicon = (ImageView) calloutBalloon.findViewById(R.id.badge);
-            String urlStr = "http://172.16.25.91:8080/SmokingArea/img/" + arr[6]; // 웹서버에 프로필사진이 없을시 예외처리
+            String urlStr = "http://18.222.175.17:8080/SmokingArea/img/" + arr[6]; // 웹서버에 프로필사진이 없을시 예외처리
 
             Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
             imgicon.setImageDrawable(draw);
@@ -518,7 +522,7 @@ public class MapActivity extends AppCompatActivity
             //--------------------------
             //   URL 설정하고 접속하기
             //--------------------------
-            URL url = new URL("http://172.16.25.91:8080/SmokingArea/SmokingArea/minDistance.jsp");
+            URL url = new URL("http://18.222.175.17:8080/SmokingArea/SmokingArea/minDistance.jsp");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
             //--------------------------
             //   전송 모드 설정 - 기본적인 설정이다
@@ -581,4 +585,14 @@ public class MapActivity extends AppCompatActivity
         mapView.addPOIItems(smokeMarkerlist.toArray(new MapPOIItem[smokeMarkerlist.size()]));
 
     }
+
+    private void onClickLogout() {//로그아웃인데..왜
+        SharedPreferences pref = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        //editor.clear()는 auto에 들어있는 모든 정보를 기기에서 지웁니다.
+        pref.edit().clear().apply();
+        Toast.makeText(MapActivity.this, "로그아웃.", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
 }
