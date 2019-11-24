@@ -91,15 +91,13 @@ public class LoginActivity extends Activity {
                     // Log.e("UserProfile", userProfile.toString());
                     // Log.e("UserProfile", userProfile.getId() + "");
 
-
                     long number = userProfile.getId();
                     Intent intent = new Intent(LoginActivity.this, MapActivity.class);
+                    intent.putExtra("user_name",name);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
-
                 }
             });
-
         }
 
         // 세션 실패시
@@ -159,6 +157,7 @@ public class LoginActivity extends Activity {
         if (!token.equals("")) {
             System.out.println("토큰" + token + "앙22" + name + "뭐야");
             Intent intent = new Intent(LoginActivity.this, MapActivity.class);
+            intent.putExtra("user_name",name);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }

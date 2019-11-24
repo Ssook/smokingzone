@@ -28,26 +28,27 @@ public class SmokingArea {
             _AreaLat=SmokingAreaInfo.getDouble("lat");
             _AreaLng=SmokingAreaInfo.getDouble("lng");
             _Point=SmokingAreaInfo.getDouble("point");
-            _ChkAircondition=(int)SmokingAreaInfo.get("vtl");
-            _ChkRoof=(int)SmokingAreaInfo.get("roof");
-            _ChkBench=(int)SmokingAreaInfo.get("bench");
-//            _ChkInside=(int)SmokingAreaInfo.get("inside");
-            _AreaType=(int)SmokingAreaInfo.get("type");
-            _Report=(int)SmokingAreaInfo.get("report");
+
+//            _ChkAircondition=Integer.parseInt(SmokingAreaInfo.getString("vtl"));
+//            _ChkRoof=Integer.parseInt(SmokingAreaInfo.getString("roof"));
+//            _ChkBench=Integer.parseInt(SmokingAreaInfo.getString("bench"));
+//            _ChkInside=(int)SmokingAreaInfo.get("inside");//서버쪽에 추가필요
+            _AreaType=Integer.parseInt(SmokingAreaInfo.getString("type"));
+            _Report=Integer.parseInt(SmokingAreaInfo.getString("report"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public String getSmokingAreaName(){
-        return _AreaName;
-    }
+    public String getSmokingAreaName(){ return _AreaName; }
 
-    public String getSmokingAreaDesc(){
-        return _AreaDesc;
-    }
+    public String getSmokingAreaDesc(){ return _AreaDesc; }
 
-    public Double getSmokingAreaPoint(){
-        return _Point;
-    }
+    public Double getSmokingAreaPoint(){ return _Point;}
+
+    public Double getSmokingAreaLat(){ return _AreaLat; }
+
+    public Double getSmokingAreaLng(){ return _AreaLng; }
+
+    public int getSmokinAreaType(){ return _AreaType; }
 }
