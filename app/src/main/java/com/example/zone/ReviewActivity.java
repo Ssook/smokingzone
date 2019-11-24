@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RatingBar;
@@ -37,12 +38,18 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class ReviewActivity extends AppCompatActivity {
+    private TextView smokingarea_name;
+    private TextView smokingarea_rating_avg;
+    private CheckBox bench;
+    private CheckBox roof;
+    private CheckBox vtl;
     private RatingBar ratingbar;
     private TextView ratingValue;
     private EditText ed_review_comment;
     private Button bt_reg_rating;
     private Button bt_reg_comment;
     private ActionBar actionBar;
+
 
     private JSONArray mArray;  //서버로부터 JSON Array를 받아 저장할 변수
     ListView listView; //게시판 ListView 레이아웃 형성을 위한 객체 생성
@@ -73,12 +80,11 @@ public class ReviewActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
 
-
-        //흡연구역 정보를 intent를 통해 받음
-        Intent intent = getIntent();
-        smoking_area_data =intent.getExtras().getStringArray("arr");
-
-
+        smokingarea_name = findViewById(R.id.review_smokingarea);
+        smokingarea_rating_avg = findViewById(R.id.avg_point);
+        bench = findViewById(R.id.bench);
+        roof = findViewById(R.id.roof);
+        vtl = findViewById(R.id.vtl);
         ratingbar = findViewById(R.id.ratingbar);
         ratingValue = findViewById(R.id.ratingvalue);
         ed_review_comment = findViewById((R.id.edit_review_comment));
@@ -86,57 +92,67 @@ public class ReviewActivity extends AppCompatActivity {
         bt_reg_comment = findViewById((R.id.comment_reg_button));
 
 
+        //흡연구역 정보를 intent를 통해 받음
+        Intent intent = getIntent();
+        smoking_area_data =intent.getExtras().getStringArray("arr");
+
+        //받아온 정보를 각 항목에 설정
+        smokingarea_name.setText(smoking_area_data[3]);
+        smokingarea_rating_avg.setText(smoking_area_data[5]);
+        if(smoking_area_data[0].charAt(0)=='1')
+        {
+            bench.setChecked(true);
+        }
+        else{
+            bench.setChecked(false);
+        }
+        if(smoking_area_data[1].charAt(0)=='1')
+        {
+            roof.setChecked(true);
+        }
+        else{
+            roof.setChecked(false);
+        }
+        if(smoking_area_data[2].charAt(0)=='1')
+        {
+            vtl.setChecked(true);
+        }
+        else{
+            vtl.setChecked(false);
+        }
+        //3가지 항목 체크박스 선택할 수 없도록 하기
+        bench.setClickable(false);
+        roof.setClickable(false);
+        vtl.setClickable(false);
+
         bt_reg_comment.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // URL 설정.
-                String url = "http://18.222.175.17:8080/SmokingArea/Board/insertBoard.jsp";
 
-                //서버로 보낼 데이터를 ContentValues에 담아줌
-                ContentValues values = new ContentValues();
-
-                values.put("smoking_area_no", "1");
-                values.put("smoking_review_reg_user", "주용이");
-                values.put("smoking_review_ctnt", ed_review_comment.getText().toString());
-                values.put("smoking_review_point", ratingValue.getText().toString());
-
-                // URL 뒤에 붙여서 보낼 파라미터.
-                StringBuffer sbParams = new StringBuffer();
-
-                /**
-                 * 1. StringBuffer에 파라미터 연결
-                 * */
-                // 보낼 데이터가 없으면 파라미터를 비운다.
-                if (values == null)
-                    sbParams.append("");
-                    // 보낼 데이터가 있으면 파라미터를 채운다.
-                else {
-                    // 파라미터가 2개 이상이면 파라미터 연결에 &가 필요하므로 스위칭할 변수 생성.
-                    boolean isAnd = false;
-                    // 파라미터 키와 값.
-                    String key;
-                    String value;
-                    sbParams.append("{");
-                    for (Map.Entry<String, Object> parameter : values.valueSet()) {
-                        key = "\"" + parameter.getKey() + "\"";
-                        value = "\"" + parameter.getValue().toString() + "\"";
-
-                        // 파라미터가 두개 이상일때, 파라미터 사이에 &를 붙인다.
-                        if (isAnd)
-                            sbParams.append(",");
-
-                        sbParams.append(key).append(":").append(value);
-
-                        // 파라미터가 2개 이상이면 isAnd를 true로 바꾸고 다음 루프부터 &를 붙인다.
-                        if (!isAnd)
-                            if (values.size() >= 2)
-                                isAnd = true;
-                    }
-                    sbParams.append("}");
+                //JSONObject에 서버에 보내줄 댓글 데이터 담아줌
+                JSONObject sbParam = new JSONObject();
+                try {
+                    sbParam.put("smoking_area_no", ""+smoking_area_data[6]+"");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    sbParam.put("smoking_review_reg_user", "주용이승연이은석이!");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    sbParam.put("smoking_review_ctnt", ed_review_comment.getText().toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    sbParam.put("smoking_review_point", ratingValue.getText().toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
 
-
-                NetworkTaskWrite networkTask = new NetworkTaskWrite(sbParams.toString());
+                NetworkTaskWrite networkTask = new NetworkTaskWrite(sbParam.toString());
                 networkTask.execute();
 
 
@@ -361,7 +377,7 @@ public class ReviewActivity extends AppCompatActivity {
             String result = "";
 
             try {
-                result = sendBoardWrite(values);
+                result = sendReviewWrite(values);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -376,7 +392,7 @@ public class ReviewActivity extends AppCompatActivity {
         }
     }
 
-    public String sendBoardWrite(String values) throws JSONException {
+    public String sendReviewWrite(String values) throws JSONException {
 
         String result = "";
         try {
@@ -400,7 +416,7 @@ public class ReviewActivity extends AppCompatActivity {
             //--------------------------
             StringBuffer buffer = new StringBuffer();
             String regdata = "json_smokingReviewValue=" + values;
-            Log.d("data", values);
+
             buffer.append(regdata);                 // php 변수에 값 대입
 
             OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");

@@ -252,6 +252,8 @@ public class MapActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_community) {
             Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
+            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
 
         } else if (id == R.id.nav_share) {
@@ -364,7 +366,7 @@ public class MapActivity extends AppCompatActivity
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
         String[] arr = mapPOIItem.getItemName().split(",");
-
+        Log.d("data","tlqkf");
         Intent intent = new Intent(MapActivity.this, ReviewActivity.class);
         intent.putExtra("arr",arr);
         startActivity(intent);
@@ -392,10 +394,10 @@ public class MapActivity extends AppCompatActivity
             String[] arr = poiItem.getItemName().split(",");
             System.out.println(arr[0] + "??" + arr[1] + "??" + arr[2] + "??" + arr[3] + "??" + arr[4] + "??" + arr[5] + "??" + arr[6]);
             ImageView imgicon = (ImageView) calloutBalloon.findViewById(R.id.badge);
-            String urlStr = "http://172.16.25.91:8080/SmokingArea/img/" + arr[6]; // 웹서버에 프로필사진이 없을시 예외처리
+         //   String urlStr = "http://172.16.25.91:8080/SmokingArea/img/" + arr[6]; // 웹서버에 프로필사진이 없을시 예외처리
 
-            Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
-            imgicon.setImageDrawable(draw);
+         //   Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
+          //  imgicon.setImageDrawable(draw);
 
 
             ((TextView) calloutBalloon.findViewById(R.id.title)).setText(arr[3]);

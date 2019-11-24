@@ -1,7 +1,6 @@
 package com.example.zone;
 
 
-
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -52,9 +51,9 @@ public class BoardWriteActivity extends AppCompatActivity {
         //액션바 가져오기
         ActionBar actionBar = getSupportActionBar();
 
-        //액션바 타이틀 가운데 정렬
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        //액션바 커스텀 뷰 설정
         actionBar.setCustomView(R.layout.custom_bar_write);
+        actionBar.setTitle("빠담 글쓰기");
 
         //메뉴바에 '<' 버튼이 생긴다.(두개는 항상 같이다닌다)
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -77,6 +76,7 @@ public class BoardWriteActivity extends AppCompatActivity {
         return true;
 
     }
+
     //메뉴 아이템을 눌렀을 때 이벤트 처리
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -86,6 +86,9 @@ public class BoardWriteActivity extends AppCompatActivity {
         if (id == R.id.newPost) {
             // URL 설정.
             String url = "http://18.222.175.17:8080/SmokingArea/Board/insertBoard.jsp";
+
+            //JSONObject에 서버로 보낼 게시글 정보를 담음
+            JSONObject board_data = new JSONObject();
 
             //서버로 보낼 데이터를 ContentValues에 담아줌
             ContentValues values = new ContentValues();
@@ -99,70 +102,53 @@ public class BoardWriteActivity extends AppCompatActivity {
             // nowDate 변수에 값을 저장한다.
             String formatDate = sdfNow.format(date);
 
-            values.put("reg_date",formatDate);
-            if(cb_anony.isChecked())
-            {
-                values.put("reg_user","익명");
-            }
-            values.put("ctnt",et_content.getText().toString());
-            values.put("tag","전체");
-            values.put("title",et_title.getText().toString());
-
-            // URL 뒤에 붙여서 보낼 파라미터.
-            StringBuffer sbParams = new StringBuffer();
-
-            /**
-             * 1. StringBuffer에 파라미터 연결
-             * */
-            // 보낼 데이터가 없으면 파라미터를 비운다.
-            if (values == null)
-                sbParams.append("");
-                // 보낼 데이터가 있으면 파라미터를 채운다.
-            else {
-                // 파라미터가 2개 이상이면 파라미터 연결에 &가 필요하므로 스위칭할 변수 생성.
-                boolean isAnd = false;
-                // 파라미터 키와 값.
-                String key;
-                String value;
-                sbParams.append("{");
-                for (Map.Entry<String, Object> parameter : values.valueSet()) {
-                    key = "\""+parameter.getKey()+"\"";
-                    value = "\""+parameter.getValue().toString()+"\"";
-
-                    // 파라미터가 두개 이상일때, 파라미터 사이에 &를 붙인다.
-                    if (isAnd)
-                        sbParams.append(",");
-
-                    sbParams.append(key).append(":").append(value);
-
-                    // 파라미터가 2개 이상이면 isAnd를 true로 바꾸고 다음 루프부터 &를 붙인다.
-                    if (!isAnd)
-                        if (values.size() >= 2)
-                            isAnd = true;
+            values.put("reg_date", formatDate);
+            if (cb_anony.isChecked()) {
+                try {
+                    board_data.put("reg_user", "익명");
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                sbParams.append("}");
+            }
+            try {
+                board_data.put("ctnt", et_content.getText().toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                board_data.put("tag", "전체");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                board_data.put("title", et_title.getText().toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
 
 
-            NetworkTask networkTask = new NetworkTask(sbParams.toString());
+            NetworkTask networkTask = new NetworkTask(board_data.toString());
             networkTask.execute();
 
 
-
             //액티비티 간 전환
-            //  Intent intent = new Intent(getApplicationContext(),MainActivity.class); //인탠트 객체는 액티비티 이동,데이터 입출력에 사용
-            // startActivity(intent);
-            //Toast.makeText(BoardWriteActivity.this, "게시글 등록 성공", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(), BoardActivity.class); //인탠트 객체는 액티비티 이동,데이터 입출력에 사용
+            //글쓰기 액티비티 제거 후
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY  | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            //게시판 액티비티 활성화
+            startActivity(intent);
+            Toast.makeText(BoardWriteActivity.this, "게시글 등록 성공", Toast.LENGTH_SHORT).show();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
     public class NetworkTask extends AsyncTask<Void, Void, String> {
 
 
         String values;
 
-        NetworkTask( String values){
+        NetworkTask(String values) {
 
             this.values = values;
         }
@@ -175,10 +161,10 @@ public class BoardWriteActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... params) {
-            String result="";
+            String result = "";
 
             try {
-                result =  sendBoardWrite(values);
+                result = sendBoardWrite(values);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -190,13 +176,14 @@ public class BoardWriteActivity extends AppCompatActivity {
             // 통신이 완료되면 호출됩니다.
             // 결과에 따른 UI 수정 등은 여기서 합니다.
 
-            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
-            tv_outPut.setText(result);
+            //Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
+            //tv_outPut.setText(result);
         }
     }
+
     public String sendBoardWrite(String values) throws JSONException {
 
-        String result="";
+        String result = "";
         try {
             //--------------------------
             //   URL 설정하고 접속하기
@@ -217,8 +204,8 @@ public class BoardWriteActivity extends AppCompatActivity {
             //   서버로 값 전송
             //--------------------------
             StringBuffer buffer = new StringBuffer();
-            String regdata="board_param="+values;
-            Log.d("data",values);
+            String regdata = "board_param=" + values;
+            Log.d("data", values);
             buffer.append(regdata);                 // php 변수에 값 대입
 
             OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
@@ -241,8 +228,8 @@ public class BoardWriteActivity extends AppCompatActivity {
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         }
-        System.out.println( result);
-        return  result;
+        System.out.println(result);
+        return result;
     } // HttpPostDat
 }
 

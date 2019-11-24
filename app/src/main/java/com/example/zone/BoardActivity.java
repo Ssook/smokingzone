@@ -70,7 +70,7 @@ public class BoardActivity extends AppCompatActivity {
         NetworkTask networkTask = new NetworkTask(this, null);
         networkTask.execute();
 
-
+        /*
         //더미 배열 생성
         String[] dummyuser = new String[]{"박지성", "손흥민", "황희찬", "이강인", "남태희"};
         String[] dummydate = new String[]{"2019/09/30", "2019/00/00", "2019/00/00", "2019/00/00", "2019/00/00"};
@@ -132,7 +132,7 @@ public class BoardActivity extends AppCompatActivity {
 
         //bind the adapter to the listview
         listView.setAdapter(adapter);
-
+        */
         //FAB 이벤트 처리 함수 생성 및 등록
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new FABClickListener());
@@ -146,6 +146,8 @@ public class BoardActivity extends AppCompatActivity {
             //FAb 클릭 이벤트 처리 구간
 
             Intent intent = new Intent(getApplicationContext(), BoardWriteActivity.class); //인탠트 객체는 액티비티 이동,데이터 입출력에 사용
+            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
         }
     }
