@@ -12,6 +12,8 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -58,6 +60,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import static android.net.wifi.p2p.WifiP2pDevice.FAILED;
 import static com.example.zone.runtimePermissions.AppPermissionHelper.REQUEST_CODE;
 
 public class AddSmokingAreaActivity extends AppCompatActivity
@@ -114,8 +117,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                 //   서버로 값 전송
                 //--------------------------
                 StringBuffer buffer = new StringBuffer();
-                String json_smokingAreaValue = "json_smokingAreaValue=";
-                makeJsonObject();
+                String json_smokingAreaValue = "json_smokingAreaValue="+makeJsonObject().toString();
 
                 buffer.append(json_smokingAreaValue);
 
@@ -138,7 +140,17 @@ public class AddSmokingAreaActivity extends AppCompatActivity
             } catch (MalformedURLException e) {
             } catch (IOException e) {
             }
-            System.out.println(response + "data");
+            System.out.println("data"+response + "data");
+            //
+            Handler mHandler = new Handler(Looper.getMainLooper());
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    // 사용하고자 하는 코드
+                    show("등록을 완료하였습니다.");
+                }
+            }, 0);
+//
         }
     }
 
@@ -228,7 +240,8 @@ public class AddSmokingAreaActivity extends AppCompatActivity
     public boolean checkNull(String smokingareaInfomation) {
         if (smokingareaInfomation.equals("") || smokingareaInfomation == null) {
             return false;
-        } else return true;
+        }
+        else return true;
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -251,11 +264,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
     }
 
     public JSONObject makeJsonObject() {
-        boolean format_check = check_Format();
         JSONObject smokingareainfo=new JSONObject();
-        if (format_check == false) {
-            return null;
-        } else if (format_check == true) {
             try {
                 smokingareainfo.put("smoking_area_name", areaName.getText().toString());
                 smokingareainfo.put("smoking_area_lat", "" + curlat + "");
@@ -273,7 +282,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
+
         return smokingareainfo;
 
     }
@@ -288,7 +297,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("알림");
         builder.setMessage(message);
-        builder.setPositiveButton("예",
+        builder.setPositiveButton("OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
@@ -319,7 +328,14 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                             .setAction("Action", null).show();
                     return;
 
-                } else {
+                }
+                else if (getRadioGroup()==0){
+                    Snackbar.make(view, "흡연 장소의 유형을 입력해주세요.", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    return;
+
+                }
+                else {
                     networkThread t1 = new networkThread();
                     t1.start();
                     try {
@@ -413,15 +429,5 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         }
     }
 
-    public boolean check_Format() {
-        if (areaName.getText().toString().equals("")) {
-            System.out.println("흡연장소명을 입력하여주세요");
-            return false;
-        } else if (getRadioGroup() == 0) {
-            System.out.println("흡연장소의 유형을 입력하여주세요");
-            return false;
-        }
-        return true;
-    }
 
 }
