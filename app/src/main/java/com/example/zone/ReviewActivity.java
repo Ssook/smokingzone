@@ -52,7 +52,7 @@ public class ReviewActivity extends AppCompatActivity {
 
 
     private JSONArray mArray;  //서버로부터 JSON Array를 받아 저장할 변수
-    ListView listView; //게시판 ListView 레이아웃 형성을 위한 객체 생성
+    ListView listView; //리뷰화면 댓글  ListView 레이아웃 형성을 위한 객체 생성
     ReviewListViewAdapter adapter; // 뷰에 넣을 데이터들을 어떠한 형식과 어떠한 값들로 구성할지 정하는 adapter 객체
 
     //흡연구역데이터 배열 선언
@@ -80,6 +80,7 @@ public class ReviewActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
 
+        //각 해당하는 변수의 xml 컴포넌트를 등록
         smokingarea_name = findViewById(R.id.review_smokingarea);
         smokingarea_rating_avg = findViewById(R.id.avg_point);
         bench = findViewById(R.id.bench);
@@ -125,6 +126,7 @@ public class ReviewActivity extends AppCompatActivity {
         roof.setClickable(false);
         vtl.setClickable(false);
 
+        //댓글 등록버튼을 눌렀을 때 리스너 등록
         bt_reg_comment.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,12 +134,12 @@ public class ReviewActivity extends AppCompatActivity {
                 //JSONObject에 서버에 보내줄 댓글 데이터 담아줌
                 JSONObject sbParam = new JSONObject();
                 try {
-                    sbParam.put("smoking_area_no", ""+smoking_area_data[6]+"");
+                    sbParam.put("smoking_area_no",Integer.parseInt(smoking_area_data[6]));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 try {
-                    sbParam.put("smoking_review_reg_user", "주용이승연이은석이!");
+                    sbParam.put("smoking_review_reg_user", "wow");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -151,18 +153,27 @@ public class ReviewActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                NetworkTaskWrite networkTask = new NetworkTaskWrite(sbParam.toString());
-                networkTask.execute();
+                //서버로 댓글 입력 클래스 생성 및 실행
+                NetworkTaskWrite networkTaskWrite = new NetworkTaskWrite(sbParam.toString());
+                Log.d("data",sbParam.toString());
+                networkTaskWrite.execute();
 
 
             }
         });
+        //------------------
+        /*흡연구역 정보 담기*/
+        //------------------
 
-        // String url = "http://18.222.175.17:8080/SmokingArea/Board/boardList.jsp";
-        ReviewActivity.NetworkTask networkTask = new ReviewActivity.NetworkTask(this, null);
+
+        //리뷰 액티비티 networkTask 클래스 생성 및 실행
+        ReviewActivity.NetworkTask networkTask = new ReviewActivity.NetworkTask(this,smoking_area_data[6]);
         networkTask.execute();
 
+        //---------------------
+        /*더미 데이터 생성 파트*/
+        //---------------------
+        /*
         //더미 배열 생성
         String[] dummyuser = new String[]{"박지성", "손흥민", "황희찬", "이강인", "남태희"};
         String[] dummydate = new String[]{"2019/09/30", "2019/00/00", "2019/00/00", "2019/00/00", "2019/00/00"};
@@ -213,8 +224,9 @@ public class ReviewActivity extends AppCompatActivity {
 
         //bind the adapter to the listview
         listView.setAdapter(adapter);
+        */
 
-
+        //별점 ratingbar 리스너
         ratingbar.setOnRatingBarChangeListener(new RatingbarListener());
     }
 
@@ -227,15 +239,16 @@ public class ReviewActivity extends AppCompatActivity {
 
 
         }
-    }
+    }//Ratingbarlistenr class
 
+    //해당 흡연구역의 댓글을 뿌려주는 NetworkTask 클래스
     public class NetworkTask extends AsyncTask<Void, Void, String> {
 
 
-        ContentValues values;
+        String values;
         Context mcontext;
 
-        NetworkTask(Context mcontext, ContentValues values) {
+        NetworkTask(Context mcontext, String values) {
             this.mcontext = mcontext;
             this.values = values;
         }
@@ -251,7 +264,8 @@ public class ReviewActivity extends AppCompatActivity {
             String result = "";
 
             try {
-                result = ServerReviewData();
+                result = ServerReviewData(values);
+                Log.d("result",result);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -263,7 +277,7 @@ public class ReviewActivity extends AppCompatActivity {
             // 통신이 완료되면 호출됩니다.
             // 결과에 따른 UI 수정 등은 여기서 합니다.
             //더미 데이터 입력 (Json Parsing)
-            String Test = "[{\"smoking_area_no\":\"1\",\"smoking_review_reg_user\":\"user\",\"smoking_review_ctnt\":\"ctntsadasdasdsada\",\"smoking_review_point\":\"15.5\"}]";
+            //String Test = "[{\"smoking_area_no\":\"1\",\"smoking_review_reg_user\":\"user\",\"smoking_review_ctnt\":\"ctntsadasdasdsada\",\"smoking_review_point\":\"15.5\"}]";
             if (result != "") {
                 try {
                     mArray = new JSONArray(result);
@@ -306,14 +320,15 @@ public class ReviewActivity extends AppCompatActivity {
         }
     }
 
-    public String ServerReviewData() throws JSONException {
+    //서버로 해당 흡연구역 정보를 넘겨주고 댓글 정보를 받는 함수
+    public String ServerReviewData(String values) throws JSONException {
 
         String result = "";
         try {
             //--------------------------
             //   URL 설정하고 접속하기
             //--------------------------
-            URL url = new URL("http://18.222.175.17:8080/SmokingArea/Board/boardList.jsp");
+            URL url = new URL("http://18.222.175.17:8080/SmokingArea/SmokingArea/smokingAreaReview.jsp");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
             //--------------------------
             //   전송 모드 설정 - 기본적인 설정이다
@@ -327,15 +342,15 @@ public class ReviewActivity extends AppCompatActivity {
             http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");            //--------------------------
             //   서버로 값 전송
             //--------------------------
-            //StringBuffer buffer = new StringBuffer();
-            //String currentlocationsend="board_param="+values;
+            StringBuffer buffer = new StringBuffer();
+            String smokingAreaReviewValue="smokingAreaReviewValue="+values;
 
-            // buffer.append(currentlocationsend);                 // php 변수에 값 대입
+            buffer.append(smokingAreaReviewValue);                 // php 변수에 값 대입
 
-            //OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
-            //PrintWriter writer = new PrintWriter(outStream);
-            //writer.write(buffer.toString());
-            //writer.flush();
+            OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
+            PrintWriter writer = new PrintWriter(outStream);
+            writer.write(buffer.toString());
+            writer.flush();
 
             //--------------------------
             //   서버에서 전송받기
@@ -352,19 +367,18 @@ public class ReviewActivity extends AppCompatActivity {
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         }
-        System.out.println(result);
+       // System.out.println(result);
         return result;
     } // HttpPostDat
 
+    // 리뷰화면 댓글 입력 클래스 (클라이언트 -> 서버 , 서버 -> 클라이언트)
     public class NetworkTaskWrite extends AsyncTask<Void, Void, String> {
-
 
         String values;
 
         NetworkTaskWrite(String values) {
-
             this.values = values;
-        }
+        }//생성자
 
         @Override
         protected void onPreExecute() {
@@ -375,9 +389,10 @@ public class ReviewActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... params) {
             String result = "";
-
             try {
+                //클라이언트로 받은 값들을 result에 넣어줌
                 result = sendReviewWrite(values);
+                Log.d("result2",result);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -388,10 +403,13 @@ public class ReviewActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             // 통신이 완료되면 호출됩니다.
             // 결과에 따른 UI 수정 등은 여기서 합니다.
-
+            Intent intent = new Intent(ReviewActivity.this, ReviewActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.putExtra("arr",smoking_area_data);
+            startActivity(intent);
         }
     }
-
+    //서버로 댓글을 JSONObject 형태의 String 값으로 댓글보내고 리턴값을 받는 함수.
     public String sendReviewWrite(String values) throws JSONException {
 
         String result = "";
@@ -399,8 +417,8 @@ public class ReviewActivity extends AppCompatActivity {
             //--------------------------
             //   URL 설정하고 접속하기
             //--------------------------
-
-            URL url = new URL("http://172.16.25.91:8080/SmokingArea/SmokingArea/insertSmokingReview.jsp");
+            //클라이언트로부터 댓글을 받는 jsp url
+            URL url = new URL("http://18.222.175.17:8080/SmokingArea/SmokingArea/insertSmokingReview.jsp");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
             //--------------------------
             //   전송 모드 설정 - 기본적인 설정이다
@@ -416,7 +434,6 @@ public class ReviewActivity extends AppCompatActivity {
             //--------------------------
             StringBuffer buffer = new StringBuffer();
             String regdata = "json_smokingReviewValue=" + values;
-
             buffer.append(regdata);                 // php 변수에 값 대입
 
             OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");

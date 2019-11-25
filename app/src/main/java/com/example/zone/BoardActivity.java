@@ -273,7 +273,7 @@ public class BoardActivity extends AppCompatActivity {
 
                 //Model에 데이터를 넣어주고 arrayList<BoardModel>에 넣어줌
                 for (int i = 0; i < arraytitle.size(); i++) {
-                    BoardModel boardModel = new BoardModel(arraytag.get(i), arrayregDate.get(i), arrayregUser.get(i), arraytitle.get(i), arrayctnt.get(i), arrayicon.get(i));
+                    BoardModel boardModel = new BoardModel(arrayboardNo.get(i),arraytag.get(i), arrayregDate.get(i), arrayregUser.get(i), arraytitle.get(i), arrayctnt.get(i), arrayicon.get(i));
                     //bind all strings in an array
                     arrayList.add(boardModel);
                 }

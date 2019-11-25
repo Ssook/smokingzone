@@ -14,8 +14,9 @@ public class BoardModel {
 
 
 
-    public BoardModel(String tag, String reg_date, String reg_user, String title, String desc, int icon)
+    public BoardModel(int board_no,String tag, String reg_date, String reg_user, String title, String desc, int icon)
     {
+        this.board_no = board_no;
         this.tag =tag;
         this.reg_date =reg_date;
         this.reg_user =reg_user;
@@ -54,6 +55,7 @@ public class BoardModel {
     public int getIcon() {
         return this.icon;
     }
+
     public int getBoard_no() {
         return this.board_no;
     }

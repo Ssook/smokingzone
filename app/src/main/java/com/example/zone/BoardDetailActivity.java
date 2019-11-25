@@ -36,7 +36,10 @@ public class BoardDetailActivity extends AppCompatActivity {
     private TextView mDetailTv;
     private EditText ed_review_comment;
     private Button bt_reg_comment;
-    private String board_no;
+
+    private String mActionBarTitle;
+    private String mContent;
+    private int board_no;
 
     private JSONArray mArray;  //서버로부터 JSON Array를 받아 저장할 변수
     ListView listView; //게시판 ListView 레이아웃 형성을 위한 객체 생성
@@ -65,10 +68,9 @@ public class BoardDetailActivity extends AppCompatActivity {
 
         //get data from previous activity when item of listview is clicked using intent
         Intent intent = getIntent();
-        String mActionBarTitle = intent.getStringExtra("actionBarTitle");
-        String mContent = intent.getStringExtra("contentTv");
-        board_no = intent.getStringExtra("board_no");
-
+        mActionBarTitle = intent.getStringExtra("actionBarTitle");
+        mContent = intent.getStringExtra("contentTv");
+        board_no = intent.getIntExtra("board_no",0);
         //set actionbar title
         actionBar.setTitle(mActionBarTitle);
         //set text in textview
@@ -81,33 +83,36 @@ public class BoardDetailActivity extends AppCompatActivity {
                 //JSONObject에 서버에 보내줄 댓글 데이터 담아줌
                 JSONObject sbParam = new JSONObject();
                 try {
-                    sbParam.put("board_no", "" + board_no + "");
+                    sbParam.put("board_area_no",board_no);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 try {
-                    sbParam.put("board_comment_reg_user", "주용이승연이은석이!");
+                    sbParam.put("board_review_reg_user", "user");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 try {
-                    sbParam.put("board_comment_ctnt", ed_review_comment.getText().toString());
+                    sbParam.put("board_review_ctnt", ed_review_comment.getText().toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                Log.d("data",sbParam.toString());
-                NetworkTaskWrite networkTask = new NetworkTaskWrite(sbParam.toString());
-                networkTask.execute();
+                Log.d("boardReviewData",sbParam.toString());
+                NetworkTaskWrite networkTaskWrite = new NetworkTaskWrite(sbParam.toString());
+                networkTaskWrite.execute();
 
 
             }
         });
-
-        // String url = "http://18.222.175.17:8080/SmokingArea/Board/boardList.jsp";
-        BoardDetailActivity.NetworkTask networkTask = new BoardDetailActivity.NetworkTask(this, null);
+        Log.d("board_no",Integer.toString(board_no));
+        BoardDetailActivity.NetworkTask networkTask = new BoardDetailActivity.NetworkTask(this, Integer.toString(board_no));
         networkTask.execute();
 
+        //---------------------
+        /*더미 데이터 생성 파트*/
+        //---------------------
+        /*
         //더미 배열 생성
         String[] dummyuser = new String[]{"박지성", "손흥민", "황희찬", "이강인", "남태희"};
         String[] dummydate = new String[]{"2019/09/30", "2019/00/00", "2019/00/00", "2019/00/00", "2019/00/00"};
@@ -158,17 +163,17 @@ public class BoardDetailActivity extends AppCompatActivity {
 
         //bind the adapter to the listview
         listView.setAdapter(adapter);
-
+        */
 
     }
 
     public class NetworkTask extends AsyncTask<Void, Void, String> {
 
 
-        ContentValues values;
+        String values;
         Context mcontext;
 
-        NetworkTask(Context mcontext, ContentValues values) {
+        NetworkTask(Context mcontext, String values) {
             this.mcontext = mcontext;
             this.values = values;
         }
@@ -184,7 +189,7 @@ public class BoardDetailActivity extends AppCompatActivity {
             String result = "";
 
             try {
-                result = ServerReviewData();
+                result = ServerBoardCommentData(values);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -196,7 +201,7 @@ public class BoardDetailActivity extends AppCompatActivity {
             // 통신이 완료되면 호출됩니다.
             // 결과에 따른 UI 수정 등은 여기서 합니다.
             //더미 데이터 입력 (Json Parsing)
-            String Test = "[{\"smoking_area_no\":\"1\",\"smoking_review_reg_user\":\"user\",\"smoking_review_ctnt\":\"ctntsadasdasdsada\"}]";
+            //String Test = "[{\"smoking_area_no\":\"1\",\"smoking_review_reg_user\":\"user\",\"smoking_review_ctnt\":\"ctntsadasdasdsada\"}]";
             if (result != "") {
                 try {
                     mArray = new JSONArray(result);
@@ -239,14 +244,14 @@ public class BoardDetailActivity extends AppCompatActivity {
         }
     }
 
-    public String ServerReviewData() throws JSONException {
+    public String ServerBoardCommentData(String values) throws JSONException {
 
         String result = "";
         try {
             //--------------------------
             //   URL 설정하고 접속하기
             //--------------------------
-            URL url = new URL("http://18.222.175.17:8080/SmokingArea/Board/boardList.jsp");
+            URL url = new URL("http://18.222.175.17:8080/SmokingArea/Board/boardReview.jsp");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
             //--------------------------
             //   전송 모드 설정 - 기본적인 설정이다
@@ -260,15 +265,15 @@ public class BoardDetailActivity extends AppCompatActivity {
             http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");            //--------------------------
             //   서버로 값 전송
             //--------------------------
-            //StringBuffer buffer = new StringBuffer();
-            //String currentlocationsend="board_param="+values;
+            StringBuffer buffer = new StringBuffer();
+            String currentlocationsend="boardReviewValue="+values;
 
-            // buffer.append(currentlocationsend);                 // php 변수에 값 대입
+            buffer.append(currentlocationsend);                 // php 변수에 값 대입
 
-            //OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
-            //PrintWriter writer = new PrintWriter(outStream);
-            //writer.write(buffer.toString());
-            //writer.flush();
+            OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
+            PrintWriter writer = new PrintWriter(outStream);
+            writer.write(buffer.toString());
+            writer.flush();
 
             //--------------------------
             //   서버에서 전송받기
@@ -310,7 +315,8 @@ public class BoardDetailActivity extends AppCompatActivity {
             String result = "";
 
             try {
-                result = sendReviewWrite(values);
+                result = sendCommentWrite(values);
+                Log.d("result",result);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -321,11 +327,17 @@ public class BoardDetailActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             // 통신이 완료되면 호출됩니다.
             // 결과에 따른 UI 수정 등은 여기서 합니다.
+            Intent intent = new Intent(BoardDetailActivity.this, BoardDetailActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.putExtra("actionBarTitle",mActionBarTitle);
+            intent.putExtra("contentTv",mContent);
+            intent.putExtra("board_no",board_no);
+            startActivity(intent);
 
         }
     }
 
-    public String sendReviewWrite(String values) throws JSONException {
+    public String sendCommentWrite(String values) throws JSONException {
 
         String result = "";
         try {
@@ -333,7 +345,7 @@ public class BoardDetailActivity extends AppCompatActivity {
             //   URL 설정하고 접속하기
             //--------------------------
 
-            URL url = new URL("http://172.16.25.91:8080/SmokingArea/SmokingArea/insertSmokingReview.jsp");
+            URL url = new URL("http://18.222.175.17:8080/SmokingArea/Board/insertBoardReview.jsp");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
             //--------------------------
             //   전송 모드 설정 - 기본적인 설정이다
@@ -348,8 +360,8 @@ public class BoardDetailActivity extends AppCompatActivity {
             //   서버로 값 전송
             //--------------------------
             StringBuffer buffer = new StringBuffer();
-            String regdata = "json_BoardCommentValue=" + values;
-
+            String regdata = "json_boardReviewValue=" + values;
+            Log.d("json data:",values);
             buffer.append(regdata);                 // php 변수에 값 대입
 
             OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");

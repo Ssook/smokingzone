@@ -102,6 +102,7 @@ public class ListViewAdapter extends BaseAdapter {
                 intent.putExtra("actionBarTitle", modellist.get(position).getTitle());
                 intent.putExtra("contentTv", modellist.get(position).getDesc());
                 intent.putExtra("board_no",modellist.get(position).getBoard_no());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 mContext.startActivity(intent);
 
             }

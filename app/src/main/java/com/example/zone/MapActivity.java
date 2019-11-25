@@ -84,18 +84,18 @@ public class MapActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo("com.example.zone", PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            PackageInfo info = getPackageManager().getPackageInfo("com.example.zone", PackageManager.GET_SIGNATURES);
+//            for (Signature signature : info.signatures) {
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+//            }
+//        } catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        }
         toolbar.setTitle("                       여기서펴");
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -366,8 +366,8 @@ public class MapActivity extends AppCompatActivity
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
         String[] arr = mapPOIItem.getItemName().split(",");
-        Log.d("data","tlqkf");
         Intent intent = new Intent(MapActivity.this, ReviewActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent.putExtra("arr",arr);
         startActivity(intent);
     }
