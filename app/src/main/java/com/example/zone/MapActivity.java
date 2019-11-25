@@ -96,8 +96,10 @@ public class MapActivity extends AppCompatActivity
     ArrayList<MapPOIItem> cafe_SmokeMarkerList = new ArrayList<MapPOIItem>();
     ArrayList<MapPOIItem> food_SmokeMarkerList = new ArrayList<MapPOIItem>();
     ArrayList<MapPOIItem> school_SmokeMarkerList = new ArrayList<MapPOIItem>();
-    ArrayList<MapPOIItem> banned_SmokeMarkerList = new ArrayList<MapPOIItem>();
+    ArrayList<MapPOIItem> company_SmokeMarkerList = new ArrayList<MapPOIItem>();
     ArrayList<MapPOIItem> street_SmokeMarkerList = new ArrayList<MapPOIItem>();
+    ArrayList<MapPOIItem> other_SmokeMarkerList = new ArrayList<MapPOIItem>();
+    ArrayList<MapPOIItem> banned_SmokeMarkerList = new ArrayList<MapPOIItem>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +127,7 @@ public class MapActivity extends AppCompatActivity
 
         nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
         Intent intent = getIntent();
-        System.out.println(intent.getStringExtra("user_name")+"test");
+        System.out.println(intent.getStringExtra("user_name") + "test");
         nav_header_id_text.setText(intent.getStringExtra("user_name"));
 
 
@@ -208,7 +210,7 @@ public class MapActivity extends AppCompatActivity
         center = mapPointWithGeoCoord(curlat, curlng);
         mapView.setMapCenterPointAndZoomLevel(center, 0, true);
 
-         track = findViewById(R.id.track);
+        track = findViewById(R.id.track);
         track.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -396,7 +398,7 @@ public class MapActivity extends AppCompatActivity
         String[] arr = mapPOIItem.getItemName().split(",");
         Intent intent = new Intent(MapActivity.this, ReviewActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        intent.putExtra("arr",arr);
+        intent.putExtra("arr", arr);
         startActivity(intent);
     }
 
@@ -464,26 +466,36 @@ public class MapActivity extends AppCompatActivity
             switch (smokingarea.getSmokinAreaType()) {
                 case 1:
                     smokeMarker.setCustomImageResourceId(R.drawable.map_pin_brown);
+                    cafe_SmokeMarkerList.add(smokeMarker);
                     break;
                 case 2:
                     smokeMarker.setCustomImageResourceId(R.drawable.map_pin_red);
+                    food_SmokeMarkerList.add(smokeMarker);
                     break;
                 case 3:
                     smokeMarker.setCustomImageResourceId(R.drawable.map_pin_yellow);
+                    school_SmokeMarkerList.add(smokeMarker);
                     break;
                 case 4:
                     smokeMarker.setCustomImageResourceId(R.drawable.map_pin_blue);
+                    company_SmokeMarkerList.add(smokeMarker);
                     break;
                 case 5:
                     smokeMarker.setCustomImageResourceId(R.drawable.map_pin_green);
+                    street_SmokeMarkerList.add(smokeMarker);
                     break;
                 case 6:
-                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_black);
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_gray);
+                    other_SmokeMarkerList.add(smokeMarker);
                     break;
-
+                case 7:
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_black);
+                    banned_SmokeMarkerList.add(smokeMarker);
+                    break;
                 default:
-                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_white);
+                    smokeMarker.setCustomImageResourceId(R.drawable.custom_poi_marker);
             }
+
             smokeMarker.setLeftSideButtonResourceIdOnCalloutBalloon(R.drawable.ic_menu_manage);
             smokeMarker.setLeftSideButtonResourceIdOnCalloutBalloon(3);
             smokeMarker.setCustomImageAutoscale(true);
@@ -533,7 +545,6 @@ public class MapActivity extends AppCompatActivity
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("에러 발생");
-
             }
         }
     }
