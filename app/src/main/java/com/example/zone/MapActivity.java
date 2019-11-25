@@ -1,7 +1,9 @@
 package com.example.zone;
 
+import android.app.Activity;
 import android.content.Intent;
 
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -26,6 +28,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -72,24 +76,39 @@ public class MapActivity extends AppCompatActivity
     MapPoint center;
     double curlat;
     double curlng;
+    MapView mapView;
     String receiveMsg;
     private MapPOIItem smokeMarker;
     ArrayList<MapPOIItem> smokeMarkerlist = new ArrayList<MapPOIItem>();
-    String smokeareainfo = "[{\"no\":\"1\",\"lng\":\"127.072949\",\"bench\":\"F\",\"reg_user\":\"reg_user\",\"loof\":\"T\",\"type\":\"2\",\"point\":\"3.3\",\"img_src\":\"C:Users\",\"vtl\":\"T\",\"reg_date\":\"2019-10-12\",\"name\":\"name\",\"report\":\"3\",\"lat\":\"37.551293\",\"desc\":\"second block\"}," +
-            "{\"no\":\"2\",\"lng\":\"127.082949\",\"bench\":\"F\",\"reg_user\":\"reg_user\",\"loof\":\"T\",\"type\":\"2\",\"point\":\"4.4\",\"img_src\":\"C:Users\",\"vtl\":\"T\",\"reg_date\":\"2019-10-12\",\"name\":\"세종대학교\",\"report\":\"3\",\"lat\":\"37.539293\",\"desc\":\"여기는 흡연장소입니다.\"}]";
-
+    String smokeareainfo = "";
+    SharedPreferences sp;
+    Toolbar toolbar;
+    NavigationView navigationView;
+    View nav_header_view;
+    TextView nav_header_id_text;
+    FloatingActionButton fab;
+    FloatingActionButton roadnavi;
+    FloatingActionButton addarea;
+    FloatingActionButton track;
+    DrawerLayout drawer;
+    ActionBarDrawerToggle toggle;
+    ViewGroup mapViewContainer;
+    ArrayList<MapPOIItem> cafe_SmokeMarkerList = new ArrayList<MapPOIItem>();
+    ArrayList<MapPOIItem> food_SmokeMarkerList = new ArrayList<MapPOIItem>();
+    ArrayList<MapPOIItem> school_SmokeMarkerList = new ArrayList<MapPOIItem>();
+    ArrayList<MapPOIItem> banned_SmokeMarkerList = new ArrayList<MapPOIItem>();
+    ArrayList<MapPOIItem> street_SmokeMarkerList = new ArrayList<MapPOIItem>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
 //        try {
 //            PackageInfo info = getPackageManager().getPackageInfo("com.example.zone", PackageManager.GET_SIGNATURES);
 //            for (Signature signature : info.signatures) {
 //                MessageDigest md = MessageDigest.getInstance("SHA");
 //                md.update(signature.toByteArray());
-//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
 //            }
 //        } catch (PackageManager.NameNotFoundException e) {
 //            e.printStackTrace();
@@ -98,7 +117,20 @@ public class MapActivity extends AppCompatActivity
 //        }
         toolbar.setTitle("                       여기서펴");
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+//View nav_header_view = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        nav_header_view = navigationView.getHeaderView(0);
+
+        nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
+        Intent intent = getIntent();
+        System.out.println(intent.getStringExtra("user_name")+"test");
+        nav_header_id_text.setText(intent.getStringExtra("user_name"));
+
+
+        toolbar.setTitle("                       여기서펴");
+        fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -107,16 +139,13 @@ public class MapActivity extends AppCompatActivity
             }
         });
 
-
-
-        FloatingActionButton roadnavi = findViewById(R.id.roadnavi);
+        roadnavi = findViewById(R.id.roadnavi);
         roadnavi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //길찾기 버튼 눌렀을 때
                 String strlat = "";
                 String strlng = "";
-
 
                 minDistanceThread t2 = new minDistanceThread();
                 t2.start();
@@ -141,12 +170,12 @@ public class MapActivity extends AppCompatActivity
 
                 String url = "daummaps://route?sp=" + curlat + "," + curlng + "&ep=" + strlat + "," + strlng + "&by=FOOT";//여기에 좌표값 넣어주면 됨
 
-//                String url ="daummaps://route?sp=" + "
+
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
             }
         });
-        FloatingActionButton addarea = findViewById(R.id.ad);
+        addarea = findViewById(R.id.ad);
         addarea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -158,17 +187,16 @@ public class MapActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        drawer = findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-        final MapView mapView = new MapView(this);
+        mapView = new MapView(this);
 
         mapView.setDaumMapApiKey("dccc7c0ddbd4beddfdaf5655ef4463ce");
-        ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
+        mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
         mapViewContainer.addView(mapView);
 
         mapView.setMapViewEventListener(this);
@@ -180,7 +208,7 @@ public class MapActivity extends AppCompatActivity
         center = mapPointWithGeoCoord(curlat, curlng);
         mapView.setMapCenterPointAndZoomLevel(center, 0, true);
 
-        FloatingActionButton track = findViewById(R.id.track);
+         track = findViewById(R.id.track);
         track.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -247,7 +275,7 @@ public class MapActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
             // Handle the camera action
         } else if (id == R.id.nav_map) {
-            
+
         } else if (id == R.id.nav_notice) {
 
         } else if (id == R.id.nav_community) {
@@ -260,10 +288,10 @@ public class MapActivity extends AppCompatActivity
             Intent intent = new Intent(MapActivity.this, ReviewActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_send) {
-
+            onClickLogout();
         }
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);//??
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -387,17 +415,16 @@ public class MapActivity extends AppCompatActivity
         }
 
 
-
         @Override
         public View getCalloutBalloon(MapPOIItem poiItem) {
 
             String[] arr = poiItem.getItemName().split(",");
             System.out.println(arr[0] + "??" + arr[1] + "??" + arr[2] + "??" + arr[3] + "??" + arr[4] + "??" + arr[5] + "??" + arr[6]);
             ImageView imgicon = (ImageView) calloutBalloon.findViewById(R.id.badge);
-         //   String urlStr = "http://172.16.25.91:8080/SmokingArea/img/" + arr[6]; // 웹서버에 프로필사진이 없을시 예외처리
+            String urlStr = "http://18.222.175.17:8080/SmokingArea/img/" + arr[6]; // 웹서버에 프로필사진이 없을시 예외처리
 
-         //   Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
-          //  imgicon.setImageDrawable(draw);
+            //   Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
+            //  imgicon.setImageDrawable(draw);
 
 
             ((TextView) calloutBalloon.findViewById(R.id.title)).setText(arr[3]);
@@ -405,14 +432,9 @@ public class MapActivity extends AppCompatActivity
             ((TextView) calloutBalloon.findViewById(R.id.star)).setText(arr[5]);
 
 
-
             return calloutBalloon;
         }
 
-        public void change(View v) {
-            Intent intent = new Intent(MapActivity.this, ReviewActivity.class);
-            startActivity(intent);
-        }
 
         @Override
         public View getPressedCalloutBalloon(MapPOIItem poiItem) {
@@ -423,31 +445,50 @@ public class MapActivity extends AppCompatActivity
 
 
     private void createSmokeAreaMarker(MapView mapView) throws JSONException {
-        double ex = 0.1;
         JSONArray ja = null;
 
         ja = new JSONArray(smokeareainfo);
         for (int i = 0; i < ja.length(); i++) {
+            //
+            SmokingArea smokingarea = new SmokingArea((JSONObject) ja.get(i));
+            //
 
             smokeMarker = new MapPOIItem();
+
+            //smokeMarker.setItemName((((JSONObject) (ja.get(i))).get("bench").toString()) + "," + (((JSONObject) (ja.get(i))).get("roof").toString()) + "," + (((JSONObject) (ja.get(i))).get("vtl").toString()) + "," + (((JSONObject) (ja.get(i))).get("name").toString()) + "," + (((JSONObject) (ja.get(i))).get("desc").toString()) + "," + (((JSONObject) (ja.get(i))).get("point").toString()) + "," + (((JSONObject) (ja.get(i))).get("no").toString()));
             smokeMarker.setItemName((((JSONObject) (ja.get(i))).get("bench").toString()) + "," + (((JSONObject) (ja.get(i))).get("roof").toString()) + "," + (((JSONObject) (ja.get(i))).get("vtl").toString()) + "," + (((JSONObject) (ja.get(i))).get("name").toString()) + "," + (((JSONObject) (ja.get(i))).get("desc").toString()) + "," + (((JSONObject) (ja.get(i))).get("point").toString()) + "," + (((JSONObject) (ja.get(i))).get("no").toString()));
             System.out.println("장소" + (((JSONObject) (ja.get(i))).get("reg_user").toString()));
-            smokeMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(Double.parseDouble(((JSONObject) (ja.get(i))).get("lat").toString()), Double.parseDouble(((JSONObject) (ja.get(i))).get("lng").toString())));
-            smokeMarker.setMarkerType(MapPOIItem.MarkerType.BluePin);
+            smokeMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
+            smokeMarker.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
+            smokeMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(smokingarea.getSmokingAreaLat(), smokingarea.getSmokingAreaLng()));
+            switch (smokingarea.getSmokinAreaType()) {
+                case 1:
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_brown);
+                    break;
+                case 2:
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_red);
+                    break;
+                case 3:
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_yellow);
+                    break;
+                case 4:
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_blue);
+                    break;
+                case 5:
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_green);
+                    break;
+                case 6:
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_black);
+                    break;
 
-            smokeMarker.setCustomImageResourceId(R.drawable.ic_menu_camera);
+                default:
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_white);
+            }
             smokeMarker.setLeftSideButtonResourceIdOnCalloutBalloon(R.drawable.ic_menu_manage);
             smokeMarker.setLeftSideButtonResourceIdOnCalloutBalloon(3);
-            smokeMarker.setCustomImageAutoscale(false);
-            smokeMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
+            smokeMarker.setCustomImageAutoscale(true);
             smokeMarkerlist.add(smokeMarker);
         }
-
-    }
-
-    public void onRoadButtonClick(View v) {
-
-
     }
 
     public class minDistanceThread extends Thread {
@@ -515,15 +556,15 @@ public class MapActivity extends AppCompatActivity
         String nearSmokingArea = "";
         System.out.println();
         JSONObject currentlocation = new JSONObject();
-        currentlocation.put("lat", ""+curlat+"");
-        currentlocation.put("lng", ""+curlng+"");
-        System.out.println("test" + currentlocation+ "dd");
+        currentlocation.put("lat", "" + curlat + "");
+        currentlocation.put("lng", "" + curlng + "");
+        System.out.println("test" + currentlocation + "dd");
         //현재 위치 데이터를 서버에 보내서 가까운 값 갖고오는거
         try {
             //--------------------------
             //   URL 설정하고 접속하기
             //--------------------------
-            URL url = new URL("http://172.16.25.91:8080/SmokingArea/SmokingArea/minDistance.jsp");
+            URL url = new URL("http://18.222.175.17:8080/SmokingArea/SmokingArea/minDistance.jsp");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
             //--------------------------
             //   전송 모드 설정 - 기본적인 설정이다
@@ -565,8 +606,35 @@ public class MapActivity extends AppCompatActivity
         System.out.println(nearSmokingArea + "data");
         return nearSmokingArea;
     } // HttpPostDat
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapView.removeAllPOIItems();
+        getThread t1 = new getThread();
+        t1.start();
+        try {
+            t1.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            createSmokeAreaMarker(mapView);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mapView.addPOIItems(smokeMarkerlist.toArray(new MapPOIItem[smokeMarkerlist.size()]));
+
+    }
+
+    private void onClickLogout() {//로그아웃인데..왜
+        sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        //editor.clear()는 auto에 들어있는 모든 정보를 기기에서 지웁니다.
+        sp.edit().clear().apply();
+        Toast.makeText(MapActivity.this, "로그아웃.", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
 }
-
-
-
-

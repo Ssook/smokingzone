@@ -417,7 +417,6 @@ public class ReviewActivity extends AppCompatActivity {
             //--------------------------
             //   URL 설정하고 접속하기
             //--------------------------
-            //클라이언트로부터 댓글을 받는 jsp url
             URL url = new URL("http://18.222.175.17:8080/SmokingArea/SmokingArea/insertSmokingReview.jsp");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
             //--------------------------

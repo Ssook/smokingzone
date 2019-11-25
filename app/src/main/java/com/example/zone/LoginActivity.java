@@ -7,11 +7,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.kakao.auth.ErrorCode;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.network.ErrorResult;
+import com.kakao.usermgmt.LoginButton;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.response.model.UserProfile;
@@ -22,22 +25,38 @@ public class LoginActivity extends Activity {
     SessionCallback callback;
     String token = "";
     String name = "";
+    private Button btn_custom_login;
+
+    private LoginButton btn_kakao_login;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // getHashKey();
+        System.out.println(loadShared() + "dasdas");
+        if (loadShared().equals("")) {
+            setContentView(R.layout.activity_login);
+            btn_custom_login = (Button) findViewById(R.id.btn_custom_login);
 
-        setContentView(R.layout.activity_login);
-        callback = new SessionCallback();
-        Session.getCurrentSession().addCallback(callback);
-        loadShared();
-        requestMe();
+            btn_custom_login.setOnClickListener(new View.OnClickListener() {
 
+                @Override
+
+                public void onClick(View view) {
+                    btn_kakao_login.performClick();
+                }
+            });
+            btn_kakao_login = (LoginButton) findViewById(R.id.com_kakao_login);
+
+
+            callback = new SessionCallback();
+            Session.getCurrentSession().addCallback(callback);
+            requestMe();
+        }
     }
 
     class SessionCallback implements ISessionCallback {
-
         @Override
         public void onSessionOpened() {
 
@@ -72,15 +91,13 @@ public class LoginActivity extends Activity {
                     // Log.e("UserProfile", userProfile.toString());
                     // Log.e("UserProfile", userProfile.getId() + "");
 
-
                     long number = userProfile.getId();
                     Intent intent = new Intent(LoginActivity.this, MapActivity.class);
+                    intent.putExtra("user_name",name);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
-
                 }
             });
-
         }
 
         // 세션 실패시
@@ -130,18 +147,20 @@ public class LoginActivity extends Activity {
     }
 
     /*쉐어드값 불러오기*/
-    private void loadShared() {
+    private String loadShared() {
         SharedPreferences pref = getSharedPreferences("profile", MODE_PRIVATE);
         token = pref.getString("token", "");
         name = pref.getString("name", "");
         if (token.equals("")) {
-            System.out.println("토큰" + token + "앙" + name + "뭐야");
+            System.out.println("토큰" + token + "앙" + name + "뭐야!");
         }
         if (!token.equals("")) {
-            System.out.println("토큰"+token+"앙22"+name+"뭐야");
+            System.out.println("토큰" + token + "앙22" + name + "뭐야");
             Intent intent = new Intent(LoginActivity.this, MapActivity.class);
+            intent.putExtra("user_name",name);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
+        return token;
     }
 }

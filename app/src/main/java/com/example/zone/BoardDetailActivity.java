@@ -337,7 +337,9 @@ public class BoardDetailActivity extends AppCompatActivity {
         }
     }
 
+
     public String sendCommentWrite(String values) throws JSONException {
+
 
         String result = "";
         try {
