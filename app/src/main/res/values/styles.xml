@@ -17,7 +17,7 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
     <style name="SplashTheme" parent="@android:style/Theme.NoTitleBar">
-        <item name="android:windowBackground">@drawable/ic_reload_btn1</item>
+        <item name="android:windowBackground">@drawable/smoke_logo</item>
     </style>
 
 </resources>

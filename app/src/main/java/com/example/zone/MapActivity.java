@@ -93,6 +93,11 @@ public class MapActivity extends AppCompatActivity
     DrawerLayout drawer;
     ActionBarDrawerToggle toggle;
     ViewGroup mapViewContainer;
+    ArrayList<MapPOIItem> cafe_SmokeMarkerList = new ArrayList<MapPOIItem>();
+    ArrayList<MapPOIItem> food_SmokeMarkerList = new ArrayList<MapPOIItem>();
+    ArrayList<MapPOIItem> school_SmokeMarkerList = new ArrayList<MapPOIItem>();
+    ArrayList<MapPOIItem> banned_SmokeMarkerList = new ArrayList<MapPOIItem>();
+    ArrayList<MapPOIItem> street_SmokeMarkerList = new ArrayList<MapPOIItem>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +125,7 @@ public class MapActivity extends AppCompatActivity
 
         nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
         Intent intent = getIntent();
-
+        System.out.println(intent.getStringExtra("user_name")+"test");
         nav_header_id_text.setText(intent.getStringExtra("user_name"));
 
 
@@ -453,29 +458,28 @@ public class MapActivity extends AppCompatActivity
             //smokeMarker.setItemName((((JSONObject) (ja.get(i))).get("bench").toString()) + "," + (((JSONObject) (ja.get(i))).get("roof").toString()) + "," + (((JSONObject) (ja.get(i))).get("vtl").toString()) + "," + (((JSONObject) (ja.get(i))).get("name").toString()) + "," + (((JSONObject) (ja.get(i))).get("desc").toString()) + "," + (((JSONObject) (ja.get(i))).get("point").toString()) + "," + (((JSONObject) (ja.get(i))).get("no").toString()));
             smokeMarker.setItemName((((JSONObject) (ja.get(i))).get("bench").toString()) + "," + (((JSONObject) (ja.get(i))).get("roof").toString()) + "," + (((JSONObject) (ja.get(i))).get("vtl").toString()) + "," + (((JSONObject) (ja.get(i))).get("name").toString()) + "," + (((JSONObject) (ja.get(i))).get("desc").toString()) + "," + (((JSONObject) (ja.get(i))).get("point").toString()) + "," + (((JSONObject) (ja.get(i))).get("no").toString()));
             System.out.println("장소" + (((JSONObject) (ja.get(i))).get("reg_user").toString()));
+            smokeMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
+            smokeMarker.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
             smokeMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(smokingarea.getSmokingAreaLat(), smokingarea.getSmokingAreaLng()));
             switch (smokingarea.getSmokinAreaType()) {
                 case 0:
-                    smokeMarker.setMarkerType(MapPOIItem.MarkerType.BluePin);
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_red);
                     break;
                 case 1:
-                    smokeMarker.setMarkerType(MapPOIItem.MarkerType.RedPin);
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_yellow);
                     break;
                 case 2:
-                    smokeMarker.setMarkerType(MapPOIItem.MarkerType.YellowPin);
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_black);
                     break;
                 case 3:
-                    smokeMarker.setCustomImageResourceId(R.drawable.custom_poi_marker_end);
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_brown);
                     break;
                 default:
-                    smokeMarker.setMarkerType(MapPOIItem.MarkerType.BluePin);
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_white);
             }
-
-            smokeMarker.setCustomImageResourceId(R.drawable.ic_menu_camera);
             smokeMarker.setLeftSideButtonResourceIdOnCalloutBalloon(R.drawable.ic_menu_manage);
             smokeMarker.setLeftSideButtonResourceIdOnCalloutBalloon(3);
-            smokeMarker.setCustomImageAutoscale(false);
-            smokeMarker.setCustomImageResourceId(R.drawable.custom_poi_marker);
+            smokeMarker.setCustomImageAutoscale(true);
             smokeMarkerlist.add(smokeMarker);
         }
     }

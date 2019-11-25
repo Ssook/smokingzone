@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -42,6 +43,8 @@ public class BoardWriteActivity extends AppCompatActivity {
     private EditText et_title;
     private EditText et_content;
     private CheckBox cb_anony;
+    SharedPreferences sp;
+    String name="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +67,8 @@ public class BoardWriteActivity extends AppCompatActivity {
         et_title = (EditText) findViewById(R.id.titletext);
         et_content = (EditText) findViewById(R.id.contenttext);
         cb_anony = (CheckBox) findViewById(R.id.anonycheck);
+        sp = getSharedPreferences("profile", MODE_PRIVATE);
+        name = sp.getString("name", "");
 
     }
 
@@ -106,6 +111,13 @@ public class BoardWriteActivity extends AppCompatActivity {
             if (cb_anony.isChecked()) {
                 try {
                     board_data.put("reg_user", "익명");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            else if (!cb_anony.isChecked()){
+                try {
+                    board_data.put("reg_user",name);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

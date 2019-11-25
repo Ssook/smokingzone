@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
+import androidx.annotation.IdRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -35,6 +36,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -77,13 +79,16 @@ public class AddSmokingAreaActivity extends AppCompatActivity
     Button btnadd;
 
     SharedPreferences sp;
+    RadioButton rb_cafe, rb_food, rb_school, rb_company, rb_street, rb_other;
+    RadioGroup rg_type;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initLayout();
         curlat = getIntent().getDoubleExtra("curlat", 0.0);
         curlng = getIntent().getDoubleExtra("curlng", 0.0);
-        sp=getSharedPreferences("profile",MODE_PRIVATE);
+        sp = getSharedPreferences("profile", MODE_PRIVATE);
     }
 
     public class networkThread extends Thread {
@@ -110,8 +115,8 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                 //--------------------------
                 StringBuffer buffer = new StringBuffer();
                 String json_smokingAreaValue = "json_smokingAreaValue=";
-                        //+ makeJsonObject().toString();
-makeJsonObject();
+                makeJsonObject();
+
                 buffer.append(json_smokingAreaValue);
 
                 OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
@@ -233,7 +238,7 @@ makeJsonObject();
         return true;
     }
 
-    public String getCurrentTime(){
+    public String getCurrentTime() {
         // 현재 시스템 시간 구하기
         long systemTime = System.currentTimeMillis();
 
@@ -246,26 +251,31 @@ makeJsonObject();
     }
 
     public JSONObject makeJsonObject() {
-
-        JSONObject smokingareainfo = new JSONObject();
-        try {
-            smokingareainfo.put("smoking_area_name", areaName.getText().toString());
-            smokingareainfo.put("smoking_area_lat", "" + curlat + "");
-            smokingareainfo.put("smoking_area_lng", "" + curlng + "");
-            smokingareainfo.put("smoking_area_reg_date", ""+getCurrentTime()+"");
-            smokingareainfo.put("smoking_area_reg_user", sp.getString("name",""));
-            smokingareainfo.put("smoking_area_point", "0");
-            smokingareainfo.put("smoking_area_report", "0");
-            smokingareainfo.put("smoking_area_roof", "" + checkboxresult(check_loop) + "");
-            smokingareainfo.put("smoking_area_vtl", "" + checkboxresult(check_aircondition) + "");
-            smokingareainfo.put("smoking_area_bench", "" + checkboxresult(check_bench) + "");
-            smokingareainfo.put("smoking_area_desc", areaDesc.getText().toString());
-            smokingareainfo.put("smoking_area_type", "0");
-            System.out.println(smokingareainfo + "eldyd");
-        } catch (JSONException e) {
-            e.printStackTrace();
+        boolean format_check = check_Format();
+        JSONObject smokingareainfo=new JSONObject();
+        if (format_check == false) {
+            return null;
+        } else if (format_check == true) {
+            try {
+                smokingareainfo.put("smoking_area_name", areaName.getText().toString());
+                smokingareainfo.put("smoking_area_lat", "" + curlat + "");
+                smokingareainfo.put("smoking_area_lng", "" + curlng + "");
+                smokingareainfo.put("smoking_area_reg_date", "" + getCurrentTime() + "");
+                smokingareainfo.put("smoking_area_reg_user", sp.getString("name", ""));
+                smokingareainfo.put("smoking_area_point", "0");
+                smokingareainfo.put("smoking_area_report", "0");
+                smokingareainfo.put("smoking_area_roof", "" + checkboxresult(check_loop) + "");
+                smokingareainfo.put("smoking_area_vtl", "" + checkboxresult(check_aircondition) + "");
+                smokingareainfo.put("smoking_area_bench", "" + checkboxresult(check_bench) + "");
+                smokingareainfo.put("smoking_area_desc", areaDesc.getText().toString());
+                smokingareainfo.put("smoking_area_type", getRadioGroup());
+                System.out.println(smokingareainfo + "eldyd");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         return smokingareainfo;
+
     }
 
     public int checkboxresult(CheckBox chk) {
@@ -287,7 +297,7 @@ makeJsonObject();
         builder.show();
     }
 
-    public void initLayout(){
+    public void initLayout() {
         setContentView(R.layout.activity_add_smoking_area);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -298,7 +308,6 @@ makeJsonObject();
         check_loop = findViewById(R.id.check_loop);
         check_bench = findViewById(R.id.check_bench);
         area_type = findViewById(R.id.radioGroup);
-
 
         btnadd = findViewById(R.id.btnadd);
         btnadd.setOnClickListener(new View.OnClickListener() {
@@ -334,6 +343,85 @@ makeJsonObject();
         //이미지
         imageView = (ImageView) findViewById(R.id.areaimage);
 
+        //radio
+        rb_cafe = (RadioButton) findViewById(R.id.rb_cafe);
+        rb_food = (RadioButton) findViewById(R.id.rb_food);
+        rb_school = (RadioButton) findViewById(R.id.rb_school);
+        rb_company = (RadioButton) findViewById(R.id.rb_company);
+        rb_street = (RadioButton) findViewById(R.id.rb_street);
+        rb_other = (RadioButton) findViewById(R.id.rb_other);
+
+        rb_cafe.setOnClickListener(radioButtonClickListener);
+        rb_food.setOnClickListener(radioButtonClickListener);
+        rb_school.setOnClickListener(radioButtonClickListener);
+        rb_company.setOnClickListener(radioButtonClickListener);
+        rb_street.setOnClickListener(radioButtonClickListener);
+        rb_other.setOnClickListener(radioButtonClickListener);
+
+
+        rg_type = findViewById(R.id.radioGroup);
+        rg_type.setOnCheckedChangeListener(radioGroupButtonChangeListener);
+
+
+    }
+
+    //라디오 버튼 클릭 리스너
+    RadioButton.OnClickListener radioButtonClickListener = new RadioButton.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+        }
+    };
+
+    //라디오 그룹 클릭 리스너
+    RadioGroup.OnCheckedChangeListener radioGroupButtonChangeListener = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+            if (i == R.id.rb_cafe) {
+                Toast.makeText(AddSmokingAreaActivity.this, "라디오 그룹 버튼1 눌렸습니다.", Toast.LENGTH_SHORT).show();
+            } else if (i == R.id.rb_food) {
+                Toast.makeText(AddSmokingAreaActivity.this, "라디오 그룹 버튼2 눌렸습니다.", Toast.LENGTH_SHORT).show();
+            } else if (i == R.id.rb_school) {
+                Toast.makeText(AddSmokingAreaActivity.this, "라디오 그룹 버튼2 눌렸습니다.", Toast.LENGTH_SHORT).show();
+            } else if (i == R.id.rb_company) {
+                Toast.makeText(AddSmokingAreaActivity.this, "라디오 그룹 버튼2 눌렸습니다.", Toast.LENGTH_SHORT).show();
+            } else if (i == R.id.rb_street) {
+                Toast.makeText(AddSmokingAreaActivity.this, "라디오 그룹 버튼2 눌렸습니다.", Toast.LENGTH_SHORT).show();
+            } else if (i == R.id.rb_other) {
+                Toast.makeText(AddSmokingAreaActivity.this, "라디오 그룹 버튼2 눌렸습니다.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
+    public int getRadioGroup() {
+        int check_type;
+        check_type = ((RadioGroup) rg_type.findViewById(R.id.radioGroup)).getCheckedRadioButtonId();
+        switch (check_type) {
+            case R.id.rb_cafe:
+                return 1;
+            case R.id.rb_food:
+                return 2;
+            case R.id.rb_school:
+                return 3;
+            case R.id.rb_company:
+                return 4;
+            case R.id.rb_street:
+                return 5;
+            case R.id.rb_other:
+                return 6;
+            default:
+                return 0;
+        }
+    }
+
+    public boolean check_Format() {
+        if (areaName.getText().toString().equals("")) {
+            System.out.println("흡연장소명을 입력하여주세요");
+            return false;
+        } else if (getRadioGroup() == 0) {
+            System.out.println("흡연장소의 유형을 입력하여주세요");
+            return false;
+        }
+        return true;
     }
 
 }

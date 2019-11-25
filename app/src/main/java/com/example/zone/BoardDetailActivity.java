@@ -326,7 +326,6 @@ public class BoardDetailActivity extends AppCompatActivity {
     }
 
     public String sendReviewWrite(String values) throws JSONException {
-
         String result = "";
         try {
             //--------------------------
