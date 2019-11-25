@@ -1,6 +1,7 @@
 package com.example.zone;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.content.SharedPreferences;
@@ -19,8 +20,10 @@ import com.google.android.material.snackbar.Snackbar;
 
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -68,6 +71,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static net.daum.mf.map.api.MapPoint.mapPointWithGeoCoord;
 
@@ -90,6 +94,7 @@ public class MapActivity extends AppCompatActivity
     FloatingActionButton roadnavi;
     FloatingActionButton addarea;
     FloatingActionButton track;
+    FloatingActionButton filter;
     DrawerLayout drawer;
     ActionBarDrawerToggle toggle;
     ViewGroup mapViewContainer;
@@ -132,14 +137,7 @@ public class MapActivity extends AppCompatActivity
 
 
         toolbar.setTitle("                       여기서펴");
-        fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        filter = findViewById(R.id.filter);
 
         roadnavi = findViewById(R.id.roadnavi);
         roadnavi.setOnClickListener(new View.OnClickListener() {
@@ -646,6 +644,113 @@ public class MapActivity extends AppCompatActivity
         sp.edit().clear().apply();
         Toast.makeText(MapActivity.this, "로그아웃.", Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    ///////////////////////
+    public void OnClickHandler(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final ArrayList<String> selectedItems = new ArrayList<String>();
+        boolean[] asdf;
+        asdf = new boolean[10];
+        Arrays.fill(asdf, true);
+        final String[] items = getResources().getStringArray(R.array.filter_list);
+
+        builder.setTitle("리스트 추가 예제");
+        builder.setMultiChoiceItems(R.array.filter_list, asdf, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int pos, boolean isChecked) {
+                if (isChecked == false) // Checked 상태일 때 추가
+                {
+                    switch (pos) {
+                        case 0:
+                            for (int b = 0; b < cafe_SmokeMarkerList.size(); b++) {
+                                cafe_SmokeMarkerList.get(b).setAlpha(0.2f);
+                            }
+                            break;
+                        case 1:
+                            for (int b = 0; b < food_SmokeMarkerList.size(); b++) {
+                                food_SmokeMarkerList.get(b).setAlpha(0.2f);
+                            }
+                            break;
+                        case 2:
+                            for (int b = 0; b < school_SmokeMarkerList.size(); b++) {
+                                school_SmokeMarkerList.get(b).setAlpha(0.2f);
+                            }
+                            break;
+                        case 3:
+                            for (int b = 0; b < company_SmokeMarkerList.size(); b++) {
+                                company_SmokeMarkerList.get(b).setAlpha(0.2f);
+                            }
+                            break;
+                        case 4:
+                            for (int b = 0; b < street_SmokeMarkerList.size(); b++) {
+                                street_SmokeMarkerList.get(b).setAlpha(0.2f);
+                            }
+                            break;
+                        case 5:
+                            for (int b = 0; b < other_SmokeMarkerList.size(); b++) {
+                                other_SmokeMarkerList.get(b).setAlpha(0.2f);
+                            }
+                            break;
+                        case 6:
+                            for (int b = 0; b < banned_SmokeMarkerList.size(); b++) {
+                                banned_SmokeMarkerList.get(b).setAlpha(0.2f);
+                            }
+                            break;
+
+
+                    }
+                } else                  // Check 해제 되었을 때 제거
+                {
+                    switch (pos) {
+                        case 0:
+                            for (int b = 0; b < cafe_SmokeMarkerList.size(); b++) {
+                                cafe_SmokeMarkerList.get(b).setAlpha(1.0f);
+                            }
+                            break;
+                        case 1:
+                            for (int b = 0; b < food_SmokeMarkerList.size(); b++) {
+                                food_SmokeMarkerList.get(b).setAlpha(1.0f);
+                            }
+                            break;
+                        case 2:
+                            for (int b = 0; b < school_SmokeMarkerList.size(); b++) {
+                                school_SmokeMarkerList.get(b).setAlpha(1.0f);
+                            }
+                            break;
+                        case 3:
+                            for (int b = 0; b < company_SmokeMarkerList.size(); b++) {
+                                company_SmokeMarkerList.get(b).setAlpha(1.0f);
+                            }
+                            break;
+                        case 4:
+                            for (int b = 0; b < street_SmokeMarkerList.size(); b++) {
+                                street_SmokeMarkerList.get(b).setAlpha(1.0f);
+                            }
+                            break;
+                        case 5:
+                            for (int b = 0; b < other_SmokeMarkerList.size(); b++) {
+                                other_SmokeMarkerList.get(b).setAlpha(1.0f);
+                            }
+                            break;
+                        case 6:
+                            for (int b = 0; b < banned_SmokeMarkerList.size(); b++) {
+                                banned_SmokeMarkerList.get(b).setAlpha(1.0f);
+                            }
+                            break;
+                    }
+                }
+            }
+        });
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int pos) {
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
 }

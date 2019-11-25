@@ -24,4 +24,15 @@
     <string name="search_hint_query">작성자나 제목을 입력하세요.</string>
     <string name="title_activity_add_smoking_area">AddSmokingAreaActivity</string>
 
+    <string-array name = "filter_list">
+        <item>"카페"</item>
+        <item>"음식점"</item>
+        <item>"학교"</item>
+        <item>"회사"</item>
+        <item>"야외"</item>
+        <item>"기타"</item>
+        <item>"신고"</item>
+
+    </string-array>
+
 </resources>
