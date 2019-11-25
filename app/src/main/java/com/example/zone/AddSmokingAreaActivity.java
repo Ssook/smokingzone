@@ -142,12 +142,13 @@ public class AddSmokingAreaActivity extends AppCompatActivity
             }
             System.out.println("data"+response + "data");
             //
+
             Handler mHandler = new Handler(Looper.getMainLooper());
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     // 사용하고자 하는 코드
-                    show("등록을 완료하였습니다.");
+                        show("등록 완료.");
                 }
             }, 0);
 //

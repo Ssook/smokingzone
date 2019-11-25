@@ -462,18 +462,25 @@ public class MapActivity extends AppCompatActivity
             smokeMarker.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
             smokeMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(smokingarea.getSmokingAreaLat(), smokingarea.getSmokingAreaLng()));
             switch (smokingarea.getSmokinAreaType()) {
-                case 0:
-                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_red);
-                    break;
                 case 1:
-                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_yellow);
-                    break;
-                case 2:
-                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_black);
-                    break;
-                case 3:
                     smokeMarker.setCustomImageResourceId(R.drawable.map_pin_brown);
                     break;
+                case 2:
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_red);
+                    break;
+                case 3:
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_yellow);
+                    break;
+                case 4:
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_blue);
+                    break;
+                case 5:
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_green);
+                    break;
+                case 6:
+                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_black);
+                    break;
+
                 default:
                     smokeMarker.setCustomImageResourceId(R.drawable.map_pin_white);
             }
@@ -622,7 +629,6 @@ public class MapActivity extends AppCompatActivity
     }
 
     private void onClickLogout() {//로그아웃인데..왜
-        SharedPreferences pref = getSharedPreferences("profile", Activity.MODE_PRIVATE);
         sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         //editor.clear()는 auto에 들어있는 모든 정보를 기기에서 지웁니다.
