@@ -105,12 +105,12 @@ public class MapActivity extends AppCompatActivity
     ArrayList<MapPOIItem> street_SmokeMarkerList = new ArrayList<MapPOIItem>();
     ArrayList<MapPOIItem> other_SmokeMarkerList = new ArrayList<MapPOIItem>();
     ArrayList<MapPOIItem> banned_SmokeMarkerList = new ArrayList<MapPOIItem>();
+    boolean[] isCheck;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map);
-        toolbar = findViewById(R.id.toolbar);
 //        try {
 //            PackageInfo info = getPackageManager().getPackageInfo("com.example.zone", PackageManager.GET_SIGNATURES);
 //            for (Signature signature : info.signatures) {
@@ -122,107 +122,10 @@ public class MapActivity extends AppCompatActivity
 //        } catch (NoSuchAlgorithmException e) {
 //            e.printStackTrace();
 //        }
-        toolbar.setTitle("                       여기서펴");
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-//View nav_header_view = navigationView.inflateHeaderView(R.layout.nav_header_main);
-        nav_header_view = navigationView.getHeaderView(0);
-
-        nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
-        Intent intent = getIntent();
-        System.out.println(intent.getStringExtra("user_name") + "test");
-        nav_header_id_text.setText(intent.getStringExtra("user_name"));
-
-
-        toolbar.setTitle("                       여기서펴");
-        filter = findViewById(R.id.filter);
-
-        roadnavi = findViewById(R.id.roadnavi);
-        roadnavi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //길찾기 버튼 눌렀을 때
-                String strlat = "";
-                String strlng = "";
-
-                minDistanceThread t2 = new minDistanceThread();
-                t2.start();
-
-                try {
-                    t2.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                try {
-                    JSONObject jo1 = new JSONObject(receiveMsg);
-
-                    strlat = jo1.getString("smoking_area_lat");
-                    strlng = jo1.getString("smoking_area_lng");
-
-                    System.out.println(strlat + strlng + "tlqk");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-//                String url = "daummaps://route?sp=" + "37.537229,127.005515&ep=37.4979502,127.0276368&by=FOOT";//여기에 좌표값 넣어주면 됨
-
-                String url = "daummaps://route?sp=" + curlat + "," + curlng + "&ep=" + strlat + "," + strlng + "&by=FOOT";//여기에 좌표값 넣어주면 됨
-
-
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(intent);
-            }
-        });
-        addarea = findViewById(R.id.ad);
-        addarea.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //길찾기 버튼 눌렀을 때
-                Intent intent = new Intent(MapActivity.this, AddSmokingAreaActivity.class);
-                intent.putExtra("curlat", curlat);
-                intent.putExtra("curlng", curlng);
-                startActivity(intent);
-            }
-        });
-
-        drawer = findViewById(R.id.drawer_layout);
-        toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
-        mapView = new MapView(this);
-
-        mapView.setDaumMapApiKey("dccc7c0ddbd4beddfdaf5655ef4463ce");
-        mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
-        mapViewContainer.addView(mapView);
-
-        mapView.setMapViewEventListener(this);
-        mapView.setPOIItemEventListener(this);
-        mapView.setCurrentLocationEventListener(this);
-        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());
-        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
-
-        center = mapPointWithGeoCoord(curlat, curlng);
-        mapView.setMapCenterPointAndZoomLevel(center, 0, true);
-
-        track = findViewById(R.id.track);
-        track.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                center = mapPointWithGeoCoord(curlat, curlng);
-                mapView.setMapCenterPointAndZoomLevel(center, 0, true);
-            }
-        });
-        getThread t1 = new getThread();
-        t1.start();
-        try {
-            t1.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        initLayout();
+        isCheck = new boolean[10];
+        Arrays.fill(isCheck, true);
 
         try {
             createSmokeAreaMarker(mapView);
@@ -391,6 +294,8 @@ public class MapActivity extends AppCompatActivity
 
     }
 
+
+    //마커 누르면 나오는 말풍선 클릭시 해당 정보를 가진 화면으로 전환
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
         String[] arr = mapPOIItem.getItemName().split(",");
@@ -406,7 +311,6 @@ public class MapActivity extends AppCompatActivity
     }
 
     class CustomCalloutBalloonAdapter implements CalloutBalloonAdapter {
-
         private final View calloutBalloon;
 
         public CustomCalloutBalloonAdapter() {
@@ -443,50 +347,56 @@ public class MapActivity extends AppCompatActivity
 
     }
 
-
+    //받아온 데이터를 통해 마커들을 생성하는 메소드
     private void createSmokeAreaMarker(MapView mapView) throws JSONException {
-        JSONArray ja = null;
+        JSONArray smokingAreaData = null;
 
-        ja = new JSONArray(smokeareainfo);
-        for (int i = 0; i < ja.length(); i++) {
+        smokingAreaData = new JSONArray(smokeareainfo);
+        for (int i = 0; i < smokingAreaData.length(); i++) {
             //
-            SmokingArea smokingarea = new SmokingArea((JSONObject) ja.get(i));
+            SmokingArea smokingarea = new SmokingArea((JSONObject) smokingAreaData.get(i));
             //
 
             smokeMarker = new MapPOIItem();
 
             //smokeMarker.setItemName((((JSONObject) (ja.get(i))).get("bench").toString()) + "," + (((JSONObject) (ja.get(i))).get("roof").toString()) + "," + (((JSONObject) (ja.get(i))).get("vtl").toString()) + "," + (((JSONObject) (ja.get(i))).get("name").toString()) + "," + (((JSONObject) (ja.get(i))).get("desc").toString()) + "," + (((JSONObject) (ja.get(i))).get("point").toString()) + "," + (((JSONObject) (ja.get(i))).get("no").toString()));
-            smokeMarker.setItemName((((JSONObject) (ja.get(i))).get("bench").toString()) + "," + (((JSONObject) (ja.get(i))).get("roof").toString()) + "," + (((JSONObject) (ja.get(i))).get("vtl").toString()) + "," + (((JSONObject) (ja.get(i))).get("name").toString()) + "," + (((JSONObject) (ja.get(i))).get("desc").toString()) + "," + (((JSONObject) (ja.get(i))).get("point").toString()) + "," + (((JSONObject) (ja.get(i))).get("no").toString()));
-            System.out.println("장소" + (((JSONObject) (ja.get(i))).get("reg_user").toString()));
+            smokeMarker.setItemName((((JSONObject) (smokingAreaData.get(i))).get("bench").toString())
+                    + "," + (((JSONObject) (smokingAreaData.get(i))).get("roof").toString())
+                    + "," + (((JSONObject) (smokingAreaData.get(i))).get("vtl").toString())
+                    + "," + smokingarea.getSmokingAreaName()
+                    + "," + smokingarea.getSmokingAreaDesc()
+                    + "," + (((JSONObject) (smokingAreaData.get(i))).get("point").toString())
+                    + "," + (((JSONObject) (smokingAreaData.get(i))).get("no").toString()));
+            System.out.println("장소" + smokingarea.getSomkingAreaRegUser());
             smokeMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
             smokeMarker.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
             smokeMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(smokingarea.getSmokingAreaLat(), smokingarea.getSmokingAreaLng()));
-            switch (smokingarea.getSmokinAreaType()) {
-                case 1:
+            switch (smokingarea.getSmokingAreaType()) {
+                case 0:
                     smokeMarker.setCustomImageResourceId(R.drawable.map_pin_brown);
                     cafe_SmokeMarkerList.add(smokeMarker);
                     break;
-                case 2:
+                case 1:
                     smokeMarker.setCustomImageResourceId(R.drawable.map_pin_red);
                     food_SmokeMarkerList.add(smokeMarker);
                     break;
-                case 3:
+                case 2:
                     smokeMarker.setCustomImageResourceId(R.drawable.map_pin_yellow);
                     school_SmokeMarkerList.add(smokeMarker);
                     break;
-                case 4:
+                case 3:
                     smokeMarker.setCustomImageResourceId(R.drawable.map_pin_blue);
                     company_SmokeMarkerList.add(smokeMarker);
                     break;
-                case 5:
+                case 4:
                     smokeMarker.setCustomImageResourceId(R.drawable.map_pin_green);
                     street_SmokeMarkerList.add(smokeMarker);
                     break;
-                case 6:
+                case 5:
                     smokeMarker.setCustomImageResourceId(R.drawable.map_pin_gray);
                     other_SmokeMarkerList.add(smokeMarker);
                     break;
-                case 7:
+                case 6:
                     smokeMarker.setCustomImageResourceId(R.drawable.map_pin_black);
                     banned_SmokeMarkerList.add(smokeMarker);
                     break;
@@ -650,13 +560,10 @@ public class MapActivity extends AppCompatActivity
     public void OnClickHandler(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final ArrayList<String> selectedItems = new ArrayList<String>();
-        boolean[] asdf;
-        asdf = new boolean[10];
-        Arrays.fill(asdf, true);
         final String[] items = getResources().getStringArray(R.array.filter_list);
 
-        builder.setTitle("리스트 추가 예제");
-        builder.setMultiChoiceItems(R.array.filter_list, asdf, new DialogInterface.OnMultiChoiceClickListener() {
+        builder.setTitle("흡연 장소 필터링");
+        builder.setMultiChoiceItems(R.array.filter_list, isCheck, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int pos, boolean isChecked) {
                 if (isChecked == false) // Checked 상태일 때 추가
@@ -666,39 +573,44 @@ public class MapActivity extends AppCompatActivity
                             for (int b = 0; b < cafe_SmokeMarkerList.size(); b++) {
                                 cafe_SmokeMarkerList.get(b).setAlpha(0.2f);
                             }
+                            isCheck[0] = false;
                             break;
                         case 1:
                             for (int b = 0; b < food_SmokeMarkerList.size(); b++) {
                                 food_SmokeMarkerList.get(b).setAlpha(0.2f);
                             }
+                            isCheck[1] = false;
                             break;
                         case 2:
                             for (int b = 0; b < school_SmokeMarkerList.size(); b++) {
                                 school_SmokeMarkerList.get(b).setAlpha(0.2f);
                             }
+                            isCheck[2] = false;
                             break;
                         case 3:
                             for (int b = 0; b < company_SmokeMarkerList.size(); b++) {
                                 company_SmokeMarkerList.get(b).setAlpha(0.2f);
                             }
+                            isCheck[3] = false;
                             break;
                         case 4:
                             for (int b = 0; b < street_SmokeMarkerList.size(); b++) {
                                 street_SmokeMarkerList.get(b).setAlpha(0.2f);
                             }
+                            isCheck[4] = false;
                             break;
                         case 5:
                             for (int b = 0; b < other_SmokeMarkerList.size(); b++) {
                                 other_SmokeMarkerList.get(b).setAlpha(0.2f);
                             }
+                            isCheck[5] =false;
                             break;
                         case 6:
                             for (int b = 0; b < banned_SmokeMarkerList.size(); b++) {
                                 banned_SmokeMarkerList.get(b).setAlpha(0.2f);
                             }
+                            isCheck[6] = false;
                             break;
-
-
                     }
                 } else                  // Check 해제 되었을 때 제거
                 {
@@ -707,36 +619,43 @@ public class MapActivity extends AppCompatActivity
                             for (int b = 0; b < cafe_SmokeMarkerList.size(); b++) {
                                 cafe_SmokeMarkerList.get(b).setAlpha(1.0f);
                             }
+                            isCheck[0] = true;
                             break;
                         case 1:
                             for (int b = 0; b < food_SmokeMarkerList.size(); b++) {
                                 food_SmokeMarkerList.get(b).setAlpha(1.0f);
                             }
+                            isCheck[1] = true;
                             break;
                         case 2:
                             for (int b = 0; b < school_SmokeMarkerList.size(); b++) {
                                 school_SmokeMarkerList.get(b).setAlpha(1.0f);
                             }
+                            isCheck[2] = true;
                             break;
                         case 3:
                             for (int b = 0; b < company_SmokeMarkerList.size(); b++) {
                                 company_SmokeMarkerList.get(b).setAlpha(1.0f);
                             }
+                            isCheck[3] = true;
                             break;
                         case 4:
                             for (int b = 0; b < street_SmokeMarkerList.size(); b++) {
                                 street_SmokeMarkerList.get(b).setAlpha(1.0f);
                             }
+                            isCheck[4] = true;
                             break;
                         case 5:
                             for (int b = 0; b < other_SmokeMarkerList.size(); b++) {
                                 other_SmokeMarkerList.get(b).setAlpha(1.0f);
                             }
+                            isCheck[5] = true;
                             break;
                         case 6:
                             for (int b = 0; b < banned_SmokeMarkerList.size(); b++) {
                                 banned_SmokeMarkerList.get(b).setAlpha(1.0f);
                             }
+                            isCheck[6] = true;
                             break;
                     }
                 }
@@ -753,4 +672,111 @@ public class MapActivity extends AppCompatActivity
         alertDialog.show();
     }
 
+    public void initLayout() {           //레이아웃 정의
+        setContentView(R.layout.activity_map);
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("                       여기서펴");
+
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+//View nav_header_view = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        nav_header_view = navigationView.getHeaderView(0);
+
+        nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
+        Intent intent = getIntent();
+        System.out.println(intent.getStringExtra("user_name") + "test");
+        nav_header_id_text.setText(intent.getStringExtra("user_name"));
+
+
+        toolbar.setTitle("                       여기서펴");
+        filter = findViewById(R.id.filter);
+
+        roadnavi = findViewById(R.id.roadnavi);
+        roadnavi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //길찾기 버튼 눌렀을 때
+                String strlat = "";
+                String strlng = "";
+
+                minDistanceThread t2 = new minDistanceThread();
+                t2.start();
+
+                try {
+                    t2.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    JSONObject jo1 = new JSONObject(receiveMsg);
+
+                    strlat = jo1.getString("smoking_area_lat");
+                    strlng = jo1.getString("smoking_area_lng");
+
+                    System.out.println(strlat + strlng + "tlqk");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+//                String url = "daummaps://route?sp=" + "37.537229,127.005515&ep=37.4979502,127.0276368&by=FOOT";//여기에 좌표값 넣어주면 됨
+
+                String url = "daummaps://route?sp=" + curlat + "," + curlng + "&ep=" + strlat + "," + strlng + "&by=FOOT";//여기에 좌표값 넣어주면 됨
+
+
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
+            }
+        });
+        addarea = findViewById(R.id.ad);
+        addarea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //길찾기 버튼 눌렀을 때
+                Intent intent = new Intent(MapActivity.this, AddSmokingAreaActivity.class);
+                intent.putExtra("curlat", curlat);
+                intent.putExtra("curlng", curlng);
+                startActivity(intent);
+            }
+        });
+
+        drawer = findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+        mapView = new MapView(this);
+
+        mapView.setDaumMapApiKey("dccc7c0ddbd4beddfdaf5655ef4463ce");
+        mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
+        mapViewContainer.addView(mapView);
+
+        mapView.setMapViewEventListener(this);
+        mapView.setPOIItemEventListener(this);
+        mapView.setCurrentLocationEventListener(this);
+        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());
+        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+
+        center = mapPointWithGeoCoord(curlat, curlng);
+        mapView.setMapCenterPointAndZoomLevel(center, 0, true);
+
+        track = findViewById(R.id.track);
+        track.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                center = mapPointWithGeoCoord(curlat, curlng);
+                mapView.setMapCenterPointAndZoomLevel(center, 0, true);
+            }
+        });
+        getThread t1 = new getThread();
+        t1.start();
+        try {
+            t1.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 }

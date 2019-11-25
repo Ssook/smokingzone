@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         MapView mapView = new MapView(this);
         mapView.setDaumMapApiKey("dccc7c0ddbd4beddfdaf5655ef4463ce");
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
-        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(37.556, 125.951949155);
+        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(37.551293, 127.072949);
         mapView.setMapCenterPoint(mapPoint, true);
         mapViewContainer.addView(mapView);
     }

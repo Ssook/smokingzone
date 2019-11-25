@@ -13,7 +13,7 @@ public class SmokingArea {
     private Double _AreaLng;
     private int _ChkAircondition;
     private int _ChkRoof;
-    private int _ChkBench;
+    private String _ChkBench;
     private int _ChkInside;
     private int _Report;
     private int _AreaType;
@@ -31,7 +31,7 @@ public class SmokingArea {
 
 //            _ChkAircondition=Integer.parseInt(SmokingAreaInfo.getString("vtl"));
 //            _ChkRoof=Integer.parseInt(SmokingAreaInfo.getString("roof"));
-//            _ChkBench=Integer.parseInt(SmokingAreaInfo.getString("bench"));
+            _ChkBench=SmokingAreaInfo.getString("bench");
 //            _ChkInside=(int)SmokingAreaInfo.get("inside");//서버쪽에 추가필요
             _AreaType=Integer.parseInt(SmokingAreaInfo.getString("type"));
             _Report=Integer.parseInt(SmokingAreaInfo.getString("report"));
@@ -50,5 +50,8 @@ public class SmokingArea {
 
     public Double getSmokingAreaLng(){ return _AreaLng; }
 
-    public int getSmokinAreaType(){ return _AreaType; }
+    public int getSmokingAreaType(){ return _AreaType; }
+
+    public String getSmokingAreaBench(){return _ChkBench;}
+    public String getSomkingAreaRegUser(){return _AreaRegUser;}
 }
