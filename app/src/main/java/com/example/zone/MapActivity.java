@@ -188,8 +188,6 @@ public class MapActivity extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.nav_share) {
-            Intent intent = new Intent(MapActivity.this, ReviewActivity.class);
-            startActivity(intent);
         } else if (id == R.id.nav_send) {
             onClickLogout();
         }

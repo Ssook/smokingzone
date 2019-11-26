@@ -19,14 +19,6 @@
             android:icon="@drawable/bus"
             android:title="커뮤니티" />
         <item
-            android:id="@+id/nav_tools"
-            android:icon="@drawable/pinicon"
-            android:title="게시판" />
-        <item
-            android:id="@+id/nav_share"
-            android:icon="@drawable/ic_menu_share"
-            android:title="@string/menu_share" />
-        <item
             android:id="@+id/nav_send"
             android:icon="@drawable/ic_menu_send"
             android:title="로그아웃" />

@@ -16,7 +16,7 @@
         android:layout_gravity="right|center"
         android:layout_marginStart="16dp"
         android:layout_marginTop="596dp"
-        android:src="@drawable/bus"
+        android:src="@drawable/roadnavi"
         app:borderWidth="0dp"
         app:fabSize="mini"
         app:layout_constraintStart_toStartOf="parent"
