@@ -39,17 +39,24 @@ import java.util.Map;
 
 public class BoardWriteActivity extends AppCompatActivity {
 
+    //빠담 글쓰기 화면 view 변수들
     private TextView tv_outPut;
     private EditText et_title;
     private EditText et_content;
     private CheckBox cb_anony;
+
+    //현재 유저 닉네임 받아오는 변수들
     SharedPreferences sp;
-    String name="";
+    String name = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board_write);
+
+        //----------------------------
+        /*        액션바 설정 부분    */
+        //----------------------------
 
         //액션바 가져오기
         ActionBar actionBar = getSupportActionBar();
@@ -67,27 +74,28 @@ public class BoardWriteActivity extends AppCompatActivity {
         et_title = (EditText) findViewById(R.id.titletext);
         et_content = (EditText) findViewById(R.id.contenttext);
         cb_anony = (CheckBox) findViewById(R.id.anonycheck);
+
+        //사용자 닉네임 받아오기
         sp = getSharedPreferences("profile", MODE_PRIVATE);
         name = sp.getString("name", "");
 
-    }
+    }//onCreate func()
 
     @Override
-
     public boolean onCreateOptionsMenu(Menu menu) {
-
+        //빠담 글쓰기 화면 메뉴 설정
         getMenuInflater().inflate(R.menu.menu_board_write, menu);
-
         return true;
-
-    }
+    }//onCreateOptionsMenu func
 
     //메뉴 아이템을 눌렀을 때 이벤트 처리
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        //새 글 등록 메뉴를 클릭했을 때 이벤트
+        //---------------------------------
+        /*  새글 등록 버튼 눌렀을 때 작업   */
+        //---------------------------------
         if (id == R.id.newPost) {
             // URL 설정.
             String url = "http://18.222.175.17:8080/SmokingArea/Board/insertBoard.jsp";
@@ -95,33 +103,24 @@ public class BoardWriteActivity extends AppCompatActivity {
             //JSONObject에 서버로 보낼 게시글 정보를 담음
             JSONObject board_data = new JSONObject();
 
-            //서버로 보낼 데이터를 ContentValues에 담아줌
-            ContentValues values = new ContentValues();
+            //-----------------------------
+            /* 서버에 게시글 정보를 보냄 Part*/
+            //-----------------------------
 
-            // 현재시간을 msec 으로 구한다.
-            long now = System.currentTimeMillis();
-            // 현재시간을 date 변수에 저장한다.
-            Date date = new Date(now);
-            // 시간을 나타냇 포맷을 정한다 ( yyyy/MM/dd 같은 형태로 변형 가능 )
-            SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            // nowDate 변수에 값을 저장한다.
-            String formatDate = sdfNow.format(date);
-
-            values.put("reg_date", formatDate);
             if (cb_anony.isChecked()) {
                 try {
                     board_data.put("reg_user", "익명");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }
-            else if (!cb_anony.isChecked()){
+            }//익명 처리
+            else if (!cb_anony.isChecked()) {
                 try {
-                    board_data.put("reg_user",name);
+                    board_data.put("reg_user", name);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }
+            }//익명 아닐 시
             try {
                 board_data.put("ctnt", et_content.getText().toString());
             } catch (JSONException e) {
@@ -138,61 +137,68 @@ public class BoardWriteActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-
+            //--------------------------------
+            /* 게시글 정보를 서버에 보냄   Part*/
+            //--------------------------------
             NetworkTask networkTask = new NetworkTask(board_data.toString());
             networkTask.execute();
 
+            //--------------------------------
+            /* 액티비티 전환 게시글 최신화 Part*/
+            //--------------------------------
 
             //액티비티 간 전환
             Intent intent = new Intent(getApplicationContext(), BoardActivity.class); //인탠트 객체는 액티비티 이동,데이터 입출력에 사용
-            //글쓰기 액티비티 제거 후
-            //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY  | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             //게시판 액티비티 활성화
             startActivity(intent);
             Toast.makeText(BoardWriteActivity.this, "게시글 등록 성공", Toast.LENGTH_SHORT).show();
+
             return true;
-        }
+
+        } // 게시글 등록 버튼(new Post)눌렀을시 if문
         return super.onOptionsItemSelected(item);
-    }
+    }//onOptionsItemSelected func()
 
+    //--------------------------------
+    /* 게시글 정보를 서버에 보내는 Class*/
+    //--------------------------------
     public class NetworkTask extends AsyncTask<Void, Void, String> {
-
 
         String values;
 
         NetworkTask(String values) {
-
             this.values = values;
-        }
+        }//생성자
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             //progress bar를 보여주는 등등의 행위
-        }
+        }//실행 이전 작업 정의 함수
 
         @Override
         protected String doInBackground(Void... params) {
             String result = "";
 
             try {
+                //서버에 게시글 정보를 입력하는 함수 호출
                 result = sendBoardWrite(values);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             return result; // 결과가 여기에 담깁니다. 아래 onPostExecute()의 파라미터로 전달됩니다.
-        }
+        } // 백그라운드 작업 함수
 
         @Override
         protected void onPostExecute(String result) {
             // 통신이 완료되면 호출됩니다.
             // 결과에 따른 UI 수정 등은 여기서 합니다.
-
-            //Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
-            //tv_outPut.setText(result);
         }
     }
 
+    //----------------------------------
+    /* 서버에 게시글 정보를 입력하는 함수 */
+    //----------------------------------
     public String sendBoardWrite(String values) throws JSONException {
 
         String result = "";
@@ -217,7 +223,7 @@ public class BoardWriteActivity extends AppCompatActivity {
             //--------------------------
             StringBuffer buffer = new StringBuffer();
             String regdata = "board_param=" + values;
-            Log.d("data", values);
+            Log.d("board_data", values);
             buffer.append(regdata);                 // php 변수에 값 대입
 
             OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");

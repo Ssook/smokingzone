@@ -1,6 +1,6 @@
 package com.example.zone;
 
-//게시판 항목들을 가지고 있는 BoardModel Class ( 게시판 번호, 태그, 등록날짜,등록유저, 제목, 내용, 아이콘 )
+//리뷰화면 항목들을 가지고 있는 Review Class
 public class ReviewModel {
     int area_no;
     String review_no;
