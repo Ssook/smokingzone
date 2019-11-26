@@ -69,12 +69,14 @@ public class ReviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
+
+        //----------------------------
+        /*        액션바 설정 부분    */
+        //----------------------------
         //액션바 가져오기
         ActionBar actionBar = getSupportActionBar();
         actionBar.setCustomView(R.layout.custom_bar_review);
         actionBar.setTitle("리뷰 화면");
-
-
 
         //메뉴바에 '<' 버튼이 생긴다.(두개는 항상 같이다닌다)
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -92,6 +94,9 @@ public class ReviewActivity extends AppCompatActivity {
         bt_reg_rating = findViewById((R.id.ratingregbutton));
         bt_reg_comment = findViewById((R.id.comment_reg_button));
 
+        //----------------------------
+        /*   뷰에 해당하는 값 설정    */
+        //----------------------------
 
         //흡연구역 정보를 intent를 통해 받음
         Intent intent = getIntent();
@@ -126,7 +131,9 @@ public class ReviewActivity extends AppCompatActivity {
         roof.setClickable(false);
         vtl.setClickable(false);
 
-        //댓글 등록버튼을 눌렀을 때 리스너 등록
+        //-------------------------------------
+        /* 댓글 등록버튼을 눌렀을 때 리스너 등록 */
+        //-------------------------------------
         bt_reg_comment.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -139,7 +146,7 @@ public class ReviewActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 try {
-                    sbParam.put("smoking_review_reg_user", "wow");
+                    sbParam.put("smoking_review_reg_user", "user");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -153,80 +160,31 @@ public class ReviewActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                //서버로 댓글 입력 클래스 생성 및 실행
+
+                //-------------------------------------
+                /* 서버로 댓글 입력 클래스 생성 및 실행  */
+                //-------------------------------------
                 NetworkTaskWrite networkTaskWrite = new NetworkTaskWrite(sbParam.toString());
-                Log.d("data",sbParam.toString());
+                Log.d("reviewComment",sbParam.toString());
                 networkTaskWrite.execute();
 
 
             }
-        });
-        //------------------
-        /*흡연구역 정보 담기*/
-        //------------------
+        });//setONClickListener func()
 
 
+        //------------------------
+        /*흡연구역 댓글정보 갖고오기*/
+        //------------------------
         //리뷰 액티비티 networkTask 클래스 생성 및 실행
         ReviewActivity.NetworkTask networkTask = new ReviewActivity.NetworkTask(this,smoking_area_data[6]);
         networkTask.execute();
 
-        //---------------------
-        /*더미 데이터 생성 파트*/
-        //---------------------
-        /*
-        //더미 배열 생성
-        String[] dummyuser = new String[]{"박지성", "손흥민", "황희찬", "이강인", "남태희"};
-        String[] dummydate = new String[]{"2019/09/30", "2019/00/00", "2019/00/00", "2019/00/00", "2019/00/00"};
-        String[] dummyctnt = new String[]{"Battery detail...", "Cpu detail...", "Display detail...", "Memory detail...", "Sensor detail..."};
-
-        //더미 데이터 입력
-        for (int i = 0; i < 5; i++) {
-            arrayregUser.add(dummyuser[i]);
-            arrayregDate.add(dummydate[i]);
-            arrayctnt.add(dummyctnt[i]);
-        }
 
 
-        //더미 데이터 입력 (Json Parsing)
-        String Test = "[{\"smoking_area_no\":\"1\",\"smoking_review_reg_user\":\"user\",\"smoking_review_ctnt\":\"ctntsadasdasdsada\",\"smoking_review_point\":\"15.5\"}]";
-
-        try {
-            mArray = new JSONArray(Test);
-        } catch (JSONException e) {
-            //TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        for (int i = 0; i < mArray.length(); i++) {
-            try {
-                JSONObject jsonObject = mArray.getJSONObject(i);
-                // Pulling items from the array
-                arrayregDate.add(jsonObject.getString("reg_date"));
-                arrayregUser.add(jsonObject.getString("reg_user"));
-                arrayctnt.add(jsonObject.getString("ctnt"));
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        //listView에 xml의 listView를 가져와서 넣어줌
-        listView = findViewById(R.id.listView);
-
-        //Model에 데이터를 넣어주고 arrayList<BoardModel>에 넣어줌
-        for (int i = 0; i < arrayregUser.size(); i++) {
-            ReviewModel reviewModel = new ReviewModel(arrayregDate.get(i), arrayregUser.get(i), arrayctnt.get(i));
-            //bind all strings in an array
-            arrayList.add(reviewModel);
-        }
-
-        //listViewAdapter클래스에 결과를 넘겨줌
-        adapter = new ReviewListViewAdapter(this, arrayList);
-
-        //bind the adapter to the listview
-        listView.setAdapter(adapter);
-        */
-
-        //별점 ratingbar 리스너
+        //-------------------------
+        /*  별점 ratingbar 리스너 */
+        //-------------------------
         ratingbar.setOnRatingBarChangeListener(new RatingbarListener());
     }
 
@@ -236,15 +194,14 @@ public class ReviewActivity extends AppCompatActivity {
             ratingbar.setRating(rating);
             ratingValue.setText(Float.toString(ratingbar.getRating()));
             ratingValue.setTypeface(null, Typeface.BOLD);
-
-
         }
     }//Ratingbarlistenr class
 
-    //해당 흡연구역의 댓글을 뿌려주는 NetworkTask 클래스
+
+    //--------------------------------------------------
+    /* 해당 흡연구역의 댓글을 뿌려주는 NetworkTask 클래스  */
+    //--------------------------------------------------
     public class NetworkTask extends AsyncTask<Void, Void, String> {
-
-
         String values;
         Context mcontext;
 
@@ -276,8 +233,6 @@ public class ReviewActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             // 통신이 완료되면 호출됩니다.
             // 결과에 따른 UI 수정 등은 여기서 합니다.
-            //더미 데이터 입력 (Json Parsing)
-            //String Test = "[{\"smoking_area_no\":\"1\",\"smoking_review_reg_user\":\"user\",\"smoking_review_ctnt\":\"ctntsadasdasdsada\",\"smoking_review_point\":\"15.5\"}]";
             if (result != "") {
                 try {
                     mArray = new JSONArray(result);
@@ -301,26 +256,28 @@ public class ReviewActivity extends AppCompatActivity {
                 //listView에 xml의 listView를 가져와서 넣어줌
                 listView = findViewById(R.id.listView);
 
-                //Model에 데이터를 넣어주고 arrayList<BoardModel>에 넣어줌
+                //reviewModel에 데이터를 넣어주고 arrayList<ReviewModel>에 넣어줌
                 for (int i = 0; i < arrayregUser.size(); i++) {
                     ReviewModel reviewModel = new ReviewModel(arrayregDate.get(i), arrayregUser.get(i), arrayctnt.get(i));
                     //bind all strings in an array
                     arrayList.add(reviewModel);
                 }
 
-                //listViewAdapter클래스에 결과를 넘겨줌
+                //ReviewlistViewAdapter클래스에 결과를 넘겨줌
                 adapter = new ReviewListViewAdapter(mcontext, arrayList);
 
                 //bind the adapter to the listview
                 listView.setAdapter(adapter);
             }//result not null
             else {
-                Log.d("data:", "게시글 없음!");
+                Log.d("댓글 data:", "댓글 없음!");
             }
         }
     }
 
-    //서버로 해당 흡연구역 정보를 넘겨주고 댓글 정보를 받는 함수
+    //------------------------------------------------------
+    /*서버로 해당 흡연구역 정보를 넘겨주고 댓글 정보를 받는 함수  */
+    //------------------------------------------------------
     public String ServerReviewData(String values) throws JSONException {
 
         String result = "";
@@ -371,7 +328,9 @@ public class ReviewActivity extends AppCompatActivity {
         return result;
     } // HttpPostDat
 
-    // 리뷰화면 댓글 입력 클래스 (클라이언트 -> 서버 , 서버 -> 클라이언트)
+    //----------------------------------------------------------------
+    /*  리뷰화면 댓글 입력 클래스 (클라이언트 -> 서버 , 서버 -> 클라이언트) */
+    //----------------------------------------------------------------
     public class NetworkTaskWrite extends AsyncTask<Void, Void, String> {
 
         String values;

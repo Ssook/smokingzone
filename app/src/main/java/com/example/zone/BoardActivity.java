@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 public class BoardActivity extends AppCompatActivity {
     private JSONArray mArray;  //서버로부터 JSON Array를 받아 저장할 변수
-    private ActionBar actionBar;
+    private ActionBar actionBar;    //게시판화면에 쓰일 actionBar
     ListView listView; //게시판 ListView 레이아웃 형성을 위한 객체 생성
     ListViewAdapter adapter; // 뷰에 넣을 데이터들을 어떠한 형식과 어떠한 값들로 구성할지 정하는 adapter 객체
 
@@ -47,16 +47,20 @@ public class BoardActivity extends AppCompatActivity {
     ArrayList<Integer> arrayboardNo = new ArrayList<Integer>();
     ArrayList<Integer> arrayicon = new ArrayList<Integer>();
 
-
+    //BoardModel 클래스 타입의 ArrayList
     ArrayList<BoardModel> arrayList = new ArrayList<BoardModel>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //이 액티비티의 view에 해당하는 layout을 등록한다.
         setContentView(R.layout.board_activity_main);
+
+        //----------------------------
+        /*        액션바 설정 부분    */
+        //----------------------------
         //액션바 가져오기
         actionBar = getSupportActionBar();
-        //actionBar.setTitle("빠담 게시판");
 
         //액션바 타이틀 가운데 정렬
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -66,73 +70,15 @@ public class BoardActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
 
-        // String url = "http://18.222.175.17:8080/SmokingArea/Board/boardList.jsp";
+        //----------------------------
+        /*      게시글을 전부 가져옴  */
+        //----------------------------
         NetworkTask networkTask = new NetworkTask(this, null);
         networkTask.execute();
 
-        /*
-        //더미 배열 생성
-        String[] dummyuser = new String[]{"박지성", "손흥민", "황희찬", "이강인", "남태희"};
-        String[] dummydate = new String[]{"2019/09/30", "2019/00/00", "2019/00/00", "2019/00/00", "2019/00/00"};
-        String[] dummytag = new String[]{"공지", "담배", "건강", "Q&A", "오류", "기타"};
-        String[] dummytitle = new String[]{"Battery", "Cpu", "Display", "Memory", "Sensor"};
-        String[] dummyctnt = new String[]{"Battery detail...", "Cpu detail...", "Display detail...", "Memory detail...", "Sensor detail..."};
-        int[] dummyicon = new int[]{R.drawable.battery, R.drawable.cpu, R.drawable.display, R.drawable.memory, R.drawable.sensor};
-
-        //더미 데이터 입력
-        for (int i = 0; i < 5; i++) {
-            arrayregUser.add(dummyuser[i]);
-            arrayregDate.add(dummydate[i]);
-            arraytag.add(dummytag[i]);
-            arraytitle.add(dummytitle[i]);
-            arrayctnt.add(dummyctnt[i]);
-            arrayicon.add(dummyicon[i]);
-        }
-
-
-        //더미 데이터 입력 (Json Parsing)
-        String Test = "[{\"no\":\"1\",\"reg_date\":\"2019-10-14\",\"reg_user\":\"user\",\"ctnt\":\"ctntsadasdasdsada\",\"tag\":\"tag\",\"title\":\"타이룰\"}]";
-
-        try {
-            mArray = new JSONArray(Test);
-        } catch (JSONException e) {
-            //TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        for (int i = 0; i < mArray.length(); i++) {
-            try {
-                JSONObject jsonObject = mArray.getJSONObject(i);
-                // Pulling items from the array
-                arrayregDate.add(jsonObject.getString("reg_date"));
-                arrayregUser.add(jsonObject.getString("reg_user"));
-                arrayctnt.add(jsonObject.getString("ctnt"));
-                arraytag.add(jsonObject.getString("tag"));
-                arraytitle.add(jsonObject.getString("title"));
-                arrayboardNo.add(jsonObject.getInt("no"));
-                arrayicon.add(0);
-                //arrayicon.add(jsonObject.getInt("icon"));
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        //listView에 xml의 listView를 가져와서 넣어줌
-        listView = findViewById(R.id.listView);
-
-        //Model에 데이터를 넣어주고 arrayList<BoardModel>에 넣어줌
-        for (int i = 0; i < arraytitle.size(); i++) {
-            BoardModel boardModel = new BoardModel(arraytag.get(i), arrayregDate.get(i), arrayregUser.get(i), arraytitle.get(i), arrayctnt.get(i), arrayicon.get(i));
-            //bind all strings in an array
-            arrayList.add(boardModel);
-        }
-
-        //listViewAdapter클래스에 결과를 넘겨줌
-        adapter = new ListViewAdapter(this, arrayList);
-
-        //bind the adapter to the listview
-        listView.setAdapter(adapter);
-        */
+        //----------------------------
+        /*      게시판 글쓰기 버튼   */
+        //----------------------------
         //FAB 이벤트 처리 함수 생성 및 등록
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new FABClickListener());
@@ -143,9 +89,11 @@ public class BoardActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            //FAb 클릭 이벤트 처리 구간
-
-            Intent intent = new Intent(getApplicationContext(), BoardWriteActivity.class); //인탠트 객체는 액티비티 이동,데이터 입출력에 사용
+            //----------------------------
+            /* FAb 클릭 이벤트 처리 구간  */
+            //----------------------------
+            //인탠트 객체는 액티비티 이동,데이터 입출력에 사용
+            Intent intent = new Intent(getApplicationContext(), BoardWriteActivity.class);
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
@@ -155,13 +103,16 @@ public class BoardActivity extends AppCompatActivity {
     //액티비티가 시작될 때 단 한번만 호출되는 함수로 이안에서 MenuItem생성과 초기화를 하면 됨.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         //Menu Inflacter를 통하여 XML Menu 리소스에 정의된 내용을 파싱하여 Menu 객체를 생성
         getMenuInflater().inflate(R.menu.menu, menu);
 
+        //----------------------------
+        /* 메뉴의 SearchView 설정  */
+        //----------------------------
         MenuItem myActionMenuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) myActionMenuItem.getActionView();
         searchView.setQueryHint(getString(R.string.search_hint_query));
-       
 
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -182,9 +133,10 @@ public class BoardActivity extends AppCompatActivity {
                 }
                 return true;
             }
-        });
+        });//onQueryTextListener func()
         return true;
-    }
+    }//onCreateOptionMenu func()
+
 
     //옵션 메뉴들을 눌렀을 때 기능 명시
     @Override
@@ -207,9 +159,10 @@ public class BoardActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+    //----------------------------
+    /*  게시글 뿌려주는 클래스     */
+    //----------------------------
     public class NetworkTask extends AsyncTask<Void, Void, String> {
-
 
         ContentValues values;
         Context mcontext;
@@ -217,32 +170,34 @@ public class BoardActivity extends AppCompatActivity {
         NetworkTask(Context mcontext, ContentValues values) {
             this.mcontext = mcontext;
             this.values = values;
-        }
+        } // 생성자
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             //progress bar를 보여주는 등등의 행위
-        }
+        }  //실행 이전에 작업되는 것들을 정의하는 함수
 
         @Override
         protected String doInBackground(Void... params) {
             String result = "";
-
             try {
+                //서버의 게시판 정보를 받아오는 함수를 호출함.
                 result = ServeBoardData();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             return result; // 결과가 여기에 담깁니다. 아래 onPostExecute()의 파라미터로 전달됩니다.
-        }
+        } //백그라운드 작업 함수
 
+        //------------------------------------
+        /* 서버로 부터 받아온 게시글로 UI 작업  */
+        //------------------------------------
         @Override
         protected void onPostExecute(String result) {
             // 통신이 완료되면 호출됩니다.
             // 결과에 따른 UI 수정 등은 여기서 합니다.
-            //더미 데이터 입력 (Json Parsing)
-            String Test = "[{\"no\":\"2\",\"reg_date\":\"2019-11-03\",\"reg_user\":\"익명\",\"ctnt\":\"ㅁㅇㄻㅇㄻ\",\"tag\":\"ㅇㄻㅇㄹ\",\"title\":\"타이룰\"}]";
+
             if (result != "") {
                 try {
                     mArray = new JSONArray(result);
@@ -250,7 +205,8 @@ public class BoardActivity extends AppCompatActivity {
                     //TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                for (int i = 0; i < mArray.length(); i++) {
+                //제일 최근에 담긴 게시글이 맨 위에 뜨도록 함
+                for (int i =  mArray.length()-1; i >=0 ; i--) {
                     try {
                         JSONObject jsonObject = mArray.getJSONObject(i);
                         // Pulling items from the array
@@ -284,12 +240,16 @@ public class BoardActivity extends AppCompatActivity {
                 //bind the adapter to the listview
                 listView.setAdapter(adapter);
             }//result not null
+            //result is null
             else {
                 Log.d("data:", "게시글 없음!");
             }
         }
-    }
+    } //NetWorkTask Class
 
+    //------------------------------------
+    /* 서버로 부터 게시판 DB 정보를 받아옴  */
+    //------------------------------------
     public String ServeBoardData() throws JSONException {
 
         String result = "";
@@ -309,17 +269,6 @@ public class BoardActivity extends AppCompatActivity {
 
             // 서버에게 웹에서 <Form>으로 값이 넘어온 것과 같은 방식으로 처리하라는 걸 알려준다
             http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");            //--------------------------
-            //   서버로 값 전송
-            //--------------------------
-            //StringBuffer buffer = new StringBuffer();
-            //String currentlocationsend="board_param="+values;
-
-            // buffer.append(currentlocationsend);                 // php 변수에 값 대입
-
-            //OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
-            //PrintWriter writer = new PrintWriter(outStream);
-            //writer.write(buffer.toString());
-            //writer.flush();
 
             //--------------------------
             //   서버에서 전송받기
@@ -337,13 +286,7 @@ public class BoardActivity extends AppCompatActivity {
         } catch (IOException e) {
         }
         System.out.println(result);
-        return result;
+        return result; //onPostExcute()로 전달
     } // HttpPostDat
-}
+}//Board Activity Class
 
-
-/*design row of listview*/
-/*adding menu to add searchview in actionbar*/
-/*add model class*/
-/*add adapter class */
-/*add some imgaes in drawable folder*/

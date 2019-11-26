@@ -158,13 +158,29 @@
 
     </LinearLayout>
 
+    <View
+        android:id="@+id/comment_deligater"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_centerInParent="true"
+        android:background="#808080"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginBottom="13dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/include"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout3"/>
+
+
     <include
         android:id="@+id/include"
         layout="@layout/review_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout3" />
+        app:layout_constraintTop_toBottomOf="@+id/comment_deligater"
+         />
 
     <LinearLayout
         android:id="@+id/linearLayout4"

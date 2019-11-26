@@ -294,10 +294,15 @@ public class MapActivity extends AppCompatActivity
 
     }
 
+    //----------------------------------
+    /*마커의 말풍선을 클릭했을 때 이벤트 */
+    //----------------------------------
 
-    //마커 누르면 나오는 말풍선 클릭시 해당 정보를 가진 화면으로 전환
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
+        //--------------------------------------
+        /* 흡연구역 정보를 리뷰 액티비티에 넘겨줌 */
+        //--------------------------------------
         String[] arr = mapPOIItem.getItemName().split(",");
         Intent intent = new Intent(MapActivity.this, ReviewActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
