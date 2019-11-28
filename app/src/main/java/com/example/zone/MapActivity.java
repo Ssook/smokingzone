@@ -372,12 +372,8 @@ public class MapActivity extends AppCompatActivity
 
         smokingAreaData = new JSONArray(smokeareainfo);
         for (int i = 0; i < smokingAreaData.length(); i++) {
-            //
             SmokingArea smokingarea = new SmokingArea((JSONObject) smokingAreaData.get(i));
-            //
-
             smokeMarker = new MapPOIItem();
-
             //smokeMarker.setItemName((((JSONObject) (ja.get(i))).get("bench").toString()) + "," + (((JSONObject) (ja.get(i))).get("roof").toString()) + "," + (((JSONObject) (ja.get(i))).get("vtl").toString()) + "," + (((JSONObject) (ja.get(i))).get("name").toString()) + "," + (((JSONObject) (ja.get(i))).get("desc").toString()) + "," + (((JSONObject) (ja.get(i))).get("point").toString()) + "," + (((JSONObject) (ja.get(i))).get("no").toString()));
             smokeMarker.setItemName((((JSONObject) (smokingAreaData.get(i))).get("bench"))
                     + "," + (((JSONObject) (smokingAreaData.get(i))).get("roof").toString())
@@ -422,7 +418,6 @@ public class MapActivity extends AppCompatActivity
                 default:
                     smokeMarker.setCustomImageResourceId(R.drawable.custom_poi_marker);
             }
-
             smokeMarker.setLeftSideButtonResourceIdOnCalloutBalloon(R.drawable.ic_menu_manage);
             smokeMarker.setLeftSideButtonResourceIdOnCalloutBalloon(3);
             smokeMarker.setCustomImageAutoscale(true);
