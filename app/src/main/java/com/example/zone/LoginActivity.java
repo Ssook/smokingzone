@@ -42,7 +42,6 @@ public class LoginActivity extends Activity {
             btn_custom_login.setOnClickListener(new View.OnClickListener() {
 
                 @Override
-
                 public void onClick(View view) {
                     btn_kakao_login.performClick();
                 }
@@ -88,7 +87,7 @@ public class LoginActivity extends Activity {
                     //로그인에 성공하면 로그인한 사용자의 일련번호, 닉네임, 이미지url등을 리턴합니다.
                     //사용자 ID는 보안상의 문제로 제공하지 않고 일련번호는 제공합니다.
 
-                    // Log.e("UserProfile", userProfile.toString());
+                    Log.e("UserProfile", userProfile.toString());
                     // Log.e("UserProfile", userProfile.getId() + "");
 
                     long number = userProfile.getId();
@@ -133,7 +132,6 @@ public class LoginActivity extends Activity {
                 Log.e("UserProfile", result.toString());
                 Log.e("UserProfile", result.getId() + "");
                 saveShared(result.getId() + "", result.getNickname());
-
             }
         });
     }

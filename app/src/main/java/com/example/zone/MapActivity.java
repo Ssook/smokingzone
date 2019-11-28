@@ -122,8 +122,16 @@ public class MapActivity extends AppCompatActivity
 //        } catch (NoSuchAlgorithmException e) {
 //            e.printStackTrace();
 //        }
-
         initLayout();
+
+        getThread t1 = new getThread();
+        t1.start();
+        try {
+            t1.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         isCheck = new boolean[10];
         Arrays.fill(isCheck, true);
 
@@ -376,23 +384,23 @@ public class MapActivity extends AppCompatActivity
             smokeMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(smokingarea.getSmokingAreaLat(), smokingarea.getSmokingAreaLng()));
             switch (smokingarea.getSmokingAreaType()) {
                 case 0:
-                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_brown);
+                    smokeMarker.setCustomImageResourceId(R.drawable.cafe);
                     cafe_SmokeMarkerList.add(smokeMarker);
                     break;
                 case 1:
-                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_red);
+                    smokeMarker.setCustomImageResourceId(R.drawable.food);
                     food_SmokeMarkerList.add(smokeMarker);
                     break;
                 case 2:
-                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_yellow);
+                    smokeMarker.setCustomImageResourceId(R.drawable.school);
                     school_SmokeMarkerList.add(smokeMarker);
                     break;
                 case 3:
-                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_blue);
+                    smokeMarker.setCustomImageResourceId(R.drawable.company);
                     company_SmokeMarkerList.add(smokeMarker);
                     break;
                 case 4:
-                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_green);
+                    smokeMarker.setCustomImageResourceId(R.drawable.street);
                     street_SmokeMarkerList.add(smokeMarker);
                     break;
                 case 5:
@@ -409,7 +417,7 @@ public class MapActivity extends AppCompatActivity
 
             smokeMarker.setLeftSideButtonResourceIdOnCalloutBalloon(R.drawable.ic_menu_manage);
             smokeMarker.setLeftSideButtonResourceIdOnCalloutBalloon(3);
-            smokeMarker.setCustomImageAutoscale(true);
+            smokeMarker.setCustomImageAutoscale(false);
             smokeMarkerlist.add(smokeMarker);
         }
     }
@@ -772,13 +780,6 @@ public class MapActivity extends AppCompatActivity
                 mapView.setMapCenterPointAndZoomLevel(center, 0, true);
             }
         });
-        getThread t1 = new getThread();
-        t1.start();
-        try {
-            t1.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
 
     }
