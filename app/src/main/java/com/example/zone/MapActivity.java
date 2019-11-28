@@ -408,7 +408,7 @@ public class MapActivity extends AppCompatActivity
                     street_SmokeMarkerList.add(smokeMarker);
                     break;
                 case OTHER:
-                    smokeMarker.setCustomImageResourceId(R.drawable.map_pin_gray);
+                    smokeMarker.setCustomImageResourceId(R.drawable.other);
                     other_SmokeMarkerList.add(smokeMarker);
                     break;
                 case BANNED:
@@ -716,7 +716,6 @@ public class MapActivity extends AppCompatActivity
         Intent intent = getIntent();
         System.out.println(intent.getStringExtra("user_name") + "test");
         nav_header_id_text.setText(intent.getStringExtra("user_name"));
-
     }
 
     private void setView_Toolbar() {
@@ -768,16 +767,15 @@ public class MapActivity extends AppCompatActivity
                 }
 
                 try {
-                    JSONObject jo1 = new JSONObject(receiveMsg);
-                    strlat = jo1.getString("smoking_area_lat");
-                    strlng = jo1.getString("smoking_area_lng");
-                    System.out.println(strlat + strlng + "tlqk");
+                    JSONObject nearSmokingAreaInfo = new JSONObject(receiveMsg);
+                    strlat = nearSmokingAreaInfo.getString("smoking_area_lat");
+                    strlng = nearSmokingAreaInfo.getString("smoking_area_lng");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                String url = "daummaps://route?sp=" + curlat + "," + curlng + "&ep=" + strlat + "," + strlng + "&by=FOOT";//여기에 좌표값 넣어주면 됨
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                String nearSmokingAreaInfoUrl = "daummaps://route?sp=" + curlat + "," + curlng + "&ep=" + strlat + "," + strlng + "&by=FOOT";//여기에 좌표값 넣어주면 됨
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(nearSmokingAreaInfoUrl));
                 startActivity(intent);
             }
         });
