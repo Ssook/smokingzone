@@ -104,6 +104,7 @@ public class MapActivity extends AppCompatActivity
     FloatingActionButton addarea;
     FloatingActionButton track;
     FloatingActionButton filter;
+    ImageView profile;
     DrawerLayout drawer;
     ActionBarDrawerToggle toggle;
     ViewGroup mapViewContainer;
@@ -132,7 +133,7 @@ public class MapActivity extends AppCompatActivity
 //            e.printStackTrace();
 //        }
         center = mapPointWithGeoCoord(curlat, curlng);
-        initLayout();
+        initLayoutMapActivity();
 
 
         GetSmokingAreaThread getSmokingAreaThread = new GetSmokingAreaThread();
@@ -480,6 +481,7 @@ public class MapActivity extends AppCompatActivity
             drawable = Drawable.createFromStream(is, "none");
         } catch (Exception e) {
             // Log.e("LOG_TAG", "error, in loadDrawable \n" + e.toString());
+            System.out.println("durltjdpfj");
         }
 
         return drawable;
@@ -686,24 +688,24 @@ public class MapActivity extends AppCompatActivity
         alertDialog.show();
     }
 
-    public void initLayout() {           //레이아웃 정의
+    public void initLayoutMapActivity() {           //레이아웃 정의
         setContentView(R.layout.activity_map);
         setView_MapView();
         setView_Toolbar();
         setView_BtnAddArea();
         setView_BtnRoadNavi();
         setView_NavHeader();
+        setView_Drawer();
+        setView_BtnTrack();
+//        setView_Profile();
+    }
 
-//        filter = findViewById(R.id.filter);
-
+    private void setView_Drawer() {
         drawer = findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-
-        setView_BtnTrack();
     }
 
     private void setView_NavHeader() {
@@ -792,5 +794,19 @@ public class MapActivity extends AppCompatActivity
         mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());
         mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
         mapView.setMapCenterPointAndZoomLevel(center, 0, true);
+    }
+
+    private  void setView_Profile(){
+        profile = findViewById(R.id.profileimage);
+        String urlStr;
+        sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+
+        urlStr=sp.getString("image_url","");
+        System.out.println("dhkt"+urlStr);
+        Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
+        if (draw==null){
+            System.out.println("tlqk");
+        }
+        profile.setImageDrawable(draw);
     }
 }

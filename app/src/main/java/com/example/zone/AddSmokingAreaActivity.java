@@ -78,7 +78,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         sp = getSharedPreferences("profile", MODE_PRIVATE);                 //reg_user데이터를 위해 사용
     }
 
-    public class networkThread extends Thread {
+    public class RequestAddThread extends Thread {
         @Override
         public void run() {
             String response = "";
@@ -287,28 +287,50 @@ public class AddSmokingAreaActivity extends AppCompatActivity
 
     public void initLayout_AddSmokingAreaActivity() {              //액티비티 레이아웃 측면의 코드들 모아논 거
         setContentView(R.layout.activity_add_smoking_area);
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setView_ToolBar();
+        setView_TextViews();
+        setView_CheckBoxs();
+        setView_Navigationview();
+        setView_Drawer();
+        setView_SmokingAreaImage();
+        setView_RadioGroup();
+        setView_BtnAdd();
+    }
+
+    private void setView_SmokingAreaImage() {
+        imageView = (ImageView) findViewById(R.id.areaimage);
+    }
+
+    private void setView_TextViews() {
         areaDesc = findViewById(R.id.smokingareadesc);
         areaName = findViewById(R.id.smokingareaname);
+
+    }
+
+    private void setView_CheckBoxs() {
         check_inside = findViewById(R.id.check_inside);
         check_aircondition = findViewById(R.id.check_aircondition);
         check_loop = findViewById(R.id.check_loop);
         check_bench = findViewById(R.id.check_bench);
-        area_type = findViewById(R.id.radioGroup);
+    }
 
+    private void setView_Drawer() {
         drawer = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
+    }
 
-        //이미지
-        imageView = (ImageView) findViewById(R.id.areaimage);
-        setView_RadioGroup();
-        setView_BtnAdd();
+    private void setView_Navigationview() {
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void setView_ToolBar() {
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
     }
 
     //라디오 버튼 클릭 리스너
@@ -362,18 +384,18 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                     Snackbar.make(view, "흡연 장소의 이름을 입력해주세요.", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                     return;
-
                 }
+
                 if (getRadioGroup() == 0) {
                     Snackbar.make(view, "흡연 장소의 유형을 입력해주세요.", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                     return;
-
                 }
-                networkThread t1 = new networkThread();
-                t1.start();
+
+                RequestAddThread requestAddThread = new RequestAddThread();
+                requestAddThread.start();
                 try {
-                    t1.join();
+                    requestAddThread.join();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -383,6 +405,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
     }
 
     void setView_RadioGroup() {
+        area_type = findViewById(R.id.radioGroup);
         //radio
         rb_cafe = (RadioButton) findViewById(R.id.rb_cafe);
         rb_food = (RadioButton) findViewById(R.id.rb_food);
