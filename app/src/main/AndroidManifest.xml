@@ -8,16 +8,22 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application android:name=".GlobalApplication">
-        <activity android:name=".LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="dccc7c0ddbd4beddfdaf5655ef4463ce" />
 
-        <activity android:name=".ReviewActivity"
-            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".ReviewActivity"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden">
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".MapActivity" />
+        </activity>
         <activity android:name=".getMapGpsActivity" />
         <activity
             android:name=".AddSmokingAreaActivity"
@@ -43,8 +49,8 @@
 
         <activity
             android:name=".BoardWriteActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -61,7 +67,7 @@
         <activity
             android:name=".BoardDetailActivity"
             android:parentActivityName=".BoardActivity"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

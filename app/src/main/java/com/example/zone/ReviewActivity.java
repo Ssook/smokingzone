@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -93,6 +94,7 @@ public class ReviewActivity extends AppCompatActivity {
         ed_review_comment = findViewById((R.id.edit_review_comment));
         bt_reg_rating = findViewById((R.id.ratingregbutton));
         bt_reg_comment = findViewById((R.id.comment_reg_button));
+
 
         //----------------------------
         /*   뷰에 해당하는 값 설정    */
@@ -351,7 +353,7 @@ public class ReviewActivity extends AppCompatActivity {
             try {
                 //클라이언트로 받은 값들을 result에 넣어줌
                 result = sendReviewWrite(values);
-                Log.d("result2",result);
+                Log.d("reviewcommentIn",result);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
