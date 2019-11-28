@@ -6,28 +6,37 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+
 import com.google.android.material.snackbar.Snackbar;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.view.KeyEvent;
 import android.view.View;
+
 import androidx.annotation.IdRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+
 import android.view.MenuItem;
+
 import com.google.android.material.navigation.NavigationView;
+
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,7 +72,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initLayout();
+        initLayout_AddSmokingAreaActivity();
         curlat = getIntent().getDoubleExtra("curlat", 0.0);     //맵 액티비티에서 구한 현재 위도 경도를 인텐트로 받아옴
         curlng = getIntent().getDoubleExtra("curlng", 0.0);
         sp = getSharedPreferences("profile", MODE_PRIVATE);                 //reg_user데이터를 위해 사용
@@ -92,7 +101,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                 //   서버로 값 전송
                 //--------------------------
                 StringBuffer buffer = new StringBuffer();
-                String json_smokingAreaValue = "json_smokingAreaValue="+makeJsonObject().toString();
+                String json_smokingAreaValue = "json_smokingAreaValue=" + makeJsonObject().toString();
 
                 buffer.append(json_smokingAreaValue);
 
@@ -115,7 +124,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
             } catch (MalformedURLException e) {
             } catch (IOException e) {
             }
-            System.out.println("data"+response + "data");
+            System.out.println("data" + response + "data");
             //
 
             Handler mHandler = new Handler(Looper.getMainLooper());
@@ -123,7 +132,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                 @Override
                 public void run() {
                     // 사용하고자 하는 코드
-                        show("등록 완료.");
+                    showDialog("등록 완료.");
                 }
             }, 0);
 //
@@ -216,8 +225,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
     public boolean checkNull(String smokingareaInfomation) {                //등록화면의 장소 이름이 비어있나 체크 해주는 메소드
         if (smokingareaInfomation.equals("") || smokingareaInfomation == null) {
             return false;
-        }
-        else return true;
+        } else return true;
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -235,24 +243,24 @@ public class AddSmokingAreaActivity extends AppCompatActivity
     }
 
     public JSONObject makeJsonObject() {                        //등록할 장소의 정보를 서버로 보내기 위한 json객체를 만드는 메소드
-        JSONObject smokingareainfo=new JSONObject();
-            try {
-                smokingareainfo.put("smoking_area_name", areaName.getText().toString());
-                smokingareainfo.put("smoking_area_lat", "" + curlat + "");
-                smokingareainfo.put("smoking_area_lng", "" + curlng + "");
-                smokingareainfo.put("smoking_area_reg_date", "" + getCurrentTime() + "");
-                smokingareainfo.put("smoking_area_reg_user", sp.getString("name", ""));
-                smokingareainfo.put("smoking_area_point", "0");
-                smokingareainfo.put("smoking_area_report", "0");
-                smokingareainfo.put("smoking_area_roof", "" + checkboxresult(check_loop) + "");
-                smokingareainfo.put("smoking_area_vtl", "" + checkboxresult(check_aircondition) + "");
-                smokingareainfo.put("smoking_area_bench", "" + checkboxresult(check_bench) + "");
-                smokingareainfo.put("smoking_area_desc", areaDesc.getText().toString());
-                smokingareainfo.put("smoking_area_type", getRadioGroup());
-                System.out.println(smokingareainfo + "eldyd");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        JSONObject smokingareainfo = new JSONObject();
+        try {
+            smokingareainfo.put("smoking_area_name", areaName.getText().toString());
+            smokingareainfo.put("smoking_area_lat", "" + curlat + "");
+            smokingareainfo.put("smoking_area_lng", "" + curlng + "");
+            smokingareainfo.put("smoking_area_reg_date", "" + getCurrentTime() + "");
+            smokingareainfo.put("smoking_area_reg_user", sp.getString("name", ""));
+            smokingareainfo.put("smoking_area_point", "0");
+            smokingareainfo.put("smoking_area_report", "0");
+            smokingareainfo.put("smoking_area_roof", "" + checkboxresult(check_loop) + "");
+            smokingareainfo.put("smoking_area_vtl", "" + checkboxresult(check_aircondition) + "");
+            smokingareainfo.put("smoking_area_bench", "" + checkboxresult(check_bench) + "");
+            smokingareainfo.put("smoking_area_desc", areaDesc.getText().toString());
+            smokingareainfo.put("smoking_area_type", getRadioGroup());
+            System.out.println(smokingareainfo + "eldyd");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         return smokingareainfo;
 
@@ -264,7 +272,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         } else return 0;
     }
 
-    public void show(String message) {                                  //장소 등록이 완료되면 다이얼로그 팝업을 띄워주는 메소드
+    public void showDialog(String message) {                                  //장소 등록이 완료되면 다이얼로그 팝업을 띄워주는 메소드
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("알림");
         builder.setMessage(message);
@@ -277,7 +285,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         builder.show();
     }
 
-    public void initLayout() {              //액티비티 레이아웃 측면의 코드들 모아논 거
+    public void initLayout_AddSmokingAreaActivity() {              //액티비티 레이아웃 측면의 코드들 모아논 거
         setContentView(R.layout.activity_add_smoking_area);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -289,35 +297,6 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         check_bench = findViewById(R.id.check_bench);
         area_type = findViewById(R.id.radioGroup);
 
-        btnadd = findViewById(R.id.btnadd);
-        btnadd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {            //이거 누를 때 서버로 데이터를 전송
-                if (!checkNull(areaName.getText().toString())) {
-                    Snackbar.make(view, "흡연 장소의 이름을 입력해주세요.", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    return;
-
-                }
-                else if (getRadioGroup()==0){
-                    Snackbar.make(view, "흡연 장소의 유형을 입력해주세요.", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    return;
-
-                }
-                else {
-                    networkThread t1 = new networkThread();
-                    t1.start();
-                    try {
-                        t1.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-
-                }
-            }
-        });
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         toggle = new ActionBarDrawerToggle(
@@ -328,27 +307,8 @@ public class AddSmokingAreaActivity extends AppCompatActivity
 
         //이미지
         imageView = (ImageView) findViewById(R.id.areaimage);
-
-        //radio
-        rb_cafe = (RadioButton) findViewById(R.id.rb_cafe);
-        rb_food = (RadioButton) findViewById(R.id.rb_food);
-        rb_school = (RadioButton) findViewById(R.id.rb_school);
-        rb_company = (RadioButton) findViewById(R.id.rb_company);
-        rb_street = (RadioButton) findViewById(R.id.rb_street);
-        rb_other = (RadioButton) findViewById(R.id.rb_other);
-
-        rb_cafe.setOnClickListener(radioButtonClickListener);
-        rb_food.setOnClickListener(radioButtonClickListener);
-        rb_school.setOnClickListener(radioButtonClickListener);
-        rb_company.setOnClickListener(radioButtonClickListener);
-        rb_street.setOnClickListener(radioButtonClickListener);
-        rb_other.setOnClickListener(radioButtonClickListener);
-
-
-        rg_type = findViewById(R.id.radioGroup);
-        rg_type.setOnCheckedChangeListener(radioGroupButtonChangeListener);
-
-
+        setView_RadioGroup();
+        setView_BtnAdd();
     }
 
     //라디오 버튼 클릭 리스너
@@ -365,13 +325,9 @@ public class AddSmokingAreaActivity extends AppCompatActivity
             if (i == R.id.rb_cafe) {
             } else if (i == R.id.rb_food) {
             } else if (i == R.id.rb_school) {
-
             } else if (i == R.id.rb_company) {
-
             } else if (i == R.id.rb_street) {
-
             } else if (i == R.id.rb_other) {
-
             }
         }
     };
@@ -397,5 +353,52 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         }
     }
 
+    void setView_BtnAdd() {
+        btnadd = findViewById(R.id.btnadd);
+        btnadd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {            //이거 누를 때 서버로 데이터를 전송
+                if (!checkNull(areaName.getText().toString())) {
+                    Snackbar.make(view, "흡연 장소의 이름을 입력해주세요.", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    return;
 
+                }
+                if (getRadioGroup() == 0) {
+                    Snackbar.make(view, "흡연 장소의 유형을 입력해주세요.", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    return;
+
+                }
+                networkThread t1 = new networkThread();
+                t1.start();
+                try {
+                    t1.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
+    void setView_RadioGroup() {
+        //radio
+        rb_cafe = (RadioButton) findViewById(R.id.rb_cafe);
+        rb_food = (RadioButton) findViewById(R.id.rb_food);
+        rb_school = (RadioButton) findViewById(R.id.rb_school);
+        rb_company = (RadioButton) findViewById(R.id.rb_company);
+        rb_street = (RadioButton) findViewById(R.id.rb_street);
+        rb_other = (RadioButton) findViewById(R.id.rb_other);
+
+        rb_cafe.setOnClickListener(radioButtonClickListener);
+        rb_food.setOnClickListener(radioButtonClickListener);
+        rb_school.setOnClickListener(radioButtonClickListener);
+        rb_company.setOnClickListener(radioButtonClickListener);
+        rb_street.setOnClickListener(radioButtonClickListener);
+        rb_other.setOnClickListener(radioButtonClickListener);
+
+        rg_type = findViewById(R.id.radioGroup);
+        rg_type.setOnCheckedChangeListener(radioGroupButtonChangeListener);
+    }
 }
