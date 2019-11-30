@@ -80,7 +80,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
     private ImageView profile;
     View nav_header_view;
     InputStream in_2;
-
+    String img_url="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -273,6 +273,8 @@ public class AddSmokingAreaActivity extends AppCompatActivity
             smokingareainfo.put("smoking_area_bench", "" + checkboxresult(check_bench) + "");
             smokingareainfo.put("smoking_area_desc", areaDesc.getText().toString());
             smokingareainfo.put("smoking_area_type", getRadioGroup());
+            smokingareainfo.put("smoking_area_url",img_url);
+            System.out.println(smokingareainfo.get("smoking_area_url")+"고유2");
             System.out.println(smokingareainfo + "eldyd");
         } catch (JSONException e) {
             e.printStackTrace();
@@ -308,7 +310,6 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         setView_CheckBoxs();
         setView_Navigationview();
         setView_NavHeader();
-
         setView_Drawer();
         setView_SmokingAreaImage();
         setView_RadioGroup();
@@ -412,13 +413,21 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                     return;
                 }
 
+                img_url=sp.getString("token","")+getCurrentTime();
+                System.out.println(img_url+"고유");
                 RequestAddThread requestAddThread = new RequestAddThread(); //흡연정보 전송
-                networkThread_img t2 = new networkThread_img(); //흡연 이미지 전송
+                networkThread_img networkThread_img = new networkThread_img(); //흡연 이미지 전송
                 requestAddThread.start();
-                t2.start();
                 try {
                     requestAddThread.join();
-                    t2.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                networkThread_img.start();
+                try {
+                    requestAddThread.join();
+                    networkThread_img.join();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -454,8 +463,6 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         profile = nav_header_view.findViewById(R.id.profileimage);
 
         String urlStr;
-        sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
-
         urlStr = sp.getString("image_url", "");
         System.out.println("dhkt" + urlStr);
         new Thread() {
@@ -526,8 +533,9 @@ public class AddSmokingAreaActivity extends AppCompatActivity
             // write data
             DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
             dos.writeBytes(twoHyphens + boundary + lineEnd);
+            System.out.println(img_url+"고유3");
             dos.writeBytes("Content-Disposition: form-data; name=\"bf_file\";filename=\""
-                    + "aaa.jpg" + "\"" + lineEnd);
+                    +img_url+".jpg" + "\"" + lineEnd);
             dos.writeBytes(lineEnd);
             int bytesAvailable = in_2.available();
             int maxBufferSize = 1024;

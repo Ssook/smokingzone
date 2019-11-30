@@ -155,7 +155,7 @@ public class ReviewActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 try {
-                    sbParam.put("smoking_review_reg_user", sp.getString("token",""));
+                    sbParam.put("smoking_review_reg_user", sp.getString("name",""));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -179,7 +179,7 @@ public class ReviewActivity extends AppCompatActivity {
 
 
             }
-        });//setONClickListener func()
+        });//setONClickListener func()f
 
 
         //------------------------
