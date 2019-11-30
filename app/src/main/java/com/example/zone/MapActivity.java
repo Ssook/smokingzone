@@ -810,11 +810,6 @@ public class MapActivity extends AppCompatActivity
 
         urlStr = sp.getString("image_url", "");
         System.out.println("dhkt" + urlStr);
-//        Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
-//        if (draw==null){
-//            System.out.println("tlqk");
-//        }
-//        profile.setImageDrawable(draw);
         new Thread() {
             public void run() {
                 try {

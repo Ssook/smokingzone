@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -49,7 +50,7 @@ public class ReviewActivity extends AppCompatActivity {
     private Button bt_reg_rating;
     private Button bt_reg_comment;
     private ActionBar actionBar;
-
+    private ImageButton report;
 
     private JSONArray mArray;  //서버로부터 JSON Array를 받아 저장할 변수
     ListView listView; //리뷰화면 댓글  ListView 레이아웃 형성을 위한 객체 생성
@@ -187,6 +188,7 @@ public class ReviewActivity extends AppCompatActivity {
         //-------------------------
         ratingbar.setOnRatingBarChangeListener(new RatingbarListener());
     }
+
 
     class RatingbarListener implements RatingBar.OnRatingBarChangeListener {
         @Override
@@ -417,5 +419,9 @@ public class ReviewActivity extends AppCompatActivity {
         System.out.println(result);
         return result;
     } // HttpPostDat
+
+    public void report(View view) {
+        //여기다가 쓰셈
+    }
 }
 
