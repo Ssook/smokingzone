@@ -104,21 +104,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="bench" />
+            android:text="벤치 " />
 
         <CheckBox
             android:id="@+id/roof"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="roof" />
+            android:text="지붕 " />
 
         <CheckBox
             android:id="@+id/vtl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="vtl" />
+            android:text="환풍기" />
     </LinearLayout>
 
     <RatingBar

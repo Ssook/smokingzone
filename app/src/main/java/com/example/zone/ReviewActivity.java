@@ -1,10 +1,12 @@
 package com.example.zone;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -424,31 +426,32 @@ public class ReviewActivity extends AppCompatActivity {
 
     public void report(View view) {
 
-        //JSONObject에 서버에 보내줄 댓글 데이터 담아줌
-        JSONObject sbParam = new JSONObject();
-        try {
-            sbParam.put("report_title", "title");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
-            sbParam.put("report_user", "user");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
-            sbParam.put("report_ctnt","report CONTENT");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
-            sbParam.put("report_smoking_area_no",Integer.parseInt(smoking_area_data[6]));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        NetworkTaskReport networkTaskReport = new NetworkTaskReport(sbParam.toString());
-        Log.d("reviewComment", sbParam.toString());
-        networkTaskReport.execute();
+//        //JSONObject에 서버에 보내줄 댓글 데이터 담아줌
+//        JSONObject sbParam = new JSONObject();
+//        try {
+//            sbParam.put("report_title", "title");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            sbParam.put("report_user", "user");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            sbParam.put("report_ctnt","report CONTENT");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            sbParam.put("report_smoking_area_no",Integer.parseInt(smoking_area_data[6]));
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        NetworkTaskReport networkTaskReport = new NetworkTaskReport(sbParam.toString());
+//        Log.d("reviewComment", sbParam.toString());
+//        networkTaskReport.execute();
+        showDialog("신고하시겠습니까?");
     }
 
     //----------------------------------------------------------------
@@ -544,5 +547,50 @@ public class ReviewActivity extends AppCompatActivity {
         System.out.println(result);
         return result;
     } // HttpPostDat
+    public void showDialog(String message) {                                  //장소 등록이 완료되면 다이얼로그 팝업을 띄워주는 메소드
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("알림");
+        builder.setMessage(message);
+        builder.setPositiveButton("OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        //JSONObject에 서버에 보내줄 댓글 데이터 담아줌
+                        JSONObject sbParam = new JSONObject();
+                        try {
+                            sbParam.put("report_title", "title");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            sbParam.put("report_user", "user");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            sbParam.put("report_ctnt","report CONTENT");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            sbParam.put("report_smoking_area_no",Integer.parseInt(smoking_area_data[6]));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        NetworkTaskReport networkTaskReport = new NetworkTaskReport(sbParam.toString());
+                        Log.d("reviewComment", sbParam.toString());
+                        networkTaskReport.execute();
+                    }
+                });
+        builder.setNegativeButton("Fail",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        System.out.println("ddddd");
+                    }
+                });
+        builder.show();
+    }
+
 }
 
