@@ -20,14 +20,14 @@ import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "";
     SessionCallback callback;
     String token = "";
     String name = "";
-    String image_url="";
-    private Button btn_custom_login;
+    String image_url = "";
     private LoginButton btn_kakao_login;
+    private Button btn_custom_login;
 
 
     @Override
@@ -37,7 +37,7 @@ public class LoginActivity extends Activity {
         System.out.println(loadShared() + "dasdas");
         if (loadShared().equals("")) {
             setContentView(R.layout.activity_login);
-            btn_custom_login = (Button) findViewById(R.id.btn_custom_login);
+            btn_custom_login = (Button)findViewById(R.id.btn_custom_login);
             btn_custom_login.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -45,18 +45,25 @@ public class LoginActivity extends Activity {
                     btn_kakao_login.performClick();
                 }
             });
-            btn_kakao_login = (LoginButton) findViewById(R.id.com_kakao_login);
+            btn_kakao_login = (LoginButton) findViewById(R.id.btn_kakao_login);
             callback = new SessionCallback();
             Session.getCurrentSession().addCallback(callback);
             requestMe();
-        }
-
-        else if (!loadShared().equals("")) {
+        } else if (!loadShared().equals("")) {
             Intent intent = new Intent(LoginActivity.this, MapActivity.class);
             intent.putExtra("user_name", name);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //간편로그인시 호출 ,없으면 간편로그인시 로그인 성공화면으로 넘어가지 않음
+        if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
+            return;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     class SessionCallback implements ISessionCallback {
@@ -135,17 +142,17 @@ public class LoginActivity extends Activity {
                 Log.e("UserProfile", result.getId() + "");
 
                 System.out.println("dmstjr3");
-                saveShared(result.getId() + "", result.getNickname(),result.getThumbnailImagePath());
+                saveShared(result.getId() + "", result.getNickname(), result.getThumbnailImagePath());
             }
         });
     }
 
-    private void saveShared(String id, String name,String profile_url) {
+    private void saveShared(String id, String name, String profile_url) {
         SharedPreferences pref = getSharedPreferences("profile", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("token", id);
         editor.putString("name", name);
-        editor.putString("image_url",profile_url);
+        editor.putString("image_url", profile_url);
         editor.apply();
     }
 
@@ -154,8 +161,8 @@ public class LoginActivity extends Activity {
         SharedPreferences pref = getSharedPreferences("profile", MODE_PRIVATE);
         token = pref.getString("token", "");
         name = pref.getString("name", "");
-        image_url=pref.getString("image_url","");
-        System.out.println("xhzms"+token+name+image_url);
+        image_url = pref.getString("image_url", "");
+        System.out.println("xhzms" + token + name + image_url);
         return token;
     }
 }
