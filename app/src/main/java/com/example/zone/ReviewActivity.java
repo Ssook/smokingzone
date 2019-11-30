@@ -1,10 +1,12 @@
 package com.example.zone;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -423,7 +425,172 @@ public class ReviewActivity extends AppCompatActivity {
     } // HttpPostDat
 
     public void report(View view) {
-        //여기다가 쓰셈
+
+//        //JSONObject에 서버에 보내줄 댓글 데이터 담아줌
+//        JSONObject sbParam = new JSONObject();
+//        try {
+//            sbParam.put("report_title", "title");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            sbParam.put("report_user", "user");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            sbParam.put("report_ctnt","report CONTENT");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            sbParam.put("report_smoking_area_no",Integer.parseInt(smoking_area_data[6]));
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        NetworkTaskReport networkTaskReport = new NetworkTaskReport(sbParam.toString());
+//        Log.d("reviewComment", sbParam.toString());
+//        networkTaskReport.execute();
+        showDialog("신고하시겠습니까?");
     }
+
+    //----------------------------------------------------------------
+    /*  리뷰화면 댓글 입력 클래스 (클라이언트 -> 서버 , 서버 -> 클라이언트) */
+    //----------------------------------------------------------------
+    public class NetworkTaskReport extends AsyncTask<Void, Void, String> {
+
+        String values;
+
+        NetworkTaskReport(String values) {
+            this.values = values;
+        }//생성자
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //progress bar를 보여주는 등등의 행위
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            String result = "";
+            try {
+                //클라이언트로 받은 값들을 result에 넣어줌
+                result = sendReviewReport(values);
+                Log.d("sendReviewReportIN",result);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return result; // 결과가 여기에 담깁니다. 아래 onPostExecute()의 파라미터로 전달됩니다.
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // 통신이 완료되면 호출됩니다.
+            // 결과에 따른 UI 수정 등은 여기서 합니다.
+            Log.d("data","adfadf");
+
+            if(result.contains("success"))
+            {
+                Log.d("data","adfadf");
+                Toast.makeText(ReviewActivity.this, "신고 등록 성공", Toast.LENGTH_SHORT).show();
+
+            }
+        }
+    }
+    //서버로 댓글을 JSONObject 형태의 String 값으로 댓글보내고 리턴값을 받는 함수.
+    public String sendReviewReport(String values) throws JSONException {
+
+        String result = "";
+        try {
+            //--------------------------
+            //   URL 설정하고 접속하기
+            //--------------------------
+            URL url = new URL("http://18.222.175.17:8080/SmokingArea/SmokingArea/insertSmokingReport.jsp");
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
+            //--------------------------
+            //   전송 모드 설정 - 기본적인 설정이다
+            //--------------------------
+            http.setDefaultUseCaches(false);
+            http.setDoInput(true);                         // 서버에서 읽기 모드 지정
+            http.setDoOutput(true);                       // 서버로 쓰기 모드 지정
+            http.setRequestMethod("POST");         // 전송 방식은 POST
+
+            // 서버에게 웹에서 <Form>으로 값이 넘어온 것과 같은 방식으로 처리하라는 걸 알려준다
+            http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");            //--------------------------
+            //   서버로 값 전송
+            //--------------------------
+            StringBuffer buffer = new StringBuffer();
+            String regdata = "json_smokingReportValue=" + values;
+            buffer.append(regdata);                 // php 변수에 값 대입
+
+            OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
+            PrintWriter writer = new PrintWriter(outStream);
+            writer.write(buffer.toString());
+            writer.flush();
+
+            //--------------------------
+            //   서버에서 전송받기
+            //--------------------------
+            InputStreamReader tmp = new InputStreamReader(http.getInputStream(), "UTF-8");
+            BufferedReader reader = new BufferedReader(tmp);
+            StringBuilder builder = new StringBuilder();
+            String str;
+
+            while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
+                builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
+            }
+            result = builder.toString();
+        } catch (MalformedURLException e) {
+        } catch (IOException e) {
+        }
+        System.out.println(result);
+        return result;
+    } // HttpPostDat
+    public void showDialog(String message) {                                  //장소 등록이 완료되면 다이얼로그 팝업을 띄워주는 메소드
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("알림");
+        builder.setMessage(message);
+        builder.setPositiveButton("OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        //JSONObject에 서버에 보내줄 댓글 데이터 담아줌
+                        JSONObject sbParam = new JSONObject();
+                        try {
+                            sbParam.put("report_title", "title");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            sbParam.put("report_user", "user");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            sbParam.put("report_ctnt","report CONTENT");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            sbParam.put("report_smoking_area_no",Integer.parseInt(smoking_area_data[6]));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        NetworkTaskReport networkTaskReport = new NetworkTaskReport(sbParam.toString());
+                        Log.d("reviewComment", sbParam.toString());
+                        networkTaskReport.execute();
+                    }
+                });
+        builder.setNegativeButton("Fail",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        System.out.println("ddddd");
+                    }
+                });
+        builder.show();
+    }
+
 }
 
