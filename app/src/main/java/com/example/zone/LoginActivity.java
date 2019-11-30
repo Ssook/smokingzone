@@ -26,7 +26,6 @@ public class LoginActivity extends Activity {
     String token = "";
     String name = "";
     String image_url="";
-    private Button btn_custom_login;
     private LoginButton btn_kakao_login;
 
 
@@ -37,8 +36,8 @@ public class LoginActivity extends Activity {
         System.out.println(loadShared() + "dasdas");
         if (loadShared().equals("")) {
             setContentView(R.layout.activity_login);
-            btn_custom_login = (Button) findViewById(R.id.btn_custom_login);
-            btn_custom_login.setOnClickListener(new View.OnClickListener() {
+            btn_kakao_login = findViewById(R.id.com_kakao_login);
+            btn_kakao_login.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {

@@ -9,6 +9,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 
 import android.net.Uri;
@@ -33,6 +35,7 @@ import android.view.MenuItem;
 import com.google.android.material.navigation.NavigationView;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
+import com.kakao.util.helper.log.Logger;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -57,6 +60,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import java.io.BufferedInputStream;
+import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -700,7 +705,7 @@ public class MapActivity extends AppCompatActivity
         setView_NavHeader();
         setView_Drawer();
         setView_BtnTrack();
-//        setView_Profile();
+        setView_Profile();
     }
 
     private void setView_Drawer() {
@@ -721,6 +726,7 @@ public class MapActivity extends AppCompatActivity
         Intent intent = getIntent();
         System.out.println(intent.getStringExtra("user_name") + "test");
         nav_header_id_text.setText(intent.getStringExtra("user_name"));
+
     }
 
     private void setView_Toolbar() {
@@ -799,17 +805,37 @@ public class MapActivity extends AppCompatActivity
         mapView.setMapCenterPointAndZoomLevel(center, 0, true);
     }
 
-    private  void setView_Profile(){
-        profile = findViewById(R.id.profileimage);
+    private void setView_Profile() {
+        profile = nav_header_view.findViewById(R.id.profileimage);
+
         String urlStr;
         sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
 
-        urlStr=sp.getString("image_url","");
-        System.out.println("dhkt"+urlStr);
-        Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
-        if (draw==null){
-            System.out.println("tlqk");
-        }
-        profile.setImageDrawable(draw);
+        urlStr = sp.getString("image_url", "");
+        System.out.println("dhkt" + urlStr);
+        new Thread() {
+            public void run() {
+                try {
+                    String urlStr= sp.getString("image_url","");
+                    URL url = new URL(urlStr);
+                    URLConnection conn = url.openConnection();
+                    conn.connect();
+                    BufferedInputStream  bis = new BufferedInputStream(conn.getInputStream());
+                    Bitmap bm = BitmapFactory.decodeStream(bis); bis.close();
+                    if (bm==null){
+                        System.out.println("what");
+                    }
+                    profile.setImageBitmap(bm);
+
+                } catch (IOException e) {
+                    Logger.e("Androes", " " + e);
+                }
+
+            }
+        }.start();
+
+
     }
+
+
 }
