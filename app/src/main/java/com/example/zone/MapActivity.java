@@ -20,6 +20,8 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
@@ -137,6 +139,8 @@ public class MapActivity extends AppCompatActivity
 //        } catch (NoSuchAlgorithmException e) {
 //            e.printStackTrace();
 //        }
+        sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+
         center = mapPointWithGeoCoord(curlat, curlng);
         initLayoutMapActivity();
 
@@ -389,7 +393,7 @@ public class MapActivity extends AppCompatActivity
                     + "," + (((JSONObject) (smokingAreaData.get(i))).get("vtl").toString())
                     + "," + smokingarea.getSmokingAreaName()
                     + "," + smokingarea.getSmokingAreaDesc()
-                    + "," + (((JSONObject) (smokingAreaData.get(i))).get("point").toString())
+                    + "," +String.format("%.2f", (((JSONObject) (smokingAreaData.get(i))).get("point")))
                     + "," + (((JSONObject) (smokingAreaData.get(i))).get("no").toString()));
             System.out.println("장소" + smokingarea.getSomkingAreaRegUser());
             smokeMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
@@ -723,15 +727,17 @@ public class MapActivity extends AppCompatActivity
 //View nav_header_view = navigationView.inflateHeaderView(R.layout.nav_header_main);
         nav_header_view = navigationView.getHeaderView(0);
         nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
-        Intent intent = getIntent();
-        System.out.println(intent.getStringExtra("user_name") + "test");
-        nav_header_id_text.setText(intent.getStringExtra("user_name"));
+//        Intent intent = getIntent();
+//        System.out.println(intent.getStringExtra("user_name") + "test");
+
+        nav_header_id_text.setText(sp.getString("name", ""));
 
     }
 
     private void setView_Toolbar() {
         toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("                       여기서펴");
+        toolbar.setTitle("여기서펴");
+        toolbar.setTitleMargin(5,0,5,0);
     }
 
     private void setView_BtnAddArea() {
@@ -809,7 +815,6 @@ public class MapActivity extends AppCompatActivity
         profile = nav_header_view.findViewById(R.id.profileimage);
 
         String urlStr;
-        sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
 
         urlStr = sp.getString("image_url", "");
         System.out.println("dhkt" + urlStr);
@@ -821,21 +826,23 @@ public class MapActivity extends AppCompatActivity
                     URLConnection conn = url.openConnection();
                     conn.connect();
                     BufferedInputStream  bis = new BufferedInputStream(conn.getInputStream());
-                    Bitmap bm = BitmapFactory.decodeStream(bis); bis.close();
+                    final Bitmap bm = BitmapFactory.decodeStream(bis); bis.close();
                     if (bm==null){
                         System.out.println("what");
                     }
-                    profile.setImageBitmap(bm);
-
+                    Handler mHandler = new Handler(Looper.getMainLooper());
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 사용하고자 하는 코드
+                            profile.setImageBitmap(bm);
+                        }
+                    }, 0);
                 } catch (IOException e) {
                     Logger.e("Androes", " " + e);
                 }
 
             }
         }.start();
-
-
     }
-
-
 }
