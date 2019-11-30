@@ -137,6 +137,8 @@ public class MapActivity extends AppCompatActivity
 //        } catch (NoSuchAlgorithmException e) {
 //            e.printStackTrace();
 //        }
+        sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+
         center = mapPointWithGeoCoord(curlat, curlng);
         initLayoutMapActivity();
 
@@ -723,15 +725,17 @@ public class MapActivity extends AppCompatActivity
 //View nav_header_view = navigationView.inflateHeaderView(R.layout.nav_header_main);
         nav_header_view = navigationView.getHeaderView(0);
         nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
-        Intent intent = getIntent();
-        System.out.println(intent.getStringExtra("user_name") + "test");
-        nav_header_id_text.setText(intent.getStringExtra("user_name"));
+//        Intent intent = getIntent();
+//        System.out.println(intent.getStringExtra("user_name") + "test");
+
+        nav_header_id_text.setText(sp.getString("name", ""));
 
     }
 
     private void setView_Toolbar() {
         toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("                       여기서펴");
+        toolbar.setTitle("여기서펴");
+        toolbar.setTitleMargin(5,0,5,0);
     }
 
     private void setView_BtnAddArea() {
@@ -809,7 +813,6 @@ public class MapActivity extends AppCompatActivity
         profile = nav_header_view.findViewById(R.id.profileimage);
 
         String urlStr;
-        sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
 
         urlStr = sp.getString("image_url", "");
         System.out.println("dhkt" + urlStr);

@@ -1,5 +1,6 @@
 package com.example.zone;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +23,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
+import com.kakao.util.helper.log.Logger;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,10 +35,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,6 +50,7 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
@@ -66,16 +71,20 @@ public class AddSmokingAreaActivity extends AppCompatActivity
     ActionBarDrawerToggle toggle;
     Button btnadd;
     SharedPreferences sp;
+    TextView nav_header_id_text;
     RadioButton rb_cafe, rb_food, rb_school, rb_company, rb_street, rb_other;
     RadioGroup rg_type;
+    private ImageView profile;
+    View nav_header_view;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
         initLayout_AddSmokingAreaActivity();
         curlat = getIntent().getDoubleExtra("curlat", 0.0);     //맵 액티비티에서 구한 현재 위도 경도를 인텐트로 받아옴
         curlng = getIntent().getDoubleExtra("curlng", 0.0);
-        sp = getSharedPreferences("profile", MODE_PRIVATE);                 //reg_user데이터를 위해 사용
     }
 
     public class RequestAddThread extends Thread {
@@ -291,10 +300,14 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         setView_TextViews();
         setView_CheckBoxs();
         setView_Navigationview();
+        setView_NavHeader();
+
         setView_Drawer();
         setView_SmokingAreaImage();
         setView_RadioGroup();
         setView_BtnAdd();
+        setView_Profile();
+
     }
 
     private void setView_SmokingAreaImage() {
@@ -424,4 +437,52 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         rg_type = findViewById(R.id.radioGroup);
         rg_type.setOnCheckedChangeListener(radioGroupButtonChangeListener);
     }
+
+    private void setView_Profile() {
+        profile = nav_header_view.findViewById(R.id.profileimage);
+
+        String urlStr;
+        sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
+
+        urlStr = sp.getString("image_url", "");
+        System.out.println("dhkt" + urlStr);
+        new Thread() {
+            public void run() {
+                try {
+                    String urlStr = sp.getString("image_url", "");
+                    URL url = new URL(urlStr);
+                    URLConnection conn = url.openConnection();
+                    conn.connect();
+                    BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
+                    Bitmap bm = BitmapFactory.decodeStream(bis);
+                    bis.close();
+                    if (bm == null) {
+                        System.out.println("what");
+                    }
+                    profile.setImageBitmap(bm);
+
+                } catch (IOException e) {
+                    Logger.e("Androes", " " + e);
+                }
+
+            }
+        }.start();
+
+
+    }
+
+    private void setView_NavHeader() {
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+//View nav_header_view = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        nav_header_view = navigationView.getHeaderView(0);
+        nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
+        Intent intent = getIntent();
+        System.out.println(intent.getStringExtra("user_name") + "test");
+        nav_header_id_text.setText(sp.getString("name", ""));
+
+    }
+
+
 }
