@@ -835,7 +835,11 @@ public class MapActivity extends AppCompatActivity
                         @Override
                         public void run() {
                             // 사용하고자 하는 코드
-                            profile.setImageBitmap(bm);
+                            if(bm!=null) {
+                                profile.setImageBitmap(bm);
+                            }
+                            else return;
+
                         }
                     }, 0);
                 } catch (IOException e) {

@@ -4,10 +4,12 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -54,6 +56,7 @@ public class ReviewActivity extends AppCompatActivity {
     private Button bt_reg_comment;
     private ActionBar actionBar;
     private ImageButton report;
+    SharedPreferences sp;
 
     private JSONArray mArray;  //서버로부터 JSON Array를 받아 저장할 변수
     ListView listView; //리뷰화면 댓글  ListView 레이아웃 형성을 위한 객체 생성
@@ -72,6 +75,7 @@ public class ReviewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
         setContentView(R.layout.activity_review);
 
         //----------------------------
@@ -151,7 +155,7 @@ public class ReviewActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 try {
-                    sbParam.put("smoking_review_reg_user", "user");
+                    sbParam.put("smoking_review_reg_user", sp.getString("token",""));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -563,7 +567,7 @@ public class ReviewActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         try {
-                            sbParam.put("report_user", "user");
+                            sbParam.put("report_user", sp.getString("token",""));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
