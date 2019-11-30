@@ -454,12 +454,20 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                     URLConnection conn = url.openConnection();
                     conn.connect();
                     BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
-                    Bitmap bm = BitmapFactory.decodeStream(bis);
+                    final Bitmap bm = BitmapFactory.decodeStream(bis);
                     bis.close();
                     if (bm == null) {
                         System.out.println("what");
                     }
-                    profile.setImageBitmap(bm);
+                    Handler mHandler = new Handler(Looper.getMainLooper());
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 사용하고자 하는 코드
+                            profile.setImageBitmap(bm);
+                        }
+                    }, 0);
+
 
                 } catch (IOException e) {
                     Logger.e("Androes", " " + e);

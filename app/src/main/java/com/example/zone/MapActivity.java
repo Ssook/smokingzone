@@ -20,6 +20,8 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
@@ -391,7 +393,7 @@ public class MapActivity extends AppCompatActivity
                     + "," + (((JSONObject) (smokingAreaData.get(i))).get("vtl").toString())
                     + "," + smokingarea.getSmokingAreaName()
                     + "," + smokingarea.getSmokingAreaDesc()
-                    + "," + (((JSONObject) (smokingAreaData.get(i))).get("point").toString())
+                    + "," +String.format("%.2f", (((JSONObject) (smokingAreaData.get(i))).get("point")))
                     + "," + (((JSONObject) (smokingAreaData.get(i))).get("no").toString()));
             System.out.println("장소" + smokingarea.getSomkingAreaRegUser());
             smokeMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
@@ -824,21 +826,23 @@ public class MapActivity extends AppCompatActivity
                     URLConnection conn = url.openConnection();
                     conn.connect();
                     BufferedInputStream  bis = new BufferedInputStream(conn.getInputStream());
-                    Bitmap bm = BitmapFactory.decodeStream(bis); bis.close();
+                    final Bitmap bm = BitmapFactory.decodeStream(bis); bis.close();
                     if (bm==null){
                         System.out.println("what");
                     }
-                    profile.setImageBitmap(bm);
-
+                    Handler mHandler = new Handler(Looper.getMainLooper());
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 사용하고자 하는 코드
+                            profile.setImageBitmap(bm);
+                        }
+                    }, 0);
                 } catch (IOException e) {
                     Logger.e("Androes", " " + e);
                 }
 
             }
         }.start();
-
-
     }
-
-
 }
