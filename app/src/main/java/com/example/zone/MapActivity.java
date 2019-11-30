@@ -325,6 +325,9 @@ public class MapActivity extends AppCompatActivity
         //--------------------------------------
         /* 흡연구역 정보를 리뷰 액티비티에 넘겨줌 */
         //--------------------------------------
+        Log.d("touch",mapView.toString());
+        Log.d("touch",mapPOIItem.toString());
+        Log.d("touch",calloutBalloonButtonType.toString());
         String[] arr = mapPOIItem.getItemName().split(",");
         Intent intent = new Intent(MapActivity.this, ReviewActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);

@@ -7,12 +7,14 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MapActivity"
-    tools:showIn="@layout/app_bar_map">
+    tools:showIn="@layout/app_bar_map"
+    >
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/roadnavi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:layout_gravity="right|center"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/road44"
@@ -21,10 +23,12 @@
         app:layout_constraintTop_toBottomOf="@id/filter"
         app:layout_constraintRight_toRightOf="parent" />
 
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/track"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_return_btn"
         app:borderWidth="0dp"
@@ -35,6 +39,7 @@
         android:id="@+id/filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:layout_margin="@dimen/fab_margin"
         android:onClick="OnClickHandler"
         app:layout_constraintBottom_toBottomOf="parent"
