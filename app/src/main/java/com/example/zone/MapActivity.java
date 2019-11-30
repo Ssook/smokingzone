@@ -393,7 +393,7 @@ public class MapActivity extends AppCompatActivity
                     + "," + (((JSONObject) (smokingAreaData.get(i))).get("vtl").toString())
                     + "," + smokingarea.getSmokingAreaName()
                     + "," + smokingarea.getSmokingAreaDesc()
-                    + "," +String.format("%.2f", (((JSONObject) (smokingAreaData.get(i))).get("point")))
+                    + "," + Math.round(smokingarea.getSmokingAreaPoint()*100)/100.0
                     + "," + (((JSONObject) (smokingAreaData.get(i))).get("no").toString()));
             System.out.println("장소" + smokingarea.getSomkingAreaRegUser());
             smokeMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
