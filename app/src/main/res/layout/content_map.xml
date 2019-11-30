@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right|center"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/bus"
+        android:src="@drawable/road44"
         app:borderWidth="0dp"
         app:fabSize="normal"
         app:layout_constraintRight_toRightOf="parent"

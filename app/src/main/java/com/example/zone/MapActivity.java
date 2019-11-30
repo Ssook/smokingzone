@@ -329,9 +329,9 @@ public class MapActivity extends AppCompatActivity
         //--------------------------------------
         /* 흡연구역 정보를 리뷰 액티비티에 넘겨줌 */
         //--------------------------------------
-        Log.d("touch",mapView.toString());
-        Log.d("touch",mapPOIItem.toString());
-        Log.d("touch",calloutBalloonButtonType.toString());
+        Log.d("touch", mapView.toString());
+        Log.d("touch", mapPOIItem.toString());
+        Log.d("touch", calloutBalloonButtonType.toString());
         String[] arr = mapPOIItem.getItemName().split(",");
         Intent intent = new Intent(MapActivity.this, ReviewActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -359,8 +359,14 @@ public class MapActivity extends AppCompatActivity
             ImageView imgicon = (ImageView) calloutBalloon.findViewById(R.id.badge);
             String urlStr = "http://18.222.175.17:8080/SmokingArea/img/" + arr[6]; // 웹서버에 프로필사진이 없을시 예외처리
 
-            //   Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
-            //  imgicon.setImageDrawable(draw);
+            Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
+            if (draw != null) {
+                System.out.println("dlrjwl");
+                imgicon.setImageDrawable(draw);
+                System.out.println("dlrjwl2");
+            }
+
+
 
 
             ((TextView) calloutBalloon.findViewById(R.id.title)).setText(arr[3]);
@@ -393,7 +399,7 @@ public class MapActivity extends AppCompatActivity
                     + "," + (((JSONObject) (smokingAreaData.get(i))).get("vtl").toString())
                     + "," + smokingarea.getSmokingAreaName()
                     + "," + smokingarea.getSmokingAreaDesc()
-                    + "," + Math.round(smokingarea.getSmokingAreaPoint()*100)/100.0
+                    + "," + Math.round(smokingarea.getSmokingAreaPoint() * 100) / 100.0
                     + "," + (((JSONObject) (smokingAreaData.get(i))).get("no").toString()));
             System.out.println("장소" + smokingarea.getSomkingAreaRegUser());
             smokeMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
@@ -494,6 +500,7 @@ public class MapActivity extends AppCompatActivity
         } catch (Exception e) {
             // Log.e("LOG_TAG", "error, in loadDrawable \n" + e.toString());
             System.out.println("durltjdpfj");
+            return null;
         }
 
         return drawable;
@@ -737,7 +744,7 @@ public class MapActivity extends AppCompatActivity
     private void setView_Toolbar() {
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("여기서펴");
-        toolbar.setTitleMargin(5,0,5,0);
+        toolbar.setTitleMargin(5, 0, 5, 0);
     }
 
     private void setView_BtnAddArea() {
@@ -821,13 +828,14 @@ public class MapActivity extends AppCompatActivity
         new Thread() {
             public void run() {
                 try {
-                    String urlStr= sp.getString("image_url","");
+                    String urlStr = sp.getString("image_url", "");
                     URL url = new URL(urlStr);
                     URLConnection conn = url.openConnection();
                     conn.connect();
-                    BufferedInputStream  bis = new BufferedInputStream(conn.getInputStream());
-                    final Bitmap bm = BitmapFactory.decodeStream(bis); bis.close();
-                    if (bm==null){
+                    BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
+                    final Bitmap bm = BitmapFactory.decodeStream(bis);
+                    bis.close();
+                    if (bm == null) {
                         System.out.println("what");
                     }
                     Handler mHandler = new Handler(Looper.getMainLooper());
@@ -835,10 +843,9 @@ public class MapActivity extends AppCompatActivity
                         @Override
                         public void run() {
                             // 사용하고자 하는 코드
-                            if(bm!=null) {
+                            if (bm != null) {
                                 profile.setImageBitmap(bm);
-                            }
-                            else return;
+                            } else return;
 
                         }
                     }, 0);

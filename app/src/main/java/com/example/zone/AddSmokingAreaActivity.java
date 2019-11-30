@@ -12,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -42,6 +43,8 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -76,6 +79,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
     RadioGroup rg_type;
     private ImageView profile;
     View nav_header_view;
+    InputStream in_2;
 
 
     @Override
@@ -220,8 +224,11 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                 try {
                     // 선택한 이미지에서 비트맵 생성
                     InputStream in = getContentResolver().openInputStream(data.getData());
+                    in_2 = getContentResolver().openInputStream(data.getData());
+                    FileInputStream fin;
                     Bitmap img = BitmapFactory.decodeStream(in);
-                    in.close();
+
+                    //in.close();
                     // 이미지 표시
                     imageView.setImageBitmap(img);
                 } catch (Exception e) {
@@ -405,15 +412,20 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                     return;
                 }
 
-                RequestAddThread requestAddThread = new RequestAddThread();
+                RequestAddThread requestAddThread = new RequestAddThread(); //흡연정보 전송
+                networkThread_img t2 = new networkThread_img(); //흡연 이미지 전송
                 requestAddThread.start();
+                t2.start();
                 try {
                     requestAddThread.join();
+                    t2.join();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
+
             }
+
         });
     }
 
@@ -464,10 +476,9 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                         @Override
                         public void run() {
                             // 사용하고자 하는 코드
-                            if(bm!=null) {
+                            if (bm != null) {
                                 profile.setImageBitmap(bm);
-                            }
-                            else return;
+                            } else return;
                         }
                     }, 0);
 
@@ -494,6 +505,78 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         nav_header_id_text.setText(sp.getString("name", ""));
 
     }
+    public void doFileUpload() throws IOException {
+        String lineEnd = "\r\n";
+        String twoHyphens = "--";
+        String boundary = "*****";
+        try {
+            URL connectUrl = new URL("http://18.222.175.17:8080/SmokingArea/SmokingArea/insertSmokingAreaImg.jsp");
 
+            // open connection
+            HttpURLConnection conn = (HttpURLConnection) connectUrl
+                    .openConnection();
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setUseCaches(false);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Connection", "Keep-Alive");
+            conn.setRequestProperty("Content-Type",
+                    "multipart/form-data;boundary=" + boundary);
 
+            // write data
+            DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name=\"bf_file\";filename=\""
+                    + "aaa.jpg" + "\"" + lineEnd);
+            dos.writeBytes(lineEnd);
+            int bytesAvailable = in_2.available();
+            int maxBufferSize = 1024;
+            int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+            byte[] buffer = new byte[bufferSize];
+            int bytesRead = in_2.read(buffer, 0, bufferSize);
+            Log.d("Test", "image byte is " + bytesRead);
+
+            // read image
+            while (bytesRead > 0) {
+                dos.write(buffer, 0, bufferSize);
+                bytesAvailable = in_2.available();
+                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                bytesRead = in_2.read(buffer, 0, bufferSize);
+            }
+
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+            // close streams
+            Log.e("Test", "File is written");
+            in_2.close();
+            dos.flush(); // finish upload...
+
+            // get response
+            int ch;
+            InputStream is = conn.getInputStream();
+            Log.e("-----------", is.toString());
+            StringBuffer b = new StringBuffer();
+
+            while ((ch = is.read()) != -1) {
+                b.append((char) ch);
+            }
+
+            String s = b.toString();
+            Log.e("Test", "result = " + s);
+            dos.close();
+        } catch (Exception e) {
+            Log.d("Test", "exception " + e.getMessage());
+        }
+    }
+    public class networkThread_img extends Thread {
+        @Override
+        public void run() {
+            try {
+                doFileUpload();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
