@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('C:\\appdev\\sskeystore.jks')
+            storePassword 'ss03120312'
+            keyAlias = 'sskey'
+            keyPassword 'ss03120312'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
@@ -10,6 +18,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
     }
     packagingOptions {
         exclude "jniLibs/arm64-v8a/libDaumMapEngineApi.so"
@@ -21,7 +30,6 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     splits {
@@ -32,6 +40,9 @@ android {
             universalApk false
         }
     }
+
+
+
 
 
 }

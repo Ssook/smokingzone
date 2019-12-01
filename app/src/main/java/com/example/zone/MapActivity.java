@@ -361,7 +361,7 @@ public class MapActivity extends AppCompatActivity
             final String urlStr = "http://18.222.175.17:8080/SmokingArea/img/" + arr[7] + ".jpg"; // 웹서버에 프로필사진이 없을시 예외처리
 
 
-            if (arr[7]!=null) {
+            if (!arr[7].equals(null)) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -589,7 +589,7 @@ public class MapActivity extends AppCompatActivity
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(smokeMarker==null){
+        if (smokeMarker == null) {
             System.out.println("wndyd");
         }
         mapView.addPOIItems(smokeMarkerlist.toArray(new MapPOIItem[smokeMarkerlist.size()]));
