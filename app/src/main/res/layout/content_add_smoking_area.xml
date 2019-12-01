@@ -170,7 +170,7 @@
         android:maxWidth="500dp"
         android:maxHeight="500dp"
         android:onClick="addImage"
-        android:src="@drawable/boardicon"
+        android:src="@drawable/ic_menu_gallery"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/radioGroup" />
