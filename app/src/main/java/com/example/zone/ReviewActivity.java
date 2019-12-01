@@ -21,11 +21,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.zone.R;
 
 import org.json.JSONArray;
@@ -56,8 +58,9 @@ public class ReviewActivity extends AppCompatActivity {
     private Button bt_reg_comment;
     private ActionBar actionBar;
     private ImageButton report;
+    private ImageView area_img;
     SharedPreferences sp;
-
+    private String img_url;
     private JSONArray mArray;  //서버로부터 JSON Array를 받아 저장할 변수
     ListView listView; //리뷰화면 댓글  ListView 레이아웃 형성을 위한 객체 생성
     ReviewListViewAdapter adapter; // 뷰에 넣을 데이터들을 어떠한 형식과 어떠한 값들로 구성할지 정하는 adapter 객체
@@ -82,6 +85,7 @@ public class ReviewActivity extends AppCompatActivity {
         /*        액션바 설정 부분    */
         //----------------------------
         //액션바 가져오기
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.setCustomView(R.layout.custom_bar_review);
         actionBar.setTitle("리뷰 화면");
@@ -101,7 +105,7 @@ public class ReviewActivity extends AppCompatActivity {
         ed_review_comment = findViewById((R.id.edit_review_comment));
         bt_reg_rating = findViewById((R.id.ratingregbutton));
         bt_reg_comment = findViewById((R.id.comment_reg_button));
-
+        area_img=findViewById(R.id.areaimage);
 
         //----------------------------
         /*   뷰에 해당하는 값 설정    */
@@ -110,8 +114,17 @@ public class ReviewActivity extends AppCompatActivity {
         //흡연구역 정보를 intent를 통해 받음
         Intent intent = getIntent();
         smoking_area_data =intent.getExtras().getStringArray("arr");
-
+        img_url=smoking_area_data[7];
         //받아온 정보를 각 항목에 설정
+        if (img_url!=null) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Glide.with(ReviewActivity.this).load("http://18.222.175.17:8080/SmokingArea/img/"+img_url+".jpg").into(area_img);
+                }
+            });
+        }
+
         smokingarea_name.setText(smoking_area_data[3]);
         smokingarea_rating_avg.setText(smoking_area_data[5]);
         if(smoking_area_data[0].charAt(0)=='1')
