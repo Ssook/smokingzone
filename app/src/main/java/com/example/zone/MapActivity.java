@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -355,18 +356,27 @@ public class MapActivity extends AppCompatActivity
         @Override
         public View getCalloutBalloon(MapPOIItem poiItem) {
             String[] arr = poiItem.getItemName().split(",");
-            System.out.println(arr[0] + "??" + arr[1] + "??" + arr[2] + "??" + arr[3] + "??" + arr[4] + "??" + arr[5] + "??" + arr[6]);
-            ImageView imgicon = (ImageView) calloutBalloon.findViewById(R.id.badge);
-            String urlStr = "http://18.222.175.17:8080/SmokingArea/img/" + arr[6]; // 웹서버에 프로필사진이 없을시 예외처리
+            System.out.println(arr[0] + "??" + arr[1] + "??" + arr[2] + "??" + arr[3] + "??" + arr[4] + "??" + arr[5] + "??" + arr[6] + "??" + arr[7]);
+            final ImageView imgicon = (ImageView) calloutBalloon.findViewById(R.id.badge);
+            final String urlStr = "http://18.222.175.17:8080/SmokingArea/img/" + arr[7] + ".jpg"; // 웹서버에 프로필사진이 없을시 예외처리
 
-            Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
-            if (draw != null) {
-                System.out.println("dlrjwl");
-                imgicon.setImageDrawable(draw);
-                System.out.println("dlrjwl2");
+
+            if (arr[7]!=null) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Glide.with(MapActivity.this).load(urlStr).into(imgicon);
+                    }
+                });
             }
 
-
+//            Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
+//            if (draw != null) {
+//                System.out.println("dlrjwl");
+//                imgicon.setImageDrawable(draw);
+//                System.out.println("dlrjwl2");
+//            }
+//
 
 
             ((TextView) calloutBalloon.findViewById(R.id.title)).setText(arr[3]);
@@ -400,8 +410,9 @@ public class MapActivity extends AppCompatActivity
                     + "," + smokingarea.getSmokingAreaName()
                     + "," + smokingarea.getSmokingAreaDesc()
                     + "," + Math.round(smokingarea.getSmokingAreaPoint() * 100) / 100.0
-                    + "," + (((JSONObject) (smokingAreaData.get(i))).get("no").toString()));
-            System.out.println("장소" + smokingarea.getSomkingAreaRegUser());
+                    + "," + smokingarea.getSmokinAreaNo()
+                    + "," + smokingarea.getSmokingAreaImgUrl());
+            System.out.println("장소" + smokingarea.getSmokingAreaRegUser());
             smokeMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
             smokeMarker.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
             smokeMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(smokingarea.getSmokingAreaLat(), smokingarea.getSmokingAreaLng()));
@@ -564,7 +575,6 @@ public class MapActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        mapView.removeAllPOIItems();
         GetSmokingAreaThread getSmokingAreaThread = new GetSmokingAreaThread();
         getSmokingAreaThread.start();
 
@@ -578,6 +588,9 @@ public class MapActivity extends AppCompatActivity
             createSmokeAreaMarker(mapView);
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+        if(smokeMarker==null){
+            System.out.println("wndyd");
         }
         mapView.addPOIItems(smokeMarkerlist.toArray(new MapPOIItem[smokeMarkerlist.size()]));
     }
@@ -852,7 +865,6 @@ public class MapActivity extends AppCompatActivity
                 } catch (IOException e) {
                     Logger.e("Androes", " " + e);
                 }
-
             }
         }.start();
     }

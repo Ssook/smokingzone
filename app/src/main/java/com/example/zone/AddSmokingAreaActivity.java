@@ -407,7 +407,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                     return;
                 }
 
-                if (getRadioGroup() == 0) {
+                if (getRadioGroup() == -1) {
                     Snackbar.make(view, "흡연 장소의 유형을 입력해주세요.", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                     return;
@@ -431,8 +431,6 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
-
             }
 
         });
@@ -577,6 +575,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
             Log.d("Test", "exception " + e.getMessage());
         }
     }
+
     public class networkThread_img extends Thread {
         @Override
         public void run() {

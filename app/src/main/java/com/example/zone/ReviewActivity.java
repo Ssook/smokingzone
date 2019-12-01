@@ -155,7 +155,7 @@ public class ReviewActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 try {
-                    sbParam.put("smoking_review_reg_user", sp.getString("name",""));
+                    sbParam.put("smoking_review_reg_user", sp.getString("token",""));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -492,13 +492,12 @@ public class ReviewActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             // 통신이 완료되면 호출됩니다.
             // 결과에 따른 UI 수정 등은 여기서 합니다.
-            Log.d("data","adfadf");
+            Log.d("data",result);
 
             if(result.contains("success"))
             {
-                Log.d("data","adfadf");
+                Log.d("data","tjdrhd");
                 Toast.makeText(ReviewActivity.this, "신고 등록 성공", Toast.LENGTH_SHORT).show();
-
             }
         }
     }

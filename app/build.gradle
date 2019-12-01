@@ -48,6 +48,8 @@ dependencies {
     implementation files('C:\\appdev\\smokingzone\\app\\libs')
     implementation group: project.KAKAO_SDK_GROUP, name: 'usermgmt', version: project.KAKAO_SDK_VERSION
     implementation 'androidx.appcompat:appcompat:1.0.0-alpha1'
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
 
-
+    annotationProcessor 'androidx.annotation:annotation:1.1.0'
 }

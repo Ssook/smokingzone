@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SmokingArea {
+    private int _AreaNo;
     private String _AreaName;
     private String _AreaDesc;
     private String _AreaRegDate;
@@ -17,41 +18,68 @@ public class SmokingArea {
     private int _ChkInside;
     private int _Report;
     private int _AreaType;
+    private String _ImgUrl;
 
 
-    public SmokingArea(JSONObject SmokingAreaInfo){
+    public SmokingArea(JSONObject SmokingAreaInfo) {
         try {
-            _AreaName=SmokingAreaInfo.get("name").toString();
-            _AreaDesc=SmokingAreaInfo.get("desc").toString();
-            _AreaRegDate=SmokingAreaInfo.get("reg_date").toString();
-            _AreaRegUser=SmokingAreaInfo.get("reg_user").toString();
-            _AreaLat=SmokingAreaInfo.getDouble("lat");
-            _AreaLng=SmokingAreaInfo.getDouble("lng");
-            _Point=SmokingAreaInfo.getDouble("point");
-
+            _AreaNo= Integer.parseInt(SmokingAreaInfo.get("no").toString());
+            _AreaName = SmokingAreaInfo.get("name").toString();
+            _AreaDesc = SmokingAreaInfo.get("desc").toString();
+            _AreaRegDate = SmokingAreaInfo.get("reg_date").toString();
+            _AreaRegUser = SmokingAreaInfo.get("reg_user").toString();
+            _AreaLat = SmokingAreaInfo.getDouble("lat");
+            _AreaLng = SmokingAreaInfo.getDouble("lng");
+            _Point = SmokingAreaInfo.getDouble("point");
+            _ImgUrl = SmokingAreaInfo.getString("img_url");
 //            _ChkAircondition=Integer.parseInt(SmokingAreaInfo.getString("vtl"));
 //            _ChkRoof=Integer.parseInt(SmokingAreaInfo.getString("roof"));
-            _ChkBench=SmokingAreaInfo.getString("bench");
+            _ChkBench = SmokingAreaInfo.getString("bench");
 //            _ChkInside=(int)SmokingAreaInfo.get("inside");//서버쪽에 추가필요
-            _AreaType=Integer.parseInt(SmokingAreaInfo.getString("type"));
-            _Report=Integer.parseInt(SmokingAreaInfo.getString("report"));
+            _AreaType = Integer.parseInt(SmokingAreaInfo.getString("type"));
+            _Report = Integer.parseInt(SmokingAreaInfo.getString("report"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public String getSmokingAreaName(){ return _AreaName; }
+    public String getSmokingAreaName() {
+        return _AreaName;
+    }
 
-    public String getSmokingAreaDesc(){ return _AreaDesc; }
+    public String getSmokingAreaDesc() {
+        return _AreaDesc;
+    }
 
-    public Double getSmokingAreaPoint(){ return _Point;}
+    public Double getSmokingAreaPoint() {
+        return _Point;
+    }
 
-    public Double getSmokingAreaLat(){ return _AreaLat; }
+    public Double getSmokingAreaLat() {
+        return _AreaLat;
+    }
 
-    public Double getSmokingAreaLng(){ return _AreaLng; }
+    public Double getSmokingAreaLng() {
+        return _AreaLng;
+    }
 
-    public int getSmokingAreaType(){ return _AreaType; }
+    public int getSmokingAreaType() {
+        return _AreaType;
+    }
 
-    public String getSmokingAreaBench(){return _ChkBench;}
-    public String getSomkingAreaRegUser(){return _AreaRegUser;}
+    public String getSmokingAreaBench() {
+        return _ChkBench;
+    }
+
+    public String getSmokingAreaRegUser() {
+        return _AreaRegUser;
+    }
+
+    public String getSmokingAreaImgUrl() {
+        return _ImgUrl;
+    }
+
+    public int getSmokinAreaNo(){
+        return _AreaNo;
+    }
 }

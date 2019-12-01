@@ -191,7 +191,7 @@ public class LoginActivity extends AppCompatActivity {
                 //--------------------------
                 //   URL 설정하고 접속하기
                 //--------------------------
-                URL url = new URL("http://18.222.175.17:8080/SmokingArea/SmokingArea/user_info.jsp");
+                URL url = new URL("http://18.222.175.17:8080/SmokingArea/Login/login.jsp");
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
                 //--------------------------
                 //   전송 모드 설정 - 기본적인 설정이다
