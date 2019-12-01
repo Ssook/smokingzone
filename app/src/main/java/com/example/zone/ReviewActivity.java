@@ -499,6 +499,14 @@ public class ReviewActivity extends AppCompatActivity {
                 Log.d("data","tjdrhd");
                 Toast.makeText(ReviewActivity.this, "신고 등록 성공", Toast.LENGTH_SHORT).show();
             }
+            else if (result.contains("fail")){
+                Log.d("data","tlfvo");
+                Toast.makeText(ReviewActivity.this, "신고 등록에 실패했습니다. 잠시 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+            }
+            else if (result.contains("overlap")){
+                Log.d("data","wndqhrtlfvo");
+                Toast.makeText(ReviewActivity.this, "이미 신고한 흡연 장소입니다.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
     //서버로 댓글을 JSONObject 형태의 String 값으로 댓글보내고 리턴값을 받는 함수.
@@ -554,7 +562,7 @@ public class ReviewActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("알림");
         builder.setMessage(message);
-        builder.setPositiveButton("OK",
+        builder.setPositiveButton("확인",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -585,7 +593,7 @@ public class ReviewActivity extends AppCompatActivity {
                         networkTaskReport.execute();
                     }
                 });
-        builder.setNegativeButton("Fail",
+        builder.setNegativeButton("취소",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
