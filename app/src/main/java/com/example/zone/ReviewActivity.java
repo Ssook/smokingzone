@@ -54,7 +54,6 @@ public class ReviewActivity extends AppCompatActivity {
     private RatingBar ratingbar;
     private TextView ratingValue;
     private EditText ed_review_comment;
-    private Button bt_reg_rating;
     private Button bt_reg_comment;
     private ActionBar actionBar;
     private ImageButton report;
@@ -103,7 +102,6 @@ public class ReviewActivity extends AppCompatActivity {
         ratingbar = findViewById(R.id.ratingbar);
         ratingValue = findViewById(R.id.ratingvalue);
         ed_review_comment = findViewById((R.id.edit_review_comment));
-        bt_reg_rating = findViewById((R.id.ratingregbutton));
         bt_reg_comment = findViewById((R.id.comment_reg_button));
         area_img=findViewById(R.id.areaimage);
 

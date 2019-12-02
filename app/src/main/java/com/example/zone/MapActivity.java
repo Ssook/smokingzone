@@ -361,15 +361,19 @@ public class MapActivity extends AppCompatActivity
             final String urlStr = "http://18.222.175.17:8080/SmokingArea/img/" + arr[7] + ".jpg"; // 웹서버에 프로필사진이 없을시 예외처리
 
 
-            if (!arr[7].equals(null)) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Glide.with(MapActivity.this).load(urlStr).into(imgicon);
-                    }
-                });
-            }
-
+//            if (arr[7]!=null) {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        try{
+//                        Glide.with(MapActivity.this).load(urlStr).into(imgicon);}
+//                        catch (Exception e){
+//                            imgicon.setImageResource(R.drawable.defaultimg);
+//                        }
+//                    }
+//                });
+//            }
+//
 //            Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
 //            if (draw != null) {
 //                System.out.println("dlrjwl");
