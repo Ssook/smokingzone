@@ -579,6 +579,8 @@ public class MapActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        mapView.removeAllPOIItems();
+
         GetSmokingAreaThread getSmokingAreaThread = new GetSmokingAreaThread();
         getSmokingAreaThread.start();
 
