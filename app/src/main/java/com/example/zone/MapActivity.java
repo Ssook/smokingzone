@@ -629,8 +629,10 @@ public class MapActivity extends AppCompatActivity
                             break;
                         case FOOD:
                             for (int b = 0; b < food_SmokeMarkerList.size(); b++) {
-                                food_SmokeMarkerList.get(b).setAlpha(0.2f);
+                                food_SmokeMarkerList.get(b).setAlpha(0.0f);
+                                System.out.println("anjdidlrjs"+b);
                             }
+
                             isCheck[1] = false;
                             break;
                         case SCHOOL:
