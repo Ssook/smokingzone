@@ -625,13 +625,13 @@ public class MapActivity extends AppCompatActivity
                     switch (pos) {
                         case CAFE:
                             for (int b = 0; b < cafe_SmokeMarkerList.size(); b++) {
-                                cafe_SmokeMarkerList.get(b).setAlpha(0.2f);
+                                cafe_SmokeMarkerList.get(b).setAlpha(0.1f);
                             }
                             isCheck[0] = false;
                             break;
                         case FOOD:
                             for (int b = 0; b < food_SmokeMarkerList.size(); b++) {
-                                food_SmokeMarkerList.get(b).setAlpha(0.0f);
+                                food_SmokeMarkerList.get(b).setAlpha(0.1f);
                                 System.out.println("anjdidlrjs"+b);
                             }
 
@@ -639,31 +639,31 @@ public class MapActivity extends AppCompatActivity
                             break;
                         case SCHOOL:
                             for (int b = 0; b < school_SmokeMarkerList.size(); b++) {
-                                school_SmokeMarkerList.get(b).setAlpha(0.2f);
+                                school_SmokeMarkerList.get(b).setAlpha(0.1f);
                             }
                             isCheck[2] = false;
                             break;
                         case COMPANY:
                             for (int b = 0; b < company_SmokeMarkerList.size(); b++) {
-                                company_SmokeMarkerList.get(b).setAlpha(0.2f);
+                                company_SmokeMarkerList.get(b).setAlpha(0.1f);
                             }
                             isCheck[3] = false;
                             break;
                         case STREET:
                             for (int b = 0; b < street_SmokeMarkerList.size(); b++) {
-                                street_SmokeMarkerList.get(b).setAlpha(0.2f);
+                                street_SmokeMarkerList.get(b).setAlpha(0.1f);
                             }
                             isCheck[4] = false;
                             break;
                         case OTHER:
                             for (int b = 0; b < other_SmokeMarkerList.size(); b++) {
-                                other_SmokeMarkerList.get(b).setAlpha(0.2f);
+                                other_SmokeMarkerList.get(b).setAlpha(0.1f);
                             }
                             isCheck[5] = false;
                             break;
                         case BANNED:
                             for (int b = 0; b < banned_SmokeMarkerList.size(); b++) {
-                                banned_SmokeMarkerList.get(b).setAlpha(0.2f);
+                                banned_SmokeMarkerList.get(b).setAlpha(0.1f);
                             }
                             isCheck[6] = false;
                             break;
