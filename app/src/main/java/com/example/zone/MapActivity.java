@@ -124,6 +124,7 @@ public class MapActivity extends AppCompatActivity
     ArrayList<MapPOIItem> other_SmokeMarkerList = new ArrayList<MapPOIItem>();
     ArrayList<MapPOIItem> banned_SmokeMarkerList = new ArrayList<MapPOIItem>();
     boolean[] isCheck;
+    private String img_url;
 
 
     @Override
@@ -356,29 +357,46 @@ public class MapActivity extends AppCompatActivity
         @Override
         public View getCalloutBalloon(MapPOIItem poiItem) {
             String[] arr = poiItem.getItemName().split(",");
+            img_url=arr[7];
             System.out.println(arr[0] + "??" + arr[1] + "??" + arr[2] + "??" + arr[3] + "??" + arr[4] + "??" + arr[5] + "??" + arr[6] + "??" + arr[7]);
-            final ImageView imgicon = (ImageView) calloutBalloon.findViewById(R.id.badge);
+//            final ImageView imgicon = (ImageView) calloutBalloon.findViewById(R.id.badge);
+//            imgicon.setImageResource(R.drawable.defaultimg);
             final String urlStr = "http://18.222.175.17:8080/SmokingArea/img/" + arr[7] + ".jpg"; // 웹서버에 프로필사진이 없을시 예외처리
 
-
-//            if (arr[7]!=null) {
+//
+//            if (img_url!=null||!img_url.equals(null)) {
 //                runOnUiThread(new Runnable() {
 //                    @Override
 //                    public void run() {
-//                        try{
-//                        Glide.with(MapActivity.this).load(urlStr).into(imgicon);}
-//                        catch (Exception e){
-//                            imgicon.setImageResource(R.drawable.defaultimg);
-//                        }
+//                        Glide.with(MapActivity.this).load("http://18.222.175.17:8080/SmokingArea/img/"+img_url+".jpg").into(imgicon);
 //                    }
 //                });
 //            }
 //
-//            Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
-//            if (draw != null) {
-//                System.out.println("dlrjwl");
-//                imgicon.setImageDrawable(draw);
-//                System.out.println("dlrjwl2");
+////            if (arr[7]!=null) {
+////                runOnUiThread(new Runnable() {
+////                    @Override
+////                    public void run() {
+////                        try{
+////                        Glide.with(MapActivity.this).load(urlStr).into(imgicon);}
+////                        catch (Exception e){
+////                            imgicon.setImageResource(R.drawable.defaultimg);
+////                        }
+////                    }
+////                });
+////            }
+//
+////            if(arr[7]!=null) {
+////                Drawable draw = loadDrawable(urlStr); // 웹서버에있는 사진을 안드로이드에 알맞게 가져온다.
+////                if (draw != null) {
+////                    System.out.println("dlrjwl");
+////                    imgicon.setImageDrawable(draw);
+////                    System.out.println("dlrjwl2");
+////                }
+////            }
+//            if (arr[7]==null||arr[7].isEmpty()||arr[7].equals(null)){
+//                System.out.println("sjfdlsep");
+//                imgicon.setImageResource(R.drawable.defaultimg);
 //            }
 //
 

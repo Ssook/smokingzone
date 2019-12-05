@@ -113,6 +113,7 @@ public class ReviewActivity extends AppCompatActivity {
         Intent intent = getIntent();
         smoking_area_data =intent.getExtras().getStringArray("arr");
         img_url=smoking_area_data[7];
+        area_img.setImageResource(R.drawable.defaultimg);
         //받아온 정보를 각 항목에 설정
         if (img_url!=null) {
             runOnUiThread(new Runnable() {

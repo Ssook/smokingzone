@@ -84,6 +84,7 @@
             android:adjustViewBounds="true"
             android:maxWidth="300dp"
             android:maxHeight="300dp"
+            android:clickable="true"
             android:src="@drawable/defaultimg" />
     </LinearLayout>
 
