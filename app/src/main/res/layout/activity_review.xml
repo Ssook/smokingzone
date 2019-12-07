@@ -84,6 +84,7 @@
             android:adjustViewBounds="true"
             android:maxWidth="300dp"
             android:maxHeight="300dp"
+            android:clickable="true"
             android:src="@drawable/defaultimg" />
     </LinearLayout>
 
@@ -128,7 +129,7 @@
         android:gravity="center_horizontal"
         android:isIndicator="false"
         android:numStars="5"
-        android:rating="0.5"
+        android:rating="5"
         android:stepSize="0.5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -160,15 +161,9 @@
             android:layout_marginStart="56dp"
             android:layout_weight="3"
             android:scrollbarSize="10dp"
-            android:text="0.5" />
+            android:text="5"
+             />
 
-        <Button
-            android:id="@+id/ratingregbutton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:text="입력"
-            android:textSize="10dp" />
 
 
     </LinearLayout>
@@ -211,7 +206,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="15"
             android:gravity="center"
-            android:hint="댓글을 입력하세요. "
+            android:hint="댓글을 입력하세요. (별점도 입력됩니다.)"
             android:imeOptions="actionSend"
             android:inputType="text" />
 
