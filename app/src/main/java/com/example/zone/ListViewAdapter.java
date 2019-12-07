@@ -74,7 +74,7 @@ public class ListViewAdapter extends BaseAdapter {
             holder.mReg_UserTv = view.findViewById(R.id.reg_user);
             holder.mtagTv = view.findViewById(R.id.tag);
             holder.mDescTv = view.findViewById(R.id.mainDesc);
-            holder.mIconIv = view.findViewById(R.id.mainIcon);
+          //  holder.mIconIv = view.findViewById(R.id.mainIcon);
             //태그 설정
             view.setTag(holder);
             //뷰가 NULL이 아니면 이미 Holder 객체가 생성 되어 있으므로 view의 태그값을 Holder에 입력
@@ -89,7 +89,7 @@ public class ListViewAdapter extends BaseAdapter {
         holder.mtagTv.setText(modellist.get(position).getTag());
         // holder.mBoard_NoTv.setText(modellist.get(position).getBoard_no());
         //imageView에 값을 넣어주는 작업
-        holder.mIconIv.setImageResource(modellist.get(position).getIcon());
+     //   holder.mIconIv.setImageResource(modellist.get(position).getIcon());
 
         //listview의 item을 Click했을 때
         view.setOnClickListener(new View.OnClickListener() {

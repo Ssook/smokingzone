@@ -70,7 +70,7 @@ public class BoardWriteActivity extends AppCompatActivity {
         actionBar.setHomeButtonEnabled(true);
 
         // 컴포넌트 값 받아오기
-        tv_outPut = (TextView) findViewById(R.id.tv_outPut);
+       // tv_outPut = (TextView) findViewById(R.id.tv_outPut);
         et_title = (EditText) findViewById(R.id.titletext);
         et_content = (EditText) findViewById(R.id.contenttext);
         cb_anony = (CheckBox) findViewById(R.id.anonycheck);

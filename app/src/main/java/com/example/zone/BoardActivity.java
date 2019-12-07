@@ -30,13 +30,21 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class BoardActivity extends AppCompatActivity {
     private JSONArray mArray;  //서버로부터 JSON Array를 받아 저장할 변수
     private ActionBar actionBar;    //게시판화면에 쓰일 actionBar
     ListView listView; //게시판 ListView 레이아웃 형성을 위한 객체 생성
     ListViewAdapter adapter; // 뷰에 넣을 데이터들을 어떠한 형식과 어떠한 값들로 구성할지 정하는 adapter 객체
+
+    FloatingActionButton tagFab;
+    FloatingActionButton fab1,fab2,fab3;
+    private Boolean isFABOpen = false;
+
 
     //각각의 데이터가 들어갈 ArrayList 생성
     ArrayList<String> arrayregDate = new ArrayList<String>();
@@ -82,6 +90,34 @@ public class BoardActivity extends AppCompatActivity {
         //FAB 이벤트 처리 함수 생성 및 등록
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new FABClickListener());
+        tagFab = (FloatingActionButton) findViewById(R.id.tagFab);
+        fab1 = (FloatingActionButton) findViewById(R.id.fab1);
+        fab2 = (FloatingActionButton) findViewById(R.id.fab2);
+        fab3 = (FloatingActionButton) findViewById(R.id.fab3);
+        tagFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!isFABOpen){
+                    showFABMenu();
+                }else{
+                    closeFABMenu();
+                }
+            }
+        });
+    }
+
+    private void showFABMenu(){
+        isFABOpen=true;
+        fab1.animate().translationY(-getResources().getDimension(R.dimen.standard_55));
+        fab2.animate().translationY(-getResources().getDimension(R.dimen.standard_105));
+        fab3.animate().translationY(-getResources().getDimension(R.dimen.standard_155));
+    }
+
+    private void closeFABMenu(){
+        isFABOpen=false;
+        fab1.animate().translationY(0);
+        fab2.animate().translationY(0);
+        fab3.animate().translationY(0);
     }
 
     //FAB 리스너 함수
@@ -210,7 +246,31 @@ public class BoardActivity extends AppCompatActivity {
                     try {
                         JSONObject jsonObject = mArray.getJSONObject(i);
                         // Pulling items from the array
-                        arrayregDate.add(jsonObject.getString("reg_date"));
+                        //Time Setting
+                        Log.d("data",jsonObject.getString("reg_date"));
+                        String time = jsonObject.getString("reg_date");
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        Date date = null;
+                        try {
+                            date = simpleDateFormat.parse(time);
+                        } catch (ParseException e) {
+                            SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+                            try {
+                                date = simpleDateFormat1.parse(time);
+                            } catch (ParseException ex) {
+                                SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+                                try {
+                                    date = simpleDateFormat2.parse(time);
+                                } catch (ParseException exc) {
+                                    exc.printStackTrace();
+                                }
+                                ex.printStackTrace();
+                            }
+                            e.printStackTrace();
+                        }
+                        //Log.d("data",Long.toString(date.getTime()));
+                        Long longDate = date.getTime();
+                        arrayregDate.add( TimeString.formatTimeString(longDate));
                         arrayregUser.add(jsonObject.getString("reg_user"));
                         arrayctnt.add(jsonObject.getString("ctnt"));
                         arraytag.add(jsonObject.getString("tag"));
