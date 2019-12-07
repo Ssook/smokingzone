@@ -94,6 +94,9 @@ public class BoardActivity extends AppCompatActivity {
         fab1 = (FloatingActionButton) findViewById(R.id.fab1);
         fab2 = (FloatingActionButton) findViewById(R.id.fab2);
         fab3 = (FloatingActionButton) findViewById(R.id.fab3);
+        fab1.setOnClickListener(new FABClickListener());
+        fab2.setOnClickListener(new FABClickListener());
+        fab3.setOnClickListener(new FABClickListener());
         tagFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,11 +131,29 @@ public class BoardActivity extends AppCompatActivity {
             //----------------------------
             /* FAb 클릭 이벤트 처리 구간  */
             //----------------------------
-            //인탠트 객체는 액티비티 이동,데이터 입출력에 사용
-            Intent intent = new Intent(getApplicationContext(), BoardWriteActivity.class);
-            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            startActivity(intent);
+            if(v.getId()==R.id.fab1)
+            {
+            //    NetworkTask networkTask = new NetworkTask(this, null);
+              //  networkTask.execute();
+            }
+            if(v.getId()==R.id.fab2)
+            {
+               // NetworkTask networkTask = new NetworkTask(this, null);
+               // networkTask.execute();
+            }
+            if(v.getId()==R.id.fab3)
+            {
+            //    NetworkTask networkTask = new NetworkTask(this, null);
+             //   networkTask.execute();
+            }
+            else{
+                //인탠트 객체는 액티비티 이동,데이터 입출력에 사용
+                Intent intent = new Intent(getApplicationContext(), BoardWriteActivity.class);
+                //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                startActivity(intent);
+            }
+
         }
     }
 

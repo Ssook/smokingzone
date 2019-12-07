@@ -38,9 +38,12 @@ public class BoardDetailActivity extends AppCompatActivity {
     private TextView mDetailTv;
     private EditText ed_review_comment;
     private Button bt_reg_comment;
-
+    private TextView m_reg_user;
+    private TextView m_reg_date;
     private String mActionBarTitle;
     private String mContent;
+    private String mUser;
+    private String mDate;
 
     // 게시글 번호 저장 변수
     private int board_no;
@@ -78,6 +81,8 @@ public class BoardDetailActivity extends AppCompatActivity {
 
         //해당하는 layout 컴포넌트를 변수에 설정
         mDetailTv = findViewById(R.id.textView);
+        m_reg_date = findViewById(R.id.reg_date);
+        m_reg_user = findViewById(R.id.reg_user);
         bt_reg_comment = findViewById((R.id.comment_reg_button));
         ed_review_comment = findViewById((R.id.edit_review_comment));
 
@@ -91,11 +96,15 @@ public class BoardDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mActionBarTitle = intent.getStringExtra("actionBarTitle");
         mContent = intent.getStringExtra("contentTv");
+        mUser = intent.getStringExtra("reg_user");
+        mDate = intent.getStringExtra("reg_date");
         board_no = intent.getIntExtra("board_no", 0);
         //액션바 제목 등록
         actionBar.setTitle(mActionBarTitle);
         //게시글 내용 등록
         mDetailTv.setText(mContent);
+        m_reg_user.setText(mUser);
+        m_reg_date.setText(mDate);
 
         //----------------------------
         /* 댓글 등록 버튼 눌렀을 때 작업*/

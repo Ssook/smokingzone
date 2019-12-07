@@ -100,6 +100,8 @@ public class ListViewAdapter extends BaseAdapter {
                 Intent intent = new Intent(mContext, BoardDetailActivity.class); //인탠트 객체는 액티비티 이동,데이터 입출력에 사용
              //   Log.d("data", modellist.get(position).getTitle());
                 intent.putExtra("actionBarTitle", modellist.get(position).getTitle());
+                intent.putExtra("reg_user", modellist.get(position).getReg_user());
+                intent.putExtra("reg_date", modellist.get(position).getReg_date());
                 intent.putExtra("contentTv", modellist.get(position).getDesc());
                 intent.putExtra("board_no",modellist.get(position).getBoard_no());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);

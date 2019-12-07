@@ -7,6 +7,36 @@
     android:gravity="center"
     tools:context=".BoardDetailActivity">
 
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/textView"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/reg_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:text="작성자"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/reg_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="등록날짜"
+        android:textSize="13sp" />
+
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textView"
@@ -18,6 +48,7 @@
         android:layout_marginRight="20dp"
         android:layout_width="match_parent"
         android:layout_height="250dp"
+        android:background="@drawable/border"
         app:layout_constraintBottom_toTopOf="@id/include"
         app:layout_constraintTop_toTopOf= "parent"
         app:layout_constraintStart_toStartOf="parent"
