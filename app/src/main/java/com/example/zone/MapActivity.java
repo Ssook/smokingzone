@@ -149,7 +149,7 @@ public class MapActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        isCheck = new boolean[10];
+        isCheck = new boolean[SmokeHereConstants.TYPECOUNT];
         Arrays.fill(isCheck, true);
 
         try {
