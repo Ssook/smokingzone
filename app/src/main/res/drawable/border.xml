@@ -4,7 +4,7 @@
         <shape>
 
             <stroke
-                android:width="2dip" android:color="#000000"/>
+                android:width="2dip" android:color="#808080"/>
 
             <corners android:radius="5dip"/>
 
@@ -33,7 +33,7 @@
         <shape>
 
             <stroke
-                android:width="1dip" android:color="#000000"
+                android:width="1dip" android:color="#808080"
                 />
             <solid android:color="#66ffffff" />
             <!-- 투명도지정 -->

@@ -1,7 +1,5 @@
 package com.example.zone;
 
-import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,23 +28,35 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
-public class BoardDetailActivity extends AppCompatActivity {
+public class BoardDetailActivity extends AppCompatActivity implements KeyboardHeightProvider.KeyboardHeightObserver {
+
+    private KeyboardHeightProvider keyboardHeightProvider;
+
+    private ViewGroup editTextLinearLayoutView;
+    private float initialY;
 
     // 게시글 화면 구성 변수들
-    private TextView mDetailTv;
-    private EditText ed_review_comment;
-    private Button bt_reg_comment;
-
-    private String mActionBarTitle;
-    private String mContent;
+    private TextView title_TV;
+    private TextView desc_TV;
+    private EditText review_comment_ET;
+    private Button reg_comment_Btn;
+    private TextView reg_user_TV;
+    private TextView reg_date_TV;
+    private String mTitle;
+    private String mDesc;
+    private String mUser;
+    private String mDate;
 
     // 게시글 번호 저장 변수
     private int board_no;
 
     //서버로부터 JSON Array를 받아 저장할 변수
-    private JSONArray mArray;
+    private JSONArray jsonArray;
     //게시글의 댓글 ListView 레이아웃 형성을 위한 객체 생성
     ListView listView;
     // 뷰에 넣을 데이터들을 어떠한 형식과 어떠한 값들로 구성할지 정하는 adapter 객체
@@ -61,7 +71,6 @@ public class BoardDetailActivity extends AppCompatActivity {
     //BoardCommentModel 클래스 타입 객체들을 담을 arrayList 생성
     ArrayList<BoardCommentModel> arrayList = new ArrayList<BoardCommentModel>();
 
-
     // 사용자 닉네임을 받아오는 변수들
     SharedPreferences sp;
     String name = "";
@@ -70,70 +79,9 @@ public class BoardDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //게시글 화면의 layout 설정
-        setContentView(R.layout.activity_board_detail);
-
+        initLayoutBoardDetailActivity();
         //사용자 닉네임 받아오기
-        sp = getSharedPreferences("profile", MODE_PRIVATE);
-        name = sp.getString("name", "");
-
-        //해당하는 layout 컴포넌트를 변수에 설정
-        mDetailTv = findViewById(R.id.textView);
-        bt_reg_comment = findViewById((R.id.comment_reg_button));
-        ed_review_comment = findViewById((R.id.edit_review_comment));
-
-        //----------------------------
-        /*        액션바 설정 부분    */
-        //----------------------------
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setCustomView(R.layout.custom_bar_detail);
-
-        //intent 객체로 부터 해당 값들을 받아옴.
-        Intent intent = getIntent();
-        mActionBarTitle = intent.getStringExtra("actionBarTitle");
-        mContent = intent.getStringExtra("contentTv");
-        board_no = intent.getIntExtra("board_no", 0);
-        //액션바 제목 등록
-        actionBar.setTitle(mActionBarTitle);
-        //게시글 내용 등록
-        mDetailTv.setText(mContent);
-
-        //----------------------------
-        /* 댓글 등록 버튼 눌렀을 때 작업*/
-        //----------------------------
-        bt_reg_comment.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                //----------------------------
-                /* 서버에 댓글 정보를 보냄 Part*/
-                //----------------------------
-                JSONObject sbParam = new JSONObject();
-                try {
-                    sbParam.put("board_area_no", board_no);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    sbParam.put("board_review_reg_user", "user");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    sbParam.put("board_review_ctnt", ed_review_comment.getText().toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                Log.d("boardCommentData", sbParam.toString());
-                //-------------------------------
-                /*JSON형식 String 값을 서버에 보냄*/
-                //-------------------------------
-                NetworkTaskWrite networkTaskWrite = new NetworkTaskWrite(sbParam.toString());
-                networkTaskWrite.execute();
-
-            }
-        });//댓글 등록버튼 setOnClickListener func()
-
+        setUserNickName();
         //-------------------------------
         /* 해당 게시글의 모든 댓글을 받아옴*/
         //-------------------------------
@@ -141,6 +89,156 @@ public class BoardDetailActivity extends AppCompatActivity {
         networkTask.execute();
 
     }//onCreate func()
+
+    private void setUserNickName() {
+        sp = getSharedPreferences("profile", MODE_PRIVATE);
+        name = sp.getString("name", "");
+    }
+
+    //해당하는 layout 컴포넌트를 변수에 설정
+    public void initLayoutBoardDetailActivity() {
+        setContentView(R.layout.activity_board_detail);
+        //editText 키보드 팝업 설정
+        setView_editText_KeyBoardView();
+        //actionbar 설정
+        setView_actionbarView();
+        //layout view 설정
+        //intent 객체로 부터 해당 값들을 받아옴.
+
+        //intent 정보 저장
+        Intent intent = getIntent();
+
+        mTitle = intent.getStringExtra("mTitle");
+        mDesc = intent.getStringExtra("mDesc");
+        mUser = intent.getStringExtra("mUser");
+        mDate = intent.getStringExtra("mDate");
+        board_no = intent.getIntExtra("board_no", 0);
+
+        //게시글 내용 등록
+        setView_titleTVView();
+        setView_descTVView();
+        setView_regDateTVView();
+        setView_regUserTVView();
+        setView_regCommentBtn();
+        setView_reviewCommentET();
+    }
+
+    private void setView_actionbarView() {
+        //----------------------------
+        /*        액션바 설정 부분    */
+        //----------------------------
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setCustomView(R.layout.activity_board_detail);
+        actionBar.setTitle("빠담 게시글");
+    }
+
+    private void setView_titleTVView() {
+        title_TV = findViewById(R.id.title);
+        title_TV.setText(mTitle);
+    }
+
+    private void setView_descTVView() {
+        desc_TV = findViewById(R.id.textView);
+        desc_TV.setText(mDesc);
+    }
+
+    private void setView_regDateTVView() {
+        reg_date_TV = findViewById(R.id.reg_date);
+        reg_date_TV.setText(mDate);
+    }
+
+    private void setView_regUserTVView() {
+        reg_user_TV = findViewById(R.id.reg_user);
+        reg_user_TV.setText(mUser);
+    }
+
+    private void setView_regCommentBtn() {
+        reg_comment_Btn = findViewById((R.id.comment_reg_button));
+
+    }
+
+    private void setView_reviewCommentET() {
+        review_comment_ET = findViewById((R.id.edit_review_comment));
+        //----------------------------
+        /* 댓글 등록 버튼 눌렀을 때 작업*/
+        //----------------------------
+        reg_comment_Btn.setOnClickListener(new regCommentBtnListener());
+    }
+
+    private void setView_editText_KeyBoardView() {
+        keyboardHeightProvider = new KeyboardHeightProvider(this);
+
+        editTextLinearLayoutView = findViewById(R.id.linearLayout);
+        editTextLinearLayoutView.post(() -> initialY = editTextLinearLayoutView.getY());
+
+        View view = findViewById(R.id.board_detail_layout);
+        view.post(() -> keyboardHeightProvider.start());
+    }
+
+    @Override
+    public void onKeyboardHeightChanged(int height, int orientation) {
+        if (height == 0) {
+            editTextLinearLayoutView.setY(initialY);
+            editTextLinearLayoutView.requestLayout();
+        } else {
+
+            float newPosition = initialY - height;
+            editTextLinearLayoutView.setY(newPosition);
+            editTextLinearLayoutView.requestLayout();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        keyboardHeightProvider.setKeyboardHeightObserver(null);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        keyboardHeightProvider.setKeyboardHeightObserver(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        keyboardHeightProvider.close();
+    }
+
+    class regCommentBtnListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+
+            //----------------------------
+            /* 서버에 댓글 정보를 보냄 Part*/
+            //----------------------------
+            JSONObject sbParam = new JSONObject();
+            try {
+                sbParam.put("board_area_no", board_no);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                sbParam.put("board_review_reg_user", name);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                sbParam.put("board_review_ctnt", review_comment_ET.getText().toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Log.d("boardCommentData", sbParam.toString());
+            //-------------------------------
+            /*JSON형식 String 값을 서버에 보냄*/
+            //-------------------------------
+            NetworkTaskWrite networkTaskWrite = new NetworkTaskWrite(sbParam.toString());
+            networkTaskWrite.execute();
+
+        }
+    }//댓글 등록버튼 regCommentBtnListener func()
 
     //---------------------------------------
     /* 해당 게시글의 모든 댓글을 받아오는 클래스*/
@@ -183,16 +281,40 @@ public class BoardDetailActivity extends AppCompatActivity {
             // 결과에 따른 UI 수정 등은 여기서 합니다.
             if (result != "") {
                 try {
-                    mArray = new JSONArray(result);
+                    jsonArray = new JSONArray(result);
                 } catch (JSONException e) {
                     //TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                for (int i = 0; i < mArray.length(); i++) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     try {
-                        JSONObject jsonObject = mArray.getJSONObject(i);
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
                         // array에 해당 값들을 넣어줌.
-                        arrayregDate.add(jsonObject.getString("reg_date"));
+                        //Time Setting
+                        Log.d("data", jsonObject.getString("reg_date"));
+                        String time = jsonObject.getString("reg_date");
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        Date date = null;
+                        try {
+                            date = simpleDateFormat.parse(time);
+                        } catch (ParseException e) {
+                            SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+                            try {
+                                date = simpleDateFormat1.parse(time);
+                            } catch (ParseException ex) {
+                                SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+                                try {
+                                    date = simpleDateFormat2.parse(time);
+                                } catch (ParseException exc) {
+                                    exc.printStackTrace();
+                                }
+                                ex.printStackTrace();
+                            }
+                            e.printStackTrace();
+                        }
+                        //Log.d("data",Long.toString(date.getTime()));
+                        Long longDate = date.getTime();
+                        arrayregDate.add(TimeString.formatTimeString(longDate));
                         arrayregUser.add(jsonObject.getString("reg_user"));
                         arrayctnt.add(jsonObject.getString("ctnt"));
 
@@ -319,9 +441,13 @@ public class BoardDetailActivity extends AppCompatActivity {
             //-------------------------------------
             Intent intent = new Intent(BoardDetailActivity.this, BoardDetailActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            intent.putExtra("actionBarTitle", mActionBarTitle);
-            intent.putExtra("contentTv", mContent);
+
+            intent.putExtra("mTitle", mTitle);
+            intent.putExtra("mDesc", mDesc);
             intent.putExtra("board_no", board_no);
+            intent.putExtra("mUser", mUser);
+            intent.putExtra("mDate", mDate);
+
             startActivity(intent);
 
         }

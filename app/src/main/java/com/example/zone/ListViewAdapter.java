@@ -74,7 +74,7 @@ public class ListViewAdapter extends BaseAdapter {
             holder.mReg_UserTv = view.findViewById(R.id.reg_user);
             holder.mtagTv = view.findViewById(R.id.tag);
             holder.mDescTv = view.findViewById(R.id.mainDesc);
-            holder.mIconIv = view.findViewById(R.id.mainIcon);
+          //  holder.mIconIv = view.findViewById(R.id.mainIcon);
             //태그 설정
             view.setTag(holder);
             //뷰가 NULL이 아니면 이미 Holder 객체가 생성 되어 있으므로 view의 태그값을 Holder에 입력
@@ -89,7 +89,7 @@ public class ListViewAdapter extends BaseAdapter {
         holder.mtagTv.setText(modellist.get(position).getTag());
         // holder.mBoard_NoTv.setText(modellist.get(position).getBoard_no());
         //imageView에 값을 넣어주는 작업
-        holder.mIconIv.setImageResource(modellist.get(position).getIcon());
+     //   holder.mIconIv.setImageResource(modellist.get(position).getIcon());
 
         //listview의 item을 Click했을 때
         view.setOnClickListener(new View.OnClickListener() {
@@ -99,8 +99,10 @@ public class ListViewAdapter extends BaseAdapter {
                 // 제목은 액션바에, 내용은 TextView에 출력
                 Intent intent = new Intent(mContext, BoardDetailActivity.class); //인탠트 객체는 액티비티 이동,데이터 입출력에 사용
              //   Log.d("data", modellist.get(position).getTitle());
-                intent.putExtra("actionBarTitle", modellist.get(position).getTitle());
-                intent.putExtra("contentTv", modellist.get(position).getDesc());
+                intent.putExtra("mTitle", modellist.get(position).getTitle());
+                intent.putExtra("mUser", modellist.get(position).getReg_user());
+                intent.putExtra("mDate", modellist.get(position).getReg_date());
+                intent.putExtra("mDesc", modellist.get(position).getDesc());
                 intent.putExtra("board_no",modellist.get(position).getBoard_no());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 mContext.startActivity(intent);
