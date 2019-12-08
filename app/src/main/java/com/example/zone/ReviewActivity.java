@@ -5,18 +5,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -28,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.zone.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,24 +39,23 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class ReviewActivity extends AppCompatActivity {
-    private TextView smokingarea_name;
-    private TextView smokingarea_rating_avg;
-    private CheckBox bench;
-    private CheckBox roof;
-    private CheckBox vtl;
-    private RatingBar ratingbar;
-    private TextView ratingValue;
-    private EditText ed_review_comment;
-    private Button bt_reg_comment;
-    private ActionBar actionBar;
-    private ImageButton report;
-    private ImageView area_img;
-    SharedPreferences sp;
+    private TextView smokingarea_name_TV;
+    private TextView smokingarea_avg_star_point_TV;
+    private CheckBox bench_CB;
+    private CheckBox roof_CB;
+    private CheckBox vtl_CB;
+    private RatingBar star_point_RB;
+    private TextView star_point_TV;
+    private EditText review_comment_ET;
+    private Button reg_comment_Btn;
+    private ImageView smokingarea_image_IV;
     private String img_url;
-    private JSONArray mArray;  //서버로부터 JSON Array를 받아 저장할 변수
+    private JSONArray jsonArray;  //서버로부터 JSON Array를 받아 저장할 변수
+    private ActionBar actionBar;
+    private ImageButton report_IBtn;
+
     ListView listView; //리뷰화면 댓글  ListView 레이아웃 형성을 위한 객체 생성
     ReviewListViewAdapter adapter; // 뷰에 넣을 데이터들을 어떠한 형식과 어떠한 값들로 구성할지 정하는 adapter 객체
 
@@ -71,8 +66,9 @@ public class ReviewActivity extends AppCompatActivity {
     ArrayList<String> arrayregDate = new ArrayList<String>();
     ArrayList<String> arrayregUser = new ArrayList<String>();
     ArrayList<String> arrayctnt = new ArrayList<String>();
-
     ArrayList<ReviewModel> arrayList = new ArrayList<ReviewModel>();
+
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,16 +90,16 @@ public class ReviewActivity extends AppCompatActivity {
         actionBar.setHomeButtonEnabled(true);
 
         //각 해당하는 변수의 xml 컴포넌트를 등록
-        smokingarea_name = findViewById(R.id.review_smokingarea);
-        smokingarea_rating_avg = findViewById(R.id.avg_point);
-        bench = findViewById(R.id.bench);
-        roof = findViewById(R.id.roof);
-        vtl = findViewById(R.id.vtl);
-        ratingbar = findViewById(R.id.ratingbar);
-        ratingValue = findViewById(R.id.ratingvalue);
-        ed_review_comment = findViewById((R.id.edit_review_comment));
-        bt_reg_comment = findViewById((R.id.comment_reg_button));
-        area_img=findViewById(R.id.areaimage);
+        smokingarea_name_TV = findViewById(R.id.review_smokingarea);
+        smokingarea_avg_star_point_TV = findViewById(R.id.avg_point);
+        bench_CB = findViewById(R.id.bench);
+        roof_CB = findViewById(R.id.roof);
+        vtl_CB = findViewById(R.id.vtl);
+        star_point_RB = findViewById(R.id.ratingbar);
+        star_point_TV = findViewById(R.id.ratingvalue);
+        review_comment_ET = findViewById((R.id.edit_review_comment));
+        reg_comment_Btn = findViewById((R.id.comment_reg_button));
+        smokingarea_image_IV =findViewById(R.id.areaimage);
 
         //----------------------------
         /*   뷰에 해당하는 값 설정    */
@@ -113,49 +109,49 @@ public class ReviewActivity extends AppCompatActivity {
         Intent intent = getIntent();
         smoking_area_data =intent.getExtras().getStringArray("arr");
         img_url=smoking_area_data[7];
-        area_img.setImageResource(R.drawable.defaultimg);
+        smokingarea_image_IV.setImageResource(R.drawable.defaultimg);
         //받아온 정보를 각 항목에 설정
         if (img_url!=null) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Glide.with(ReviewActivity.this).load("http://18.222.175.17:8080/SmokingArea/img/"+img_url+".jpg").into(area_img);
+                    Glide.with(ReviewActivity.this).load("http://18.222.175.17:8080/SmokingArea/img/"+img_url+".jpg").into(smokingarea_image_IV);
                 }
             });
         }
 
-        smokingarea_name.setText(smoking_area_data[3]);
-        smokingarea_rating_avg.setText(smoking_area_data[5]);
+        smokingarea_name_TV.setText(smoking_area_data[3]);
+        smokingarea_avg_star_point_TV.setText(smoking_area_data[5]);
         if(smoking_area_data[0].charAt(0)=='1')
         {
-            bench.setChecked(true);
+            bench_CB.setChecked(true);
         }
         else{
-            bench.setChecked(false);
+            bench_CB.setChecked(false);
         }
         if(smoking_area_data[1].charAt(0)=='1')
         {
-            roof.setChecked(true);
+            roof_CB.setChecked(true);
         }
         else{
-            roof.setChecked(false);
+            roof_CB.setChecked(false);
         }
         if(smoking_area_data[2].charAt(0)=='1')
         {
-            vtl.setChecked(true);
+            vtl_CB.setChecked(true);
         }
         else{
-            vtl.setChecked(false);
+            vtl_CB.setChecked(false);
         }
         //3가지 항목 체크박스 선택할 수 없도록 하기
-        bench.setClickable(false);
-        roof.setClickable(false);
-        vtl.setClickable(false);
+        bench_CB.setClickable(false);
+        roof_CB.setClickable(false);
+        vtl_CB.setClickable(false);
 
         //-------------------------------------
         /* 댓글 등록버튼을 눌렀을 때 리스너 등록 */
         //-------------------------------------
-        bt_reg_comment.setOnClickListener(new Button.OnClickListener() {
+        reg_comment_Btn.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -172,12 +168,12 @@ public class ReviewActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 try {
-                    sbParam.put("smoking_review_ctnt", ed_review_comment.getText().toString());
+                    sbParam.put("smoking_review_ctnt", review_comment_ET.getText().toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 try {
-                    sbParam.put("smoking_review_point", ratingValue.getText().toString());
+                    sbParam.put("smoking_review_point", star_point_TV.getText().toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -204,18 +200,18 @@ public class ReviewActivity extends AppCompatActivity {
 
 
         //-------------------------
-        /*  별점 ratingbar 리스너 */
+        /*  별점 star_point_RB 리스너 */
         //-------------------------
-        ratingbar.setOnRatingBarChangeListener(new RatingbarListener());
+        star_point_RB.setOnRatingBarChangeListener(new RatingbarListener());
     }
 
 
     class RatingbarListener implements RatingBar.OnRatingBarChangeListener {
         @Override
         public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-            ratingbar.setRating(rating);
-            ratingValue.setText(Float.toString(ratingbar.getRating()));
-            ratingValue.setTypeface(null, Typeface.BOLD);
+            star_point_RB.setRating(rating);
+            star_point_TV.setText(Float.toString(star_point_RB.getRating()));
+            star_point_TV.setTypeface(null, Typeface.BOLD);
         }
     }//Ratingbarlistenr class
 
@@ -257,14 +253,14 @@ public class ReviewActivity extends AppCompatActivity {
             // 결과에 따른 UI 수정 등은 여기서 합니다.
             if (result != "") {
                 try {
-                    mArray = new JSONArray(result);
+                    jsonArray = new JSONArray(result);
                 } catch (JSONException e) {
                     //TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                for (int i = 0; i < mArray.length(); i++) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     try {
-                        JSONObject jsonObject = mArray.getJSONObject(i);
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
                         // Pulling items from the array
                         arrayregDate.add(jsonObject.getString("reg_date"));
                         arrayregUser.add(jsonObject.getString("reg_user"));
@@ -455,7 +451,7 @@ public class ReviewActivity extends AppCompatActivity {
 //            e.printStackTrace();
 //        }
 //        try {
-//            sbParam.put("report_ctnt","report CONTENT");
+//            sbParam.put("report_ctnt","report_IBtn CONTENT");
 //        } catch (JSONException e) {
 //            e.printStackTrace();
 //        }
@@ -591,7 +587,7 @@ public class ReviewActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         try {
-                            sbParam.put("report_ctnt","report CONTENT");
+                            sbParam.put("report_ctnt","report_IBtn CONTENT");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

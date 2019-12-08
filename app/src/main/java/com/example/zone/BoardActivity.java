@@ -82,23 +82,23 @@ public class BoardActivity extends AppCompatActivity {
     }
 
     private void setView_writeFabView() {
-        write_fab = (FloatingActionButton) findViewById(R.id.fab);
+        write_fab = (FloatingActionButton) findViewById(R.id.write_fab);
         write_fab.setOnClickListener(new FABClickListener());
 
     }
 
     private void setView_tagCigaFabView() {
-        tag_ciga_fab = (FloatingActionButton) findViewById(R.id.fab3);
+        tag_ciga_fab = (FloatingActionButton) findViewById(R.id.all_tag_fab);
         tag_ciga_fab.setOnClickListener(new FABClickListener());
     }
 
     private void setView_tagHealthFabView() {
-        tag_health_fab = (FloatingActionButton) findViewById(R.id.fab2);
+        tag_health_fab = (FloatingActionButton) findViewById(R.id.health_tag_fab);
         tag_health_fab.setOnClickListener(new FABClickListener());
     }
 
     private void setView_tagAllFabView() {
-        tag_all_fab = (FloatingActionButton) findViewById(R.id.fab1);
+        tag_all_fab = (FloatingActionButton) findViewById(R.id.ciga_tag_fab);
         tag_all_fab.setOnClickListener(new FABClickListener());
     }
 
@@ -128,7 +128,7 @@ public class BoardActivity extends AppCompatActivity {
             //----------------------------
             /* FAb 클릭 이벤트 처리 구간  */
             //----------------------------
-            Log.d("data",Integer.toString(v.getId()));
+
             if (v.getId() == R.id.tagFab) {
                 Log.d("태그팹","터치");
                 if (!isFABOpen) {
@@ -138,19 +138,19 @@ public class BoardActivity extends AppCompatActivity {
                 }
 
             }
-            else if (v.getId() == R.id.fab1) {
+            else if (v.getId() == R.id.ciga_tag_fab) {
                 //    NetworkTask networkTask = new NetworkTask(this, null);
                 //  networkTask.execute();
             }
-            else if (v.getId() == R.id.fab2) {
+            else if (v.getId() == R.id.health_tag_fab) {
                 // NetworkTask networkTask = new NetworkTask(this, null);
                 // networkTask.execute();
             }
-            else if (v.getId() == R.id.fab3) {
+            else if (v.getId() == R.id.all_tag_fab) {
                 //    NetworkTask networkTask = new NetworkTask(this, null);
                 //   networkTask.execute();
             }
-            else if(v.getId()== R.id.fab) {
+            else if(v.getId()== R.id.write_fab) {
                 //인탠트 객체는 액티비티 이동,데이터 입출력에 사용
                 Intent intent = new Intent(getApplicationContext(), BoardWriteActivity.class);
                 //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
