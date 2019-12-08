@@ -15,8 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -36,15 +34,16 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class BoardActivity extends AppCompatActivity {
-    private JSONArray mArray;  //서버로부터 JSON Array를 받아 저장할 변수
+    private JSONArray boardJSONArray;  //서버로부터 JSON Array를 받아 저장할 변수
     private ActionBar actionBar;    //게시판화면에 쓰일 actionBar
     ListView listView; //게시판 ListView 레이아웃 형성을 위한 객체 생성
     ListViewAdapter adapter; // 뷰에 넣을 데이터들을 어떠한 형식과 어떠한 값들로 구성할지 정하는 adapter 객체
-
-    FloatingActionButton tagFab;
-    FloatingActionButton fab1,fab2,fab3;
+    
+    //FloatingActionButton 선언 
+    FloatingActionButton write_fab;
+    FloatingActionButton tag_fab;
+    FloatingActionButton tag_all_fab, tag_health_fab, tag_ciga_fab;
     private Boolean isFABOpen = false;
-
 
     //각각의 데이터가 들어갈 ArrayList 생성
     ArrayList<String> arrayregDate = new ArrayList<String>();
@@ -62,11 +61,53 @@ public class BoardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //이 액티비티의 view에 해당하는 layout을 등록한다.
-        setContentView(R.layout.board_activity_main);
+        initLayoutBoardActivity();
+        //----------------------------
+        /*      게시글을 전부 가져옴  */
+        //----------------------------
+        NetworkTask networkTask = new NetworkTask(this, null);
+        networkTask.execute();
+    }
 
-        //----------------------------
-        /*        액션바 설정 부분    */
-        //----------------------------
+    public void initLayoutBoardActivity() {
+        setContentView(R.layout.board_activity_main);
+        //actionbar 등록
+        setView_actionbarView();
+        //FAB 이벤트 처리 함수 생성 및 등록
+        setView_tagFabView();
+        setView_tagAllFabView();
+        setView_tagHealthFabView();
+        setView_tagCigaFabView();
+        setView_writeFabView();
+    }
+
+    private void setView_writeFabView() {
+        write_fab = (FloatingActionButton) findViewById(R.id.fab);
+        write_fab.setOnClickListener(new FABClickListener());
+
+    }
+
+    private void setView_tagCigaFabView() {
+        tag_ciga_fab = (FloatingActionButton) findViewById(R.id.fab3);
+        tag_ciga_fab.setOnClickListener(new FABClickListener());
+    }
+
+    private void setView_tagHealthFabView() {
+        tag_health_fab = (FloatingActionButton) findViewById(R.id.fab2);
+        tag_health_fab.setOnClickListener(new FABClickListener());
+    }
+
+    private void setView_tagAllFabView() {
+        tag_all_fab = (FloatingActionButton) findViewById(R.id.fab1);
+        tag_all_fab.setOnClickListener(new FABClickListener());
+    }
+
+    private void setView_tagFabView() {
+        tag_fab = (FloatingActionButton) findViewById(R.id.tagFab);
+        tag_fab.setOnClickListener(new FABClickListener());
+    }
+
+    private void setView_actionbarView() {
         //액션바 가져오기
         actionBar = getSupportActionBar();
 
@@ -77,50 +118,6 @@ public class BoardActivity extends AppCompatActivity {
         //메뉴바에 '<' 버튼이 생긴다.(두개는 항상 같이다닌다)
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
-
-        //----------------------------
-        /*      게시글을 전부 가져옴  */
-        //----------------------------
-        NetworkTask networkTask = new NetworkTask(this, null);
-        networkTask.execute();
-
-        //----------------------------
-        /*      게시판 글쓰기 버튼   */
-        //----------------------------
-        //FAB 이벤트 처리 함수 생성 및 등록
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new FABClickListener());
-        tagFab = (FloatingActionButton) findViewById(R.id.tagFab);
-        fab1 = (FloatingActionButton) findViewById(R.id.fab1);
-        fab2 = (FloatingActionButton) findViewById(R.id.fab2);
-        fab3 = (FloatingActionButton) findViewById(R.id.fab3);
-        fab1.setOnClickListener(new FABClickListener());
-        fab2.setOnClickListener(new FABClickListener());
-        fab3.setOnClickListener(new FABClickListener());
-        tagFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!isFABOpen){
-                    showFABMenu();
-                }else{
-                    closeFABMenu();
-                }
-            }
-        });
-    }
-
-    private void showFABMenu(){
-        isFABOpen=true;
-        fab1.animate().translationY(-getResources().getDimension(R.dimen.standard_55));
-        fab2.animate().translationY(-getResources().getDimension(R.dimen.standard_105));
-        fab3.animate().translationY(-getResources().getDimension(R.dimen.standard_155));
-    }
-
-    private void closeFABMenu(){
-        isFABOpen=false;
-        fab1.animate().translationY(0);
-        fab2.animate().translationY(0);
-        fab3.animate().translationY(0);
     }
 
     //FAB 리스너 함수
@@ -131,22 +128,29 @@ public class BoardActivity extends AppCompatActivity {
             //----------------------------
             /* FAb 클릭 이벤트 처리 구간  */
             //----------------------------
-            if(v.getId()==R.id.fab1)
-            {
-            //    NetworkTask networkTask = new NetworkTask(this, null);
-              //  networkTask.execute();
+            Log.d("data",Integer.toString(v.getId()));
+            if (v.getId() == R.id.tagFab) {
+                Log.d("태그팹","터치");
+                if (!isFABOpen) {
+                    showFABMenu();
+                } else {
+                    closeFABMenu();
+                }
+
             }
-            if(v.getId()==R.id.fab2)
-            {
-               // NetworkTask networkTask = new NetworkTask(this, null);
-               // networkTask.execute();
+            else if (v.getId() == R.id.fab1) {
+                //    NetworkTask networkTask = new NetworkTask(this, null);
+                //  networkTask.execute();
             }
-            if(v.getId()==R.id.fab3)
-            {
-            //    NetworkTask networkTask = new NetworkTask(this, null);
-             //   networkTask.execute();
+            else if (v.getId() == R.id.fab2) {
+                // NetworkTask networkTask = new NetworkTask(this, null);
+                // networkTask.execute();
             }
-            else{
+            else if (v.getId() == R.id.fab3) {
+                //    NetworkTask networkTask = new NetworkTask(this, null);
+                //   networkTask.execute();
+            }
+            else if(v.getId()== R.id.fab) {
                 //인탠트 객체는 액티비티 이동,데이터 입출력에 사용
                 Intent intent = new Intent(getApplicationContext(), BoardWriteActivity.class);
                 //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
@@ -155,6 +159,19 @@ public class BoardActivity extends AppCompatActivity {
             }
 
         }
+    }
+    private void showFABMenu() {
+        isFABOpen = true;
+        tag_all_fab.animate().translationY(-getResources().getDimension(R.dimen.standard_55));
+        tag_health_fab.animate().translationY(-getResources().getDimension(R.dimen.standard_105));
+        tag_ciga_fab.animate().translationY(-getResources().getDimension(R.dimen.standard_155));
+    }
+
+    private void closeFABMenu() {
+        isFABOpen = false;
+        tag_all_fab.animate().translationY(0);
+        tag_health_fab.animate().translationY(0);
+        tag_ciga_fab.animate().translationY(0);
     }
 
     //액티비티가 시작될 때 단 한번만 호출되는 함수로 이안에서 MenuItem생성과 초기화를 하면 됨.
@@ -257,20 +274,20 @@ public class BoardActivity extends AppCompatActivity {
 
             if (result != "") {
                 try {
-                    mArray = new JSONArray(result);
+                    boardJSONArray = new JSONArray(result);
                 } catch (JSONException e) {
                     //TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 //제일 최근에 담긴 게시글이 맨 위에 뜨도록 함
-                for (int i =  mArray.length()-1; i >=0 ; i--) {
+                for (int i = boardJSONArray.length() - 1; i >= 0; i--) {
                     try {
-                        JSONObject jsonObject = mArray.getJSONObject(i);
+                        JSONObject jsonObject = boardJSONArray.getJSONObject(i);
                         // Pulling items from the array
                         //Time Setting
-                        Log.d("data",jsonObject.getString("reg_date"));
+                        Log.d("data", jsonObject.getString("reg_date"));
                         String time = jsonObject.getString("reg_date");
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         Date date = null;
                         try {
                             date = simpleDateFormat.parse(time);
@@ -291,7 +308,7 @@ public class BoardActivity extends AppCompatActivity {
                         }
                         //Log.d("data",Long.toString(date.getTime()));
                         Long longDate = date.getTime();
-                        arrayregDate.add( TimeString.formatTimeString(longDate));
+                        arrayregDate.add(TimeString.formatTimeString(longDate));
                         arrayregUser.add(jsonObject.getString("reg_user"));
                         arrayctnt.add(jsonObject.getString("ctnt"));
                         arraytag.add(jsonObject.getString("tag"));
@@ -310,7 +327,7 @@ public class BoardActivity extends AppCompatActivity {
 
                 //Model에 데이터를 넣어주고 arrayList<BoardModel>에 넣어줌
                 for (int i = 0; i < arraytitle.size(); i++) {
-                    BoardModel boardModel = new BoardModel(arrayboardNo.get(i),arraytag.get(i), arrayregDate.get(i), arrayregUser.get(i), arraytitle.get(i), arrayctnt.get(i), arrayicon.get(i));
+                    BoardModel boardModel = new BoardModel(arrayboardNo.get(i), arraytag.get(i), arrayregDate.get(i), arrayregUser.get(i), arraytitle.get(i), arrayctnt.get(i), arrayicon.get(i));
                     //bind all strings in an array
                     arrayList.add(boardModel);
                 }
@@ -338,7 +355,7 @@ public class BoardActivity extends AppCompatActivity {
             //--------------------------
             //   URL 설정하고 접속하기
             //--------------------------
-                URL url = new URL("http://18.222.175.17:8080/SmokingArea/Board/boardList.jsp");
+            URL url = new URL("http://18.222.175.17:8080/SmokingArea/Board/boardList.jsp");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();   // 접속
             //--------------------------
             //   전송 모드 설정 - 기본적인 설정이다

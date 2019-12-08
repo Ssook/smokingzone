@@ -4,12 +4,8 @@ package com.example.zone;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,33 +13,26 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
 
 public class BoardWriteActivity extends AppCompatActivity {
 
     //빠담 글쓰기 화면 view 변수들
-    private TextView tv_outPut;
-    private EditText et_title;
-    private EditText et_content;
-    private CheckBox cb_anony;
+    private EditText title_ET;
+    private EditText desc_ET;
+    private CheckBox anony_CB;
 
     //현재 유저 닉네임 받아오는 변수들
     SharedPreferences sp;
@@ -52,12 +41,42 @@ public class BoardWriteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //사용자 닉네임 받아오기
+        setUserNickName();
+        //레이아웃 설정
+        initLayoutBoardWriteActivity();
+    }//onCreate func()
+
+
+    private void setUserNickName() {
+        sp = getSharedPreferences("profile", MODE_PRIVATE);
+        name = sp.getString("name", "");
+    }
+
+    //해당하는 layout 컴포넌트를 변수에 설정
+    public void initLayoutBoardWriteActivity() {
         setContentView(R.layout.activity_board_write);
+        //actionbar 설정
+        setView_actionbarView();
+        //layout view 설정
+        setView_titleEVView();
+        setView_descETView();
+        setView_anonyCBView();
+    }
 
-        //----------------------------
-        /*        액션바 설정 부분    */
-        //----------------------------
+    private void setView_anonyCBView() {
+        anony_CB = (CheckBox) findViewById(R.id.anonycheck);
+    }
 
+    private void setView_descETView() {
+        desc_ET = (EditText) findViewById(R.id.contenttext);
+    }
+
+    private void setView_titleEVView() {
+        title_ET = (EditText) findViewById(R.id.titletext);
+    }
+
+    private void setView_actionbarView() {
         //액션바 가져오기
         ActionBar actionBar = getSupportActionBar();
 
@@ -68,18 +87,7 @@ public class BoardWriteActivity extends AppCompatActivity {
         //메뉴바에 '<' 버튼이 생긴다.(두개는 항상 같이다닌다)
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
-
-        // 컴포넌트 값 받아오기
-       // tv_outPut = (TextView) findViewById(R.id.tv_outPut);
-        et_title = (EditText) findViewById(R.id.titletext);
-        et_content = (EditText) findViewById(R.id.contenttext);
-        cb_anony = (CheckBox) findViewById(R.id.anonycheck);
-
-        //사용자 닉네임 받아오기
-        sp = getSharedPreferences("profile", MODE_PRIVATE);
-        name = sp.getString("name", "");
-
-    }//onCreate func()
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -107,14 +115,14 @@ public class BoardWriteActivity extends AppCompatActivity {
             /* 서버에 게시글 정보를 보냄 Part*/
             //-----------------------------
 
-            if (cb_anony.isChecked()) {
+            if (anony_CB.isChecked()) {
                 try {
                     board_data.put("reg_user", "익명");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }//익명 처리
-            else if (!cb_anony.isChecked()) {
+            else if (!anony_CB.isChecked()) {
                 try {
                     board_data.put("reg_user", name);
                 } catch (JSONException e) {
@@ -122,7 +130,7 @@ public class BoardWriteActivity extends AppCompatActivity {
                 }
             }//익명 아닐 시
             try {
-                board_data.put("ctnt", et_content.getText().toString());
+                board_data.put("ctnt", desc_ET.getText().toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -132,7 +140,7 @@ public class BoardWriteActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             try {
-                board_data.put("title", et_title.getText().toString());
+                board_data.put("title", title_ET.getText().toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
