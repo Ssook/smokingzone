@@ -30,16 +30,21 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class BoardDetailActivity extends AppCompatActivity {
 
     // 게시글 화면 구성 변수들
+    private TextView titleTv;
     private TextView mDetailTv;
     private EditText ed_review_comment;
     private Button bt_reg_comment;
     private TextView m_reg_user;
     private TextView m_reg_date;
+    private String mTitle;
     private String mActionBarTitle;
     private String mContent;
     private String mUser;
@@ -80,6 +85,7 @@ public class BoardDetailActivity extends AppCompatActivity {
         name = sp.getString("name", "");
 
         //해당하는 layout 컴포넌트를 변수에 설정
+        titleTv = findViewById(R.id.title);
         mDetailTv = findViewById(R.id.textView);
         m_reg_date = findViewById(R.id.reg_date);
         m_reg_user = findViewById(R.id.reg_user);
@@ -90,18 +96,20 @@ public class BoardDetailActivity extends AppCompatActivity {
         /*        액션바 설정 부분    */
         //----------------------------
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setCustomView(R.layout.custom_bar_detail);
+        actionBar.setCustomView(R.layout.activity_board_detail);
 
         //intent 객체로 부터 해당 값들을 받아옴.
         Intent intent = getIntent();
-        mActionBarTitle = intent.getStringExtra("actionBarTitle");
+        mTitle = intent.getStringExtra("actionBarTitle");
         mContent = intent.getStringExtra("contentTv");
         mUser = intent.getStringExtra("reg_user");
         mDate = intent.getStringExtra("reg_date");
         board_no = intent.getIntExtra("board_no", 0);
         //액션바 제목 등록
-        actionBar.setTitle(mActionBarTitle);
+        //actionBar.setTitle(mActionBarTitle);
+        actionBar.setTitle("빠담 게시글");
         //게시글 내용 등록
+        titleTv.setText(mTitle);
         mDetailTv.setText(mContent);
         m_reg_user.setText(mUser);
         m_reg_date.setText(mDate);
@@ -201,7 +209,31 @@ public class BoardDetailActivity extends AppCompatActivity {
                     try {
                         JSONObject jsonObject = mArray.getJSONObject(i);
                         // array에 해당 값들을 넣어줌.
-                        arrayregDate.add(jsonObject.getString("reg_date"));
+                        //Time Setting
+                        Log.d("data",jsonObject.getString("reg_date"));
+                        String time = jsonObject.getString("reg_date");
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        Date date = null;
+                        try {
+                            date = simpleDateFormat.parse(time);
+                        } catch (ParseException e) {
+                            SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+                            try {
+                                date = simpleDateFormat1.parse(time);
+                            } catch (ParseException ex) {
+                                SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+                                try {
+                                    date = simpleDateFormat2.parse(time);
+                                } catch (ParseException exc) {
+                                    exc.printStackTrace();
+                                }
+                                ex.printStackTrace();
+                            }
+                            e.printStackTrace();
+                        }
+                        //Log.d("data",Long.toString(date.getTime()));
+                        Long longDate = date.getTime();
+                        arrayregDate.add( TimeString.formatTimeString(longDate));
                         arrayregUser.add(jsonObject.getString("reg_user"));
                         arrayctnt.add(jsonObject.getString("ctnt"));
 
@@ -328,9 +360,12 @@ public class BoardDetailActivity extends AppCompatActivity {
             //-------------------------------------
             Intent intent = new Intent(BoardDetailActivity.this, BoardDetailActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            intent.putExtra("actionBarTitle", mActionBarTitle);
+            intent.putExtra("actionBarTitle",mTitle);
             intent.putExtra("contentTv", mContent);
             intent.putExtra("board_no", board_no);
+            intent.putExtra("reg_user", mUser);
+            intent.putExtra("reg_date",mDate);
+
             startActivity(intent);
 
         }
