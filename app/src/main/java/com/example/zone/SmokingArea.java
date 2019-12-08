@@ -12,10 +12,10 @@ public class SmokingArea {
     private Double _Point;
     private Double _AreaLat;
     private Double _AreaLng;
-    private int _ChkAircondition;
-    private int _ChkRoof;
+    private String _ChkAircondition;
+    private String _ChkRoof;
     private String _ChkBench;
-    private int _ChkInside;
+    private String _ChkInside;
     private int _Report;
     private int _AreaType;
     private String _ImgUrl;
@@ -32,10 +32,10 @@ public class SmokingArea {
             _AreaLng = SmokingAreaInfo.getDouble("lng");
             _Point = SmokingAreaInfo.getDouble("point");
             _ImgUrl = SmokingAreaInfo.getString("img_url");
-//            _ChkAircondition=Integer.parseInt(SmokingAreaInfo.getString("vtl"));
-//            _ChkRoof=Integer.parseInt(SmokingAreaInfo.getString("roof"));
+            _ChkAircondition=SmokingAreaInfo.getString("vtl");
+            _ChkRoof=SmokingAreaInfo.getString("roof");
             _ChkBench = SmokingAreaInfo.getString("bench");
-//            _ChkInside=(int)SmokingAreaInfo.get("inside");//서버쪽에 추가필요
+//            _ChkInside=SmokingAreaInfo.get("inside");//서버쪽에 추가필요
             _AreaType = Integer.parseInt(SmokingAreaInfo.getString("type"));
             _Report = Integer.parseInt(SmokingAreaInfo.getString("report"));
         } catch (JSONException e) {
@@ -59,9 +59,7 @@ public class SmokingArea {
         return _AreaLat;
     }
 
-    public Double getSmokingAreaLng() {
-        return _AreaLng;
-    }
+    public Double getSmokingAreaLng() { return _AreaLng; }
 
     public int getSmokingAreaType() {
         return _AreaType;
@@ -69,6 +67,14 @@ public class SmokingArea {
 
     public String getSmokingAreaBench() {
         return _ChkBench;
+    }
+
+    public String getSmokingAreaRoof() {
+        return _ChkRoof;
+    }
+
+    public String getSmokingAreaAircondition() {
+        return _ChkAircondition;
     }
 
     public String getSmokingAreaRegUser() {

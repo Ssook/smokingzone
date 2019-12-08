@@ -361,7 +361,7 @@ public class MapActivity extends AppCompatActivity
             System.out.println(arr[0] + "??" + arr[1] + "??" + arr[2] + "??" + arr[3] + "??" + arr[4] + "??" + arr[5] + "??" + arr[6] + "??" + arr[7]);
 //            final ImageView imgicon = (ImageView) calloutBalloon.findViewById(R.id.badge);
 //            imgicon.setImageResource(R.drawable.defaultimg);
-            final String urlStr = "http://18.222.175.17:8080/SmokingArea/img/" + arr[7] + ".jpg"; // 웹서버에 프로필사진이 없을시 예외처리
+//            final String urlStr = "http://18.222.175.17:8080/SmokingArea/img/" + arr[7] + ".jpg"; // 웹서버에 프로필사진이 없을시 예외처리
 
 //
 //            if (img_url!=null||!img_url.equals(null)) {
@@ -426,9 +426,9 @@ public class MapActivity extends AppCompatActivity
             SmokingArea smokingarea = new SmokingArea((JSONObject) smokingAreaData.get(i));
             smokeMarker = new MapPOIItem();
             //smokeMarker.setItemName((((JSONObject) (ja.get(i))).get("bench").toString()) + "," + (((JSONObject) (ja.get(i))).get("roof").toString()) + "," + (((JSONObject) (ja.get(i))).get("vtl").toString()) + "," + (((JSONObject) (ja.get(i))).get("name").toString()) + "," + (((JSONObject) (ja.get(i))).get("desc").toString()) + "," + (((JSONObject) (ja.get(i))).get("point").toString()) + "," + (((JSONObject) (ja.get(i))).get("no").toString()));
-            smokeMarker.setItemName((((JSONObject) (smokingAreaData.get(i))).get("bench"))
-                    + "," + (((JSONObject) (smokingAreaData.get(i))).get("roof").toString())
-                    + "," + (((JSONObject) (smokingAreaData.get(i))).get("vtl").toString())
+            smokeMarker.setItemName(smokingarea.getSmokingAreaBench()
+                    + "," + smokingarea.getSmokingAreaRoof()
+                    + "," + smokingarea.getSmokingAreaAircondition()
                     + "," + smokingarea.getSmokingAreaName()
                     + "," + smokingarea.getSmokingAreaDesc()
                     + "," + Math.round(smokingarea.getSmokingAreaPoint() * 100) / 100.0
@@ -438,6 +438,7 @@ public class MapActivity extends AppCompatActivity
             smokeMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
             smokeMarker.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
             smokeMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(smokingarea.getSmokingAreaLat(), smokingarea.getSmokingAreaLng()));
+
             switch (smokingarea.getSmokingAreaType()) {
                 case CAFE:
                     smokeMarker.setCustomImageResourceId(R.drawable.cafe);
@@ -650,7 +651,6 @@ public class MapActivity extends AppCompatActivity
                         case FOOD:
                             for (int b = 0; b < food_SmokeMarkerList.size(); b++) {
                                 food_SmokeMarkerList.get(b).setAlpha(0.1f);
-                                System.out.println("anjdidlrjs"+b);
                             }
 
                             isCheck[1] = false;
