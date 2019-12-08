@@ -85,14 +85,6 @@ import static net.daum.mf.map.api.MapPoint.mapPointWithGeoCoord;
 
 public class MapActivity extends AppCompatActivity
         implements MapView.MapViewEventListener, MapView.POIItemEventListener, MapView.CurrentLocationEventListener, MapReverseGeoCoder.ReverseGeoCodingResultListener, NavigationView.OnNavigationItemSelectedListener {
-    public static final int CAFE = 0;
-    public static final int FOOD = 1;
-    public static final int SCHOOL = 2;
-    public static final int COMPANY = 3;
-    public static final int STREET = 4;
-    public static final int OTHER = 5;
-    public static final int BANNED = 6;
-
 
     MapPoint center;
     double curlat;
@@ -357,7 +349,7 @@ public class MapActivity extends AppCompatActivity
         @Override
         public View getCalloutBalloon(MapPOIItem poiItem) {
             String[] arr = poiItem.getItemName().split(",");
-            img_url=arr[7];
+            img_url = arr[7];
             System.out.println(arr[0] + "??" + arr[1] + "??" + arr[2] + "??" + arr[3] + "??" + arr[4] + "??" + arr[5] + "??" + arr[6] + "??" + arr[7]);
 //            final ImageView imgicon = (ImageView) calloutBalloon.findViewById(R.id.badge);
 //            imgicon.setImageResource(R.drawable.defaultimg);
@@ -417,54 +409,62 @@ public class MapActivity extends AppCompatActivity
 
     }
 
+    public MapPOIItem setSmokeMarker(SmokingArea smokingarea){
+        smokeMarker.setItemName(smokingarea.getSmokingAreaBench()
+                + "," + smokingarea.getSmokingAreaRoof()
+                + "," + smokingarea.getSmokingAreaAircondition()
+                + "," + smokingarea.getSmokingAreaName()
+                + "," + smokingarea.getSmokingAreaDesc()
+                + "," + Math.round(smokingarea.getSmokingAreaPoint() * 100) / 100.0
+                + "," + smokingarea.getSmokinAreaNo()
+                + "," + smokingarea.getSmokingAreaImgUrl()
+                + "," + smokingarea.getSmokingAreaType());
+        System.out.println("장소" + smokingarea.getSmokingAreaRegUser());
+        smokeMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
+        smokeMarker.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
+        smokeMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(smokingarea.getSmokingAreaLat(), smokingarea.getSmokingAreaLng()));
+
+        return smokeMarker;
+    }
+
     //받아온 데이터를 통해 마커들을 생성하는 메소드
     private void createSmokeAreaMarker(MapView mapView) throws JSONException {
         JSONArray smokingAreaData = null;
-
         smokingAreaData = new JSONArray(smokeareainfo);
+
         for (int i = 0; i < smokingAreaData.length(); i++) {
+            smokeMarker = new MapPOIItem();                 //이걸 반복문에서 빼니까 하나밖에 안나옴
             SmokingArea smokingarea = new SmokingArea((JSONObject) smokingAreaData.get(i));
-            smokeMarker = new MapPOIItem();
+
+            smokeMarker = setSmokeMarker(smokingarea);
             //smokeMarker.setItemName((((JSONObject) (ja.get(i))).get("bench").toString()) + "," + (((JSONObject) (ja.get(i))).get("roof").toString()) + "," + (((JSONObject) (ja.get(i))).get("vtl").toString()) + "," + (((JSONObject) (ja.get(i))).get("name").toString()) + "," + (((JSONObject) (ja.get(i))).get("desc").toString()) + "," + (((JSONObject) (ja.get(i))).get("point").toString()) + "," + (((JSONObject) (ja.get(i))).get("no").toString()));
-            smokeMarker.setItemName(smokingarea.getSmokingAreaBench()
-                    + "," + smokingarea.getSmokingAreaRoof()
-                    + "," + smokingarea.getSmokingAreaAircondition()
-                    + "," + smokingarea.getSmokingAreaName()
-                    + "," + smokingarea.getSmokingAreaDesc()
-                    + "," + Math.round(smokingarea.getSmokingAreaPoint() * 100) / 100.0
-                    + "," + smokingarea.getSmokinAreaNo()
-                    + "," + smokingarea.getSmokingAreaImgUrl());
-            System.out.println("장소" + smokingarea.getSmokingAreaRegUser());
-            smokeMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
-            smokeMarker.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
-            smokeMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(smokingarea.getSmokingAreaLat(), smokingarea.getSmokingAreaLng()));
 
             switch (smokingarea.getSmokingAreaType()) {
-                case CAFE:
+                case SmokeHereConstants.CAFE:
                     smokeMarker.setCustomImageResourceId(R.drawable.cafe);
                     cafe_SmokeMarkerList.add(smokeMarker);
                     break;
-                case FOOD:
+                case SmokeHereConstants.FOOD:
                     smokeMarker.setCustomImageResourceId(R.drawable.food);
                     food_SmokeMarkerList.add(smokeMarker);
                     break;
-                case SCHOOL:
+                case SmokeHereConstants.SCHOOL:
                     smokeMarker.setCustomImageResourceId(R.drawable.school);
                     school_SmokeMarkerList.add(smokeMarker);
                     break;
-                case COMPANY:
+                case SmokeHereConstants.COMPANY:
                     smokeMarker.setCustomImageResourceId(R.drawable.company);
                     company_SmokeMarkerList.add(smokeMarker);
                     break;
-                case STREET:
+                case SmokeHereConstants.STREET:
                     smokeMarker.setCustomImageResourceId(R.drawable.street);
                     street_SmokeMarkerList.add(smokeMarker);
                     break;
-                case OTHER:
+                case SmokeHereConstants.OTHER:
                     smokeMarker.setCustomImageResourceId(R.drawable.other);
                     other_SmokeMarkerList.add(smokeMarker);
                     break;
-                case BANNED:
+                case SmokeHereConstants.BANNED:
                     smokeMarker.setCustomImageResourceId(R.drawable.map_pin_black);
                     banned_SmokeMarkerList.add(smokeMarker);
                     break;
@@ -642,44 +642,44 @@ public class MapActivity extends AppCompatActivity
                 if (isChecked == false) // Checked 상태일 때 추가
                 {
                     switch (pos) {
-                        case CAFE:
+                        case SmokeHereConstants.CAFE:
                             for (int b = 0; b < cafe_SmokeMarkerList.size(); b++) {
                                 cafe_SmokeMarkerList.get(b).setAlpha(0.1f);
                             }
                             isCheck[0] = false;
                             break;
-                        case FOOD:
+                        case SmokeHereConstants.FOOD:
                             for (int b = 0; b < food_SmokeMarkerList.size(); b++) {
                                 food_SmokeMarkerList.get(b).setAlpha(0.1f);
                             }
 
                             isCheck[1] = false;
                             break;
-                        case SCHOOL:
+                        case SmokeHereConstants.SCHOOL:
                             for (int b = 0; b < school_SmokeMarkerList.size(); b++) {
                                 school_SmokeMarkerList.get(b).setAlpha(0.1f);
                             }
                             isCheck[2] = false;
                             break;
-                        case COMPANY:
+                        case SmokeHereConstants.COMPANY:
                             for (int b = 0; b < company_SmokeMarkerList.size(); b++) {
                                 company_SmokeMarkerList.get(b).setAlpha(0.1f);
                             }
                             isCheck[3] = false;
                             break;
-                        case STREET:
+                        case SmokeHereConstants.STREET:
                             for (int b = 0; b < street_SmokeMarkerList.size(); b++) {
                                 street_SmokeMarkerList.get(b).setAlpha(0.1f);
                             }
                             isCheck[4] = false;
                             break;
-                        case OTHER:
+                        case SmokeHereConstants.OTHER:
                             for (int b = 0; b < other_SmokeMarkerList.size(); b++) {
                                 other_SmokeMarkerList.get(b).setAlpha(0.1f);
                             }
                             isCheck[5] = false;
                             break;
-                        case BANNED:
+                        case SmokeHereConstants.BANNED:
                             for (int b = 0; b < banned_SmokeMarkerList.size(); b++) {
                                 banned_SmokeMarkerList.get(b).setAlpha(0.1f);
                             }
@@ -689,43 +689,43 @@ public class MapActivity extends AppCompatActivity
                 } else                  // Check 해제 되었을 때 제거
                 {
                     switch (pos) {
-                        case CAFE:
+                        case SmokeHereConstants.CAFE:
                             for (int b = 0; b < cafe_SmokeMarkerList.size(); b++) {
                                 cafe_SmokeMarkerList.get(b).setAlpha(1.0f);
                             }
-                            isCheck[CAFE] = true;
+                            isCheck[SmokeHereConstants.CAFE] = true;
                             break;
-                        case FOOD:
+                        case SmokeHereConstants.FOOD:
                             for (int b = 0; b < food_SmokeMarkerList.size(); b++) {
                                 food_SmokeMarkerList.get(b).setAlpha(1.0f);
                             }
                             isCheck[1] = true;
                             break;
-                        case SCHOOL:
+                        case SmokeHereConstants.SCHOOL:
                             for (int b = 0; b < school_SmokeMarkerList.size(); b++) {
                                 school_SmokeMarkerList.get(b).setAlpha(1.0f);
                             }
                             isCheck[2] = true;
                             break;
-                        case COMPANY:
+                        case SmokeHereConstants.COMPANY:
                             for (int b = 0; b < company_SmokeMarkerList.size(); b++) {
                                 company_SmokeMarkerList.get(b).setAlpha(1.0f);
                             }
                             isCheck[3] = true;
                             break;
-                        case STREET:
+                        case SmokeHereConstants.STREET:
                             for (int b = 0; b < street_SmokeMarkerList.size(); b++) {
                                 street_SmokeMarkerList.get(b).setAlpha(1.0f);
                             }
                             isCheck[4] = true;
                             break;
-                        case OTHER:
+                        case SmokeHereConstants.OTHER:
                             for (int b = 0; b < other_SmokeMarkerList.size(); b++) {
                                 other_SmokeMarkerList.get(b).setAlpha(1.0f);
                             }
                             isCheck[5] = true;
                             break;
-                        case BANNED:
+                        case SmokeHereConstants.BANNED:
                             for (int b = 0; b < banned_SmokeMarkerList.size(); b++) {
                                 banned_SmokeMarkerList.get(b).setAlpha(1.0f);
                             }
@@ -744,6 +744,13 @@ public class MapActivity extends AppCompatActivity
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    public void filterMarker(int type, float transparent) {
+        for (int i = 0; i < smokeMarkerlist.size(); i++) {
+            smokeMarkerlist.get(i).getItemName().split(",")[7] ="0" ;
+            smokeMarkerlist.get(i).setAlpha(transparent);
+        }
     }
 
     public void initLayoutMapActivity() {           //레이아웃 정의
