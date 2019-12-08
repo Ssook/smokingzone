@@ -80,7 +80,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
     private ImageView profile;
     View nav_header_view;
     InputStream in_2;
-    String img_url="";
+    String img_url = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,16 +139,17 @@ public class AddSmokingAreaActivity extends AppCompatActivity
             }
             System.out.println("data" + response + "data");
             //
-
-            Handler mHandler = new Handler(Looper.getMainLooper());
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    // 사용하고자 하는 코드
-                    showDialog("등록 완료.");
-                }
-            }, 0);
+            if (response.equals("success")) {
+                Handler mHandler = new Handler(Looper.getMainLooper());
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 사용하고자 하는 코드
+                        showDialog("등록 완료.");
+                    }
+                }, 0);
 //
+            }
         }
     }
 
@@ -273,8 +274,8 @@ public class AddSmokingAreaActivity extends AppCompatActivity
             smokingareainfo.put("smoking_area_bench", "" + checkboxresult(check_bench) + "");
             smokingareainfo.put("smoking_area_desc", areaDesc.getText().toString());
             smokingareainfo.put("smoking_area_type", getRadioGroup());
-            smokingareainfo.put("smoking_area_url",img_url);
-            System.out.println(smokingareainfo.get("smoking_area_url")+"고유2");
+            smokingareainfo.put("smoking_area_url", img_url);
+            System.out.println(smokingareainfo.get("smoking_area_url") + "고유2");
             System.out.println(smokingareainfo + "eldyd");
         } catch (JSONException e) {
             e.printStackTrace();
@@ -380,17 +381,17 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         check_type = ((RadioGroup) rg_type.findViewById(R.id.radioGroup)).getCheckedRadioButtonId();
         switch (check_type) {
             case R.id.rb_cafe:
-                return 0;
+                return SmokeHereConstants.CAFE;
             case R.id.rb_food:
-                return 1;
+                return SmokeHereConstants.FOOD;
             case R.id.rb_school:
-                return 2;
+                return SmokeHereConstants.SCHOOL;
             case R.id.rb_company:
-                return 3;
+                return SmokeHereConstants.COMPANY;
             case R.id.rb_street:
-                return 4;
+                return SmokeHereConstants.STREET;
             case R.id.rb_other:
-                return 5;
+                return SmokeHereConstants.OTHER;
             default:
                 return -1;
         }
@@ -413,8 +414,8 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                     return;
                 }
 
-                img_url=sp.getString("token","")+getCurrentTime();
-                System.out.println(img_url+"고유");
+                img_url = sp.getString("token", "") + getCurrentTime();
+                System.out.println(img_url + "고유");
                 RequestAddThread requestAddThread = new RequestAddThread(); //흡연정보 전송
                 networkThread_img networkThread_img = new networkThread_img(); //흡연 이미지 전송
                 requestAddThread.start();
@@ -510,6 +511,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
         nav_header_id_text.setText(sp.getString("name", ""));
 
     }
+
     public void doFileUpload() throws IOException {
         String lineEnd = "\r\n";
         String twoHyphens = "--";
@@ -531,9 +533,9 @@ public class AddSmokingAreaActivity extends AppCompatActivity
             // write data
             DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
             dos.writeBytes(twoHyphens + boundary + lineEnd);
-            System.out.println(img_url+"고유3");
+            System.out.println(img_url + "고유3");
             dos.writeBytes("Content-Disposition: form-data; name=\"bf_file\";filename=\""
-                    +img_url+".jpg" + "\"" + lineEnd);
+                    + img_url + ".jpg" + "\"" + lineEnd);
             dos.writeBytes(lineEnd);
             int bytesAvailable = in_2.available();
             int maxBufferSize = 1024;

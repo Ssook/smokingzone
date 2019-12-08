@@ -115,6 +115,8 @@ public class MapActivity extends AppCompatActivity
     ArrayList<MapPOIItem> street_SmokeMarkerList = new ArrayList<MapPOIItem>();
     ArrayList<MapPOIItem> other_SmokeMarkerList = new ArrayList<MapPOIItem>();
     ArrayList<MapPOIItem> banned_SmokeMarkerList = new ArrayList<MapPOIItem>();
+    ArrayList<SmokeMarker> all_SmokeMarkerList = new ArrayList<SmokeMarker>();
+
     boolean[] isCheck;
     private String img_url;
 
@@ -437,8 +439,10 @@ public class MapActivity extends AppCompatActivity
             SmokingArea smokingarea = new SmokingArea((JSONObject) smokingAreaData.get(i));
 
             smokeMarker = setSmokeMarker(smokingarea);
-            //smokeMarker.setItemName((((JSONObject) (ja.get(i))).get("bench").toString()) + "," + (((JSONObject) (ja.get(i))).get("roof").toString()) + "," + (((JSONObject) (ja.get(i))).get("vtl").toString()) + "," + (((JSONObject) (ja.get(i))).get("name").toString()) + "," + (((JSONObject) (ja.get(i))).get("desc").toString()) + "," + (((JSONObject) (ja.get(i))).get("point").toString()) + "," + (((JSONObject) (ja.get(i))).get("no").toString()));
+            SmokeMarker data_SmokeMarker=new SmokeMarker(smokeMarker,smokingarea.getSmokingAreaType());
 
+            //smokeMarker.setItemName((((JSONObject) (ja.get(i))).get("bench").toString()) + "," + (((JSONObject) (ja.get(i))).get("roof").toString()) + "," + (((JSONObject) (ja.get(i))).get("vtl").toString()) + "," + (((JSONObject) (ja.get(i))).get("name").toString()) + "," + (((JSONObject) (ja.get(i))).get("desc").toString()) + "," + (((JSONObject) (ja.get(i))).get("point").toString()) + "," + (((JSONObject) (ja.get(i))).get("no").toString()));
+            all_SmokeMarkerList.add(data_SmokeMarker);
             switch (smokingarea.getSmokingAreaType()) {
                 case SmokeHereConstants.CAFE:
                     smokeMarker.setCustomImageResourceId(R.drawable.cafe);
@@ -641,96 +645,105 @@ public class MapActivity extends AppCompatActivity
             public void onClick(DialogInterface dialog, int pos, boolean isChecked) {
                 if (isChecked == false) // Checked 상태일 때 추가
                 {
-                    switch (pos) {
-                        case SmokeHereConstants.CAFE:
-                            for (int b = 0; b < cafe_SmokeMarkerList.size(); b++) {
-                                cafe_SmokeMarkerList.get(b).setAlpha(0.1f);
-                            }
-                            isCheck[0] = false;
-                            break;
-                        case SmokeHereConstants.FOOD:
-                            for (int b = 0; b < food_SmokeMarkerList.size(); b++) {
-                                food_SmokeMarkerList.get(b).setAlpha(0.1f);
+                        for (int i=0; i<all_SmokeMarkerList.size();i++){
+                            if(all_SmokeMarkerList.get(i).getSmokingAreaType()==pos) {
+                                all_SmokeMarkerList.get(i).getSmokeMarker().setAlpha(0.1f);
                             }
 
-                            isCheck[1] = false;
-                            break;
-                        case SmokeHereConstants.SCHOOL:
-                            for (int b = 0; b < school_SmokeMarkerList.size(); b++) {
-                                school_SmokeMarkerList.get(b).setAlpha(0.1f);
-                            }
-                            isCheck[2] = false;
-                            break;
-                        case SmokeHereConstants.COMPANY:
-                            for (int b = 0; b < company_SmokeMarkerList.size(); b++) {
-                                company_SmokeMarkerList.get(b).setAlpha(0.1f);
-                            }
-                            isCheck[3] = false;
-                            break;
-                        case SmokeHereConstants.STREET:
-                            for (int b = 0; b < street_SmokeMarkerList.size(); b++) {
-                                street_SmokeMarkerList.get(b).setAlpha(0.1f);
-                            }
-                            isCheck[4] = false;
-                            break;
-                        case SmokeHereConstants.OTHER:
-                            for (int b = 0; b < other_SmokeMarkerList.size(); b++) {
-                                other_SmokeMarkerList.get(b).setAlpha(0.1f);
-                            }
-                            isCheck[5] = false;
-                            break;
-                        case SmokeHereConstants.BANNED:
-                            for (int b = 0; b < banned_SmokeMarkerList.size(); b++) {
-                                banned_SmokeMarkerList.get(b).setAlpha(0.1f);
-                            }
-                            isCheck[6] = false;
-                            break;
+//                        case SmokeHereConstants.CAFE:
+//                            for (int b = 0; b < cafe_SmokeMarkerList.size(); b++) {
+//                                cafe_SmokeMarkerList.get(b).setAlpha(0.1f);
+//                            }
+//                            isCheck[0] = false;
+//                            break;
+//                        case SmokeHereConstants.FOOD:
+//                            for (int b = 0; b < food_SmokeMarkerList.size(); b++) {
+//                                food_SmokeMarkerList.get(b).setAlpha(0.1f);
+//                            }
+//
+//                            isCheck[1] = false;
+//                            break;
+//                        case SmokeHereConstants.SCHOOL:
+//                            for (int b = 0; b < school_SmokeMarkerList.size(); b++) {
+//                                school_SmokeMarkerList.get(b).setAlpha(0.1f);
+//                            }
+//                            isCheck[2] = false;
+//                            break;
+//                        case SmokeHereConstants.COMPANY:
+//                            for (int b = 0; b < company_SmokeMarkerList.size(); b++) {
+//                                company_SmokeMarkerList.get(b).setAlpha(0.1f);
+//                            }
+//                            isCheck[3] = false;
+//                            break;
+//                        case SmokeHereConstants.STREET:
+//                            for (int b = 0; b < street_SmokeMarkerList.size(); b++) {
+//                                street_SmokeMarkerList.get(b).setAlpha(0.1f);
+//                            }
+//                            isCheck[4] = false;
+//                            break;
+//                        case SmokeHereConstants.OTHER:
+//                            for (int b = 0; b < other_SmokeMarkerList.size(); b++) {
+//                                other_SmokeMarkerList.get(b).setAlpha(0.1f);
+//                            }
+//                            isCheck[5] = false;
+//                            break;
+//                        case SmokeHereConstants.BANNED:
+//                            for (int b = 0; b < banned_SmokeMarkerList.size(); b++) {
+//                                banned_SmokeMarkerList.get(b).setAlpha(0.1f);
+//                            }
+//                            isCheck[6] = false;
+//                            break;
                     }
                 } else                  // Check 해제 되었을 때 제거
                 {
-                    switch (pos) {
-                        case SmokeHereConstants.CAFE:
-                            for (int b = 0; b < cafe_SmokeMarkerList.size(); b++) {
-                                cafe_SmokeMarkerList.get(b).setAlpha(1.0f);
-                            }
-                            isCheck[SmokeHereConstants.CAFE] = true;
-                            break;
-                        case SmokeHereConstants.FOOD:
-                            for (int b = 0; b < food_SmokeMarkerList.size(); b++) {
-                                food_SmokeMarkerList.get(b).setAlpha(1.0f);
-                            }
-                            isCheck[1] = true;
-                            break;
-                        case SmokeHereConstants.SCHOOL:
-                            for (int b = 0; b < school_SmokeMarkerList.size(); b++) {
-                                school_SmokeMarkerList.get(b).setAlpha(1.0f);
-                            }
-                            isCheck[2] = true;
-                            break;
-                        case SmokeHereConstants.COMPANY:
-                            for (int b = 0; b < company_SmokeMarkerList.size(); b++) {
-                                company_SmokeMarkerList.get(b).setAlpha(1.0f);
-                            }
-                            isCheck[3] = true;
-                            break;
-                        case SmokeHereConstants.STREET:
-                            for (int b = 0; b < street_SmokeMarkerList.size(); b++) {
-                                street_SmokeMarkerList.get(b).setAlpha(1.0f);
-                            }
-                            isCheck[4] = true;
-                            break;
-                        case SmokeHereConstants.OTHER:
-                            for (int b = 0; b < other_SmokeMarkerList.size(); b++) {
-                                other_SmokeMarkerList.get(b).setAlpha(1.0f);
-                            }
-                            isCheck[5] = true;
-                            break;
-                        case SmokeHereConstants.BANNED:
-                            for (int b = 0; b < banned_SmokeMarkerList.size(); b++) {
-                                banned_SmokeMarkerList.get(b).setAlpha(1.0f);
-                            }
-                            isCheck[6] = true;
-                            break;
+                    for (int i=0; i<all_SmokeMarkerList.size();i++){
+                        if(all_SmokeMarkerList.get(i).getSmokingAreaType()==pos) {
+                            all_SmokeMarkerList.get(i).getSmokeMarker().setAlpha(1.0f);
+                        }
+
+//                    switch (pos) {
+//                        case SmokeHereConstants.CAFE:
+//                            for (int b = 0; b < cafe_SmokeMarkerList.size(); b++) {
+//                                cafe_SmokeMarkerList.get(b).setAlpha(1.0f);
+//                            }
+//                            isCheck[SmokeHereConstants.CAFE] = true;
+//                            break;
+//                        case SmokeHereConstants.FOOD:
+//                            for (int b = 0; b < food_SmokeMarkerList.size(); b++) {
+//                                food_SmokeMarkerList.get(b).setAlpha(1.0f);
+//                            }
+//                            isCheck[1] = true;
+//                            break;
+//                        case SmokeHereConstants.SCHOOL:
+//                            for (int b = 0; b < school_SmokeMarkerList.size(); b++) {
+//                                school_SmokeMarkerList.get(b).setAlpha(1.0f);
+//                            }
+//                            isCheck[2] = true;
+//                            break;
+//                        case SmokeHereConstants.COMPANY:
+//                            for (int b = 0; b < company_SmokeMarkerList.size(); b++) {
+//                                company_SmokeMarkerList.get(b).setAlpha(1.0f);
+//                            }
+//                            isCheck[3] = true;
+//                            break;
+//                        case SmokeHereConstants.STREET:
+//                            for (int b = 0; b < street_SmokeMarkerList.size(); b++) {
+//                                street_SmokeMarkerList.get(b).setAlpha(1.0f);
+//                            }
+//                            isCheck[4] = true;
+//                            break;
+//                        case SmokeHereConstants.OTHER:
+//                            for (int b = 0; b < other_SmokeMarkerList.size(); b++) {
+//                                other_SmokeMarkerList.get(b).setAlpha(1.0f);
+//                            }
+//                            isCheck[5] = true;
+//                            break;
+//                        case SmokeHereConstants.BANNED:
+//                            for (int b = 0; b < banned_SmokeMarkerList.size(); b++) {
+//                                banned_SmokeMarkerList.get(b).setAlpha(1.0f);
+//                            }
+//                            isCheck[6] = true;
+//                            break;
                     }
                 }
             }
