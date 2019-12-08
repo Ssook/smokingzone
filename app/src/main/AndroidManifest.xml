@@ -68,7 +68,7 @@
             android:name=".BoardDetailActivity"
             android:parentActivityName=".BoardActivity"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:windowSoftInputMode="adjustNothing|stateHidden"
         />
     </application>
 

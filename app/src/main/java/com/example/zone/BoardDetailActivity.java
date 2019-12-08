@@ -9,9 +9,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
@@ -35,7 +37,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class BoardDetailActivity extends AppCompatActivity {
+public class BoardDetailActivity extends AppCompatActivity  implements KeyboardHeightProvider.KeyboardHeightObserver  {
+
+    private KeyboardHeightProvider keyboardHeightProvider;
+
+    private ViewGroup relativeView;
+    private float initialY;
 
     // 게시글 화면 구성 변수들
     private TextView titleTv;
@@ -79,6 +86,14 @@ public class BoardDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //게시글 화면의 layout 설정
         setContentView(R.layout.activity_board_detail);
+
+        keyboardHeightProvider = new KeyboardHeightProvider(this);
+
+        relativeView = findViewById(R.id.linearLayout);
+        relativeView.post(() -> initialY = relativeView.getY());
+
+        View view = findViewById(R.id.board_detail_layout);
+        view.post(() -> keyboardHeightProvider.start());
 
         //사용자 닉네임 받아오기
         sp = getSharedPreferences("profile", MODE_PRIVATE);
@@ -159,6 +174,37 @@ public class BoardDetailActivity extends AppCompatActivity {
 
     }//onCreate func()
 
+
+    @Override
+    public void onKeyboardHeightChanged(int height, int orientation) {
+        if(height == 0){
+            relativeView.setY(initialY);
+            relativeView.requestLayout();
+        }else {
+
+            float newPosition = initialY - height;
+            relativeView.setY(newPosition);
+            relativeView.requestLayout();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        keyboardHeightProvider.setKeyboardHeightObserver(null);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        keyboardHeightProvider.setKeyboardHeightObserver(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        keyboardHeightProvider.close();
+    }
     //---------------------------------------
     /* 해당 게시글의 모든 댓글을 받아오는 클래스*/
     //---------------------------------------
