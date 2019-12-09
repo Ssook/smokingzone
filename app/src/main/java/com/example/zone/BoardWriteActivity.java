@@ -135,7 +135,7 @@ public class BoardWriteActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             try {
-                board_data.put("tag", "전체");
+                board_data.put("tag", "담배");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -158,6 +158,9 @@ public class BoardWriteActivity extends AppCompatActivity {
             //액티비티 간 전환
             Intent intent = new Intent(getApplicationContext(), BoardActivity.class); //인탠트 객체는 액티비티 이동,데이터 입출력에 사용
             //게시판 액티비티 활성화
+            intent.putExtra("태그","전체");
+            //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
             Toast.makeText(BoardWriteActivity.this, "게시글 등록 성공", Toast.LENGTH_SHORT).show();
 

@@ -25,6 +25,8 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -38,7 +40,8 @@ public class BoardActivity extends AppCompatActivity {
     private ActionBar actionBar;    //게시판화면에 쓰일 actionBar
     ListView listView; //게시판 ListView 레이아웃 형성을 위한 객체 생성
     ListViewAdapter adapter; // 뷰에 넣을 데이터들을 어떠한 형식과 어떠한 값들로 구성할지 정하는 adapter 객체
-    
+
+    private String tag;
     //FloatingActionButton 선언 
     FloatingActionButton write_fab;
     FloatingActionButton tag_fab;
@@ -65,7 +68,15 @@ public class BoardActivity extends AppCompatActivity {
         //----------------------------
         /*      게시글을 전부 가져옴  */
         //----------------------------
-        NetworkTask networkTask = new NetworkTask(this, null);
+        Intent intent = getIntent();
+        if(intent!=null)
+        {
+            tag=intent.getExtras().getString("태그");
+        }
+        else{
+            tag="전체";
+        }
+        NetworkTask networkTask = new NetworkTask( this,tag);
         networkTask.execute();
     }
 
@@ -139,16 +150,25 @@ public class BoardActivity extends AppCompatActivity {
 
             }
             else if (v.getId() == R.id.ciga_tag_fab) {
-                //    NetworkTask networkTask = new NetworkTask(this, null);
-                //  networkTask.execute();
+                Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
+                //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.putExtra("태그","담배");
+                startActivity(intent);
             }
             else if (v.getId() == R.id.health_tag_fab) {
-                // NetworkTask networkTask = new NetworkTask(this, null);
-                // networkTask.execute();
+                Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
+                //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.putExtra("태그","건강");
+                startActivity(intent);
             }
             else if (v.getId() == R.id.all_tag_fab) {
-                //    NetworkTask networkTask = new NetworkTask(this, null);
-                //   networkTask.execute();
+                Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
+                //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.putExtra("태그","전체");
+                startActivity(intent);
             }
             else if(v.getId()== R.id.write_fab) {
                 //인탠트 객체는 액티비티 이동,데이터 입출력에 사용
@@ -238,6 +258,7 @@ public class BoardActivity extends AppCompatActivity {
     //----------------------------
     public class NetworkTask extends AsyncTask<Void, Void, String> {
 
+        String value;
         ContentValues values;
         Context mcontext;
 
@@ -245,6 +266,11 @@ public class BoardActivity extends AppCompatActivity {
             this.mcontext = mcontext;
             this.values = values;
         } // 생성자
+
+        NetworkTask(Context mcontext,String value) {
+            this.mcontext = mcontext;
+            this.value = value;
+        }//생성자
 
         @Override
         protected void onPreExecute() {
@@ -257,7 +283,7 @@ public class BoardActivity extends AppCompatActivity {
             String result = "";
             try {
                 //서버의 게시판 정보를 받아오는 함수를 호출함.
-                result = ServeBoardData();
+                result = ServeBoardData(value);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -348,7 +374,7 @@ public class BoardActivity extends AppCompatActivity {
     //------------------------------------
     /* 서버로 부터 게시판 DB 정보를 받아옴  */
     //------------------------------------
-    public String ServeBoardData() throws JSONException {
+    public String ServeBoardData(String values) throws JSONException {
 
         String result = "";
         try {
@@ -367,7 +393,17 @@ public class BoardActivity extends AppCompatActivity {
 
             // 서버에게 웹에서 <Form>으로 값이 넘어온 것과 같은 방식으로 처리하라는 걸 알려준다
             http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");            //--------------------------
+            //   서버로 값 전송
+            //--------------------------
+            StringBuffer buffer = new StringBuffer();
+            String regdata = "boardTag=" + values;
+            Log.d("게시글 태그 정보 ", values);
+            buffer.append(regdata);                 // php 변수에 값 대입
 
+            OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
+            PrintWriter writer = new PrintWriter(outStream);
+            writer.write(buffer.toString());
+            writer.flush();
             //--------------------------
             //   서버에서 전송받기
             //--------------------------
