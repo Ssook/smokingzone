@@ -9,17 +9,144 @@
     tools:context=".ReviewActivity">
 
     <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:id="@+id/parent_linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/avg_point_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="3"
+                    android:adjustViewBounds="true"
+                    android:maxWidth="30dp"
+                    android:maxHeight="30dp"
+                    android:src="@drawable/rating" />
+
+
+                <TextView
+                    android:id="@+id/avg_point"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="점수"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:id="@+id/review_smokingarea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:text="흡연구역 이름"
+                    android:textSize="20dp" />
+
+                <ImageButton
+                    android:id="@+id/report"
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:onClick="report"
+                    android:padding="0sp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/report" />
+
+                <TextView
+                    android:id="@+id/report_cnt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="3"
+                    android:text="0"
+                    android:textSize="20dp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/areaimage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:clickable="true"
+                android:maxWidth="300dp"
+                android:maxHeight="300dp"
+                android:src="@drawable/defaultimg" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/bench"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="벤치 " />
+
+            <CheckBox
+                android:id="@+id/roof"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="지붕 " />
+
+            <CheckBox
+                android:id="@+id/vtl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="환풍기" />
+        </LinearLayout>
+
+        <RatingBar
+            android:id="@+id/ratingbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:isIndicator="false"
+            android:numStars="5"
+            android:rating="5"
+            android:stepSize="0.5" />
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
@@ -27,203 +154,69 @@
             android:orientation="horizontal">
 
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <ImageView
-                android:id="@+id/avg_point_img"
+            <TextView
+                android:id="@+id/ratingmark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="center_horizontal"
                 android:layout_weight="3"
-                android:adjustViewBounds="true"
-                android:maxWidth="30dp"
-                android:maxHeight="30dp"
-                android:src="@drawable/rating" />
-
+                android:text="별점: "
+                android:textSize="10dp" />
 
             <TextView
-                android:id="@+id/avg_point"
+                android:id="@+id/ratingvalue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="56dp"
                 android:layout_weight="3"
-                android:text="점수"
-                android:textSize="20dp" />
-            <TextView
-                android:id="@+id/review_smokingarea"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="5"
-                android:text="흡연구역 이름"
-                android:textSize="20dp" />
+                android:scrollbarSize="10dp"
+                android:text="5" />
 
-            <ImageButton
-                android:id="@+id/report"
-                android:layout_width="10dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:onClick="report"
-                android:padding="0sp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/report" />
-            <TextView
-                android:id="@+id/report_cnt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="3"
-                android:text="0"
-                android:textSize="20dp" />
 
         </LinearLayout>
 
+        <View
+            android:id="@+id/comment_deligater"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="13dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="13dp"
+            android:layout_marginBottom="13dp"
+            android:background="#808080" />
 
 
-
-        <ImageView
-            android:id="@+id/areaimage"
+        <include
+            android:id="@+id/include"
+            layout="@layout/review_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:maxWidth="300dp"
-            android:maxHeight="300dp"
-            android:clickable="true"
-            android:src="@drawable/defaultimg" />
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edit_review_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="15"
+                android:gravity="center"
+                android:hint="댓글을 입력하세요. (별점도 입력됩니다.)"
+                android:imeOptions="actionSend"
+                android:inputType="text" />
+
+            <Button
+                android:id="@+id/comment_reg_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="입력" />
+
+        </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout">
-
-        <CheckBox
-            android:id="@+id/bench"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="벤치 " />
-
-        <CheckBox
-            android:id="@+id/roof"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="지붕 " />
-
-        <CheckBox
-            android:id="@+id/vtl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="환풍기" />
-    </LinearLayout>
-
-    <RatingBar
-        android:id="@+id/ratingbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:isIndicator="false"
-        android:numStars="5"
-        android:rating="5"
-        android:stepSize="0.5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout2" />
-
-
-    <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/ratingbar">
-
-
-        <TextView
-            android:id="@+id/ratingmark"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:text="별점: "
-            android:textSize="10dp" />
-
-        <TextView
-            android:id="@+id/ratingvalue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="56dp"
-            android:layout_weight="3"
-            android:scrollbarSize="10dp"
-            android:text="5"
-             />
-
-
-
-    </LinearLayout>
-
-    <View
-        android:id="@+id/comment_deligater"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="13dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="13dp"
-        android:layout_marginBottom="13dp"
-        android:background="#808080"
-        app:layout_constraintBottom_toTopOf="@id/include"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout3" />
-
-
-    <include
-        android:id="@+id/include"
-        layout="@layout/review_comment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/comment_deligater" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <EditText
-            android:id="@+id/edit_review_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="15"
-            android:gravity="center"
-            android:hint="댓글을 입력하세요. (별점도 입력됩니다.)"
-            android:imeOptions="actionSend"
-            android:inputType="text" />
-
-        <Button
-            android:id="@+id/comment_reg_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text="입력" />
-
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
