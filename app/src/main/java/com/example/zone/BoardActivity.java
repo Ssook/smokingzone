@@ -237,26 +237,6 @@ public class BoardActivity extends AppCompatActivity {
     }//onCreateOptionMenu func()
 
 
-    //옵션 메뉴들을 눌렀을 때 기능 명시
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings1) {
-            //do your functionality here
-            return true;
-        }
-        if (id == R.id.action_settings2) {
-            //do your functionality here
-            return true;
-        }
-        if (id == R.id.action_settings3) {
-            //do your functionality here
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     //----------------------------
     /*  게시글 뿌려주는 클래스     */
