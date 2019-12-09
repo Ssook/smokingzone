@@ -124,7 +124,7 @@ public class ReviewActivity extends AppCompatActivity {
         }
 
         smokingarea_name_TV.setText(smoking_area_data[3]);
-        smokingarea_avg_star_point_TV.setText(smoking_area_data[5]);
+
         if(smoking_area_data[0].charAt(0)=='1')
         {
             bench_CB.setChecked(true);
