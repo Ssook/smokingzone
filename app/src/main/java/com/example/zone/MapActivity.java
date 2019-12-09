@@ -852,15 +852,37 @@ public class MapActivity extends AppCompatActivity
                     JSONObject nearSmokingAreaInfo = new JSONObject(receiveMsg);
                     strlat = nearSmokingAreaInfo.getString("smoking_area_lat");
                     strlng = nearSmokingAreaInfo.getString("smoking_area_lng");
+                    String nearSmokingAreaInfoUrl = "daummaps://route?sp=" + curlat + "," + curlng + "&ep=" + strlat + "," + strlng + "&by=FOOT";//여기에 좌표값 넣어주면 됨
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(nearSmokingAreaInfoUrl));
+                    startActivity(intent);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Handler mHandler = new Handler(Looper.getMainLooper());
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 사용하고자 하는 코드
+                            showDialog("반경 1km이내에 흡연장소가 없습니다.\n아시는 흡연장소가 있다면 등록해주세요!");
+                        }
+                    }, 0);
+
                 }
 
-                String nearSmokingAreaInfoUrl = "daummaps://route?sp=" + curlat + "," + curlng + "&ep=" + strlat + "," + strlng + "&by=FOOT";//여기에 좌표값 넣어주면 됨
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(nearSmokingAreaInfoUrl));
-                startActivity(intent);
             }
         });
+    }
+    public void showDialog(String message) {                                  //장소 등록이 완료되면 다이얼로그 팝업을 띄워주는 메소드
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("알림");
+        builder.setMessage(message);
+        builder.setPositiveButton("OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        builder.show();
     }
 
     private void setView_MapView() {
