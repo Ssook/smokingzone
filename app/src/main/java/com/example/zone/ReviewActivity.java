@@ -397,7 +397,7 @@ public class ReviewActivity extends AppCompatActivity {
             // 통신이 완료되면 호출됩니다.
             // 결과에 따른 UI 수정 등은 여기서 합니다.
 
-            if(result.equals("overlap")){
+            if(result.contains("overlap")){
                 Toast.makeText(ReviewActivity.this, "이미 리뷰를 등록하셨습니다.", Toast.LENGTH_SHORT).show();
                 return ;
             }
