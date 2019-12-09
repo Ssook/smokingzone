@@ -55,6 +55,7 @@ public class ReviewActivity extends AppCompatActivity {
     private JSONArray jsonArray;  //서버로부터 JSON Array를 받아 저장할 변수
     private ActionBar actionBar;
     private ImageButton report_IBtn;
+    private TextView report_ctn_TV;
 
     ListView listView; //리뷰화면 댓글  ListView 레이아웃 형성을 위한 객체 생성
     ReviewListViewAdapter adapter; // 뷰에 넣을 데이터들을 어떠한 형식과 어떠한 값들로 구성할지 정하는 adapter 객체
@@ -100,7 +101,7 @@ public class ReviewActivity extends AppCompatActivity {
         review_comment_ET = findViewById((R.id.edit_review_comment));
         reg_comment_Btn = findViewById((R.id.comment_reg_button));
         smokingarea_image_IV =findViewById(R.id.areaimage);
-
+        report_ctn_TV= findViewById(R.id.report_cnt);
         //----------------------------
         /*   뷰에 해당하는 값 설정    */
         //----------------------------
@@ -261,6 +262,12 @@ public class ReviewActivity extends AppCompatActivity {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     try {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        //신고수,평균별점 넣기
+                        if(i==jsonArray.length()-1)
+                        {
+                            smokingarea_avg_star_point_TV.setText(jsonObject.getString("avg_point"));
+                            report_ctn_TV.setText(jsonObject.getString("report_ctn"));
+                        }
                         // Pulling items from the array
                         arrayregDate.add(jsonObject.getString("reg_date"));
                         arrayregUser.add(jsonObject.getString("reg_user"));
@@ -288,7 +295,7 @@ public class ReviewActivity extends AppCompatActivity {
                 listView.setAdapter(adapter);
             }//result not null
             else {
-                Log.d("댓글 data:", "댓글 없음!");
+                Log.d("오류:", "정보 안넘어옴!");
             }
         }
     }
@@ -380,6 +387,7 @@ public class ReviewActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             // 통신이 완료되면 호출됩니다.
             // 결과에 따른 UI 수정 등은 여기서 합니다.
+
             Intent intent = new Intent(ReviewActivity.this, ReviewActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             intent.putExtra("arr",smoking_area_data);
@@ -405,7 +413,8 @@ public class ReviewActivity extends AppCompatActivity {
             http.setRequestMethod("POST");         // 전송 방식은 POST
 
             // 서버에게 웹에서 <Form>으로 값이 넘어온 것과 같은 방식으로 처리하라는 걸 알려준다
-            http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");            //--------------------------
+            http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+            //--------------------------
             //   서버로 값 전송
             //--------------------------
             StringBuffer buffer = new StringBuffer();
@@ -437,32 +446,6 @@ public class ReviewActivity extends AppCompatActivity {
     } // HttpPostDat
 
     public void report(View view) {
-
-//        //JSONObject에 서버에 보내줄 댓글 데이터 담아줌
-//        JSONObject sbParam = new JSONObject();
-//        try {
-//            sbParam.put("report_title", "title");
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        try {
-//            sbParam.put("report_user", "user");
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        try {
-//            sbParam.put("report_ctnt","report_IBtn CONTENT");
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        try {
-//            sbParam.put("report_smoking_area_no",Integer.parseInt(smoking_area_data[6]));
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        NetworkTaskReport networkTaskReport = new NetworkTaskReport(sbParam.toString());
-//        Log.d("reviewComment", sbParam.toString());
-//        networkTaskReport.execute();
         showDialog("신고하시겠습니까?");
     }
 
@@ -566,6 +549,9 @@ public class ReviewActivity extends AppCompatActivity {
         System.out.println(result);
         return result;
     } // HttpPostDat
+
+
+
     public void showDialog(String message) {                                  //장소 등록이 완료되면 다이얼로그 팝업을 띄워주는 메소드
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("알림");
