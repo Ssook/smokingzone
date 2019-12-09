@@ -12,6 +12,8 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -111,7 +113,7 @@ public class ReviewActivity extends AppCompatActivity {
         img_url=smoking_area_data[7];
         smokingarea_image_IV.setImageResource(R.drawable.defaultimg);
         //받아온 정보를 각 항목에 설정
-        if (img_url!=null) {
+        if (!img_url.equals("null")) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -342,6 +344,7 @@ public class ReviewActivity extends AppCompatActivity {
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         }
+
        // System.out.println(result);
         return result;
     } // HttpPostDat
@@ -369,17 +372,23 @@ public class ReviewActivity extends AppCompatActivity {
             try {
                 //클라이언트로 받은 값들을 result에 넣어줌
                 result = sendReviewWrite(values);
+                if(result.equals("overlap")){
+                    showDialogOverlap("이미 댓글과 별점을 등록하셨습니다.");
+                }
                 Log.d("reviewcommentIn",result);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             return result; // 결과가 여기에 담깁니다. 아래 onPostExecute()의 파라미터로 전달됩니다.
         }
-
+    //////////////////////////이쪽 봐바 승연아!!
         @Override
         protected void onPostExecute(String result) {
             // 통신이 완료되면 호출됩니다.
             // 결과에 따른 UI 수정 등은 여기서 합니다.
+            if(result.equals("overlap")){
+                return ;
+            }
             Intent intent = new Intent(ReviewActivity.this, ReviewActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             intent.putExtra("arr",smoking_area_data);
@@ -432,6 +441,19 @@ public class ReviewActivity extends AppCompatActivity {
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         }
+        if (result.equals("overlap")) {
+            Handler mHandler = new Handler(Looper.getMainLooper());
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    // 사용하고자 하는 코드
+                    showDialog("이미 별점과 댓글을 입력하셨습니다.");
+                    return ;
+                }
+            }, 0);
+
+        }
+
         System.out.println(result);
         return result;
     } // HttpPostDat
@@ -566,6 +588,19 @@ public class ReviewActivity extends AppCompatActivity {
         System.out.println(result);
         return result;
     } // HttpPostDat
+
+    public void showDialogOverlap(String message) {                                  //장소 등록이 완료되면 다이얼로그 팝업을 띄워주는 메소드
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("알림");
+        builder.setMessage(message);
+        builder.setPositiveButton("OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+        builder.show();
+    }
+
     public void showDialog(String message) {                                  //장소 등록이 완료되면 다이얼로그 팝업을 띄워주는 메소드
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("알림");
