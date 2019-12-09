@@ -21,7 +21,7 @@
     <string name="review_name">리뷰 창</string>
     <string name="board_name">빠담 게시판</string>
     <string name="board_write_name">빠담 글쓰기</string>
-    <string name="search_hint_query">작성자나 제목을 입력하세요.</string>
+    <string name="search_hint_query">내용이나 제목을 입력하세요.</string>
     <string name="title_activity_add_smoking_area">흡연 장소 등록</string>
 
     <string-array name = "filter_list">

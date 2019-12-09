@@ -211,8 +211,8 @@ public class BoardActivity extends AppCompatActivity {
         //----------------------------
         MenuItem myActionMenuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setQueryHint(getString(R.string.search_hint_query));
-
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             //검색어 완료시
