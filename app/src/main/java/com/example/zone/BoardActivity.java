@@ -69,13 +69,18 @@ public class BoardActivity extends AppCompatActivity {
         /*      게시글을 전부 가져옴  */
         //----------------------------
         Intent intent = getIntent();
-        if(intent!=null)
-        {
-            tag=intent.getExtras().getString("태그");
-        }
-        else{
+        Log.d("getintent()",getIntent().toString());
+        try {
+            if(!(intent.getExtras().isEmpty()))
+            {
+                tag=intent.getExtras().getString("태그");
+            }
+        } catch (NullPointerException e) {
             tag="전체";
+            e.printStackTrace();
         }
+
+
         NetworkTask networkTask = new NetworkTask( this,tag);
         networkTask.execute();
     }
