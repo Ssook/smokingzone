@@ -58,7 +58,7 @@ public class ReviewActivity extends AppCompatActivity {
     private ActionBar actionBar;
     private ImageButton report_IBtn;
     private TextView report_ctn_TV;
-
+    private String report_result;
     ListView listView; //리뷰화면 댓글  ListView 레이아웃 형성을 위한 객체 생성
     ReviewListViewAdapter adapter; // 뷰에 넣을 데이터들을 어떠한 형식과 어떠한 값들로 구성할지 정하는 adapter 객체
 
@@ -267,13 +267,16 @@ public class ReviewActivity extends AppCompatActivity {
                         //신고수,평균별점 넣기
                         if(i==jsonArray.length()-1)
                         {
-                            smokingarea_avg_star_point_TV.setText(jsonObject.getString("avg_point"));
-                            report_ctn_TV.setText(jsonObject.getString("report_ctn"));
+                            smokingarea_avg_star_point_TV.setText(jsonObject.getString("point"));
+                            report_ctn_TV.setText(jsonObject.getString("report"));
                         }
-                        // Pulling items from the array
-                        arrayregDate.add(jsonObject.getString("reg_dat e"));
-                        arrayregUser.add(jsonObject.getString("reg_user"));
-                        arrayctnt.add(jsonObject.getString("ctnt"));
+                        else{
+                            // Pulling items from the array
+                            arrayregDate.add(jsonObject.getString("reg_date"));
+                            arrayregUser.add(jsonObject.getString("reg_user"));
+                            arrayctnt.add(jsonObject.getString("ctnt"));
+                        }
+
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -394,15 +397,17 @@ public class ReviewActivity extends AppCompatActivity {
             // 통신이 완료되면 호출됩니다.
             // 결과에 따른 UI 수정 등은 여기서 합니다.
 
-            ////////////////
             if(result.equals("overlap")){
+                Toast.makeText(ReviewActivity.this, "이미 리뷰를 등록하셨습니다.", Toast.LENGTH_SHORT).show();
                 return ;
             }
-            ////////////////////
-            Intent intent = new Intent(ReviewActivity.this, ReviewActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            intent.putExtra("arr",smoking_area_data);
-            startActivity(intent);
+            else{
+                Intent intent = new Intent(ReviewActivity.this, ReviewActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.putExtra("arr",smoking_area_data);
+                startActivity(intent);
+            }
+
         }
     }
     //서버로 댓글을 JSONObject 형태의 String 값으로 댓글보내고 리턴값을 받는 함수.
@@ -474,7 +479,7 @@ public class ReviewActivity extends AppCompatActivity {
     }
 
     //----------------------------------------------------------------
-    /*  리뷰화면 댓글 입력 클래스 (클라이언트 -> 서버 , 서버 -> 클라이언트) */
+    /*  신고 */
     //----------------------------------------------------------------
     public class NetworkTaskReport extends AsyncTask<Void, Void, String> {
 
