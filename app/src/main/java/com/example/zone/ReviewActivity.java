@@ -271,7 +271,7 @@ public class ReviewActivity extends AppCompatActivity {
                             report_ctn_TV.setText(jsonObject.getString("report_ctn"));
                         }
                         // Pulling items from the array
-                        arrayregDate.add(jsonObject.getString("reg_date"));
+                        arrayregDate.add(jsonObject.getString("reg_dat e"));
                         arrayregUser.add(jsonObject.getString("reg_user"));
                         arrayctnt.add(jsonObject.getString("ctnt"));
 

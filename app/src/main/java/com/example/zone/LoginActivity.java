@@ -131,6 +131,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.e("UserProfile", userProfile.toString());
                     // Log.e("UserProfile", userProfile.getId() + "");
                     System.out.println("dmstjr");
+                    saveShared(userProfile.getId() + "", userProfile.getNickname(), userProfile.getThumbnailImagePath());
                     long number = userProfile.getId();
                     Intent intent = new Intent(LoginActivity.this, MapActivity.class);
                     intent.putExtra("user_name", name);
