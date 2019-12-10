@@ -7,6 +7,6 @@ public final class SmokeHereConstants {
     public static final int COMPANY = 3;
     public static final int STREET = 4;
     public static final int OTHER = 5;
-    public static final int BANNED = 6;
+    public static final int BANNED = 10;
     public static final int TYPECOUNT = 7;
 }
