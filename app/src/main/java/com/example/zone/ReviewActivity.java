@@ -41,7 +41,10 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ReviewActivity extends AppCompatActivity  implements KeyboardHeightProvider.KeyboardHeightObserver{
 
@@ -319,8 +322,33 @@ public class ReviewActivity extends AppCompatActivity  implements KeyboardHeight
                             report_ctn_TV.setText(jsonObject.getString("report"));
                         }
                         else{
+                            //Time Setting
+                            Log.d("data", jsonObject.getString("reg_date"));
+                            String time = jsonObject.getString("reg_date");
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                            Date date = null;
+                            try {
+                                date = simpleDateFormat.parse(time);
+                            } catch (ParseException e) {
+                                SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+                                try {
+                                    date = simpleDateFormat1.parse(time);
+                                } catch (ParseException ex) {
+                                    SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+                                    try {
+                                        date = simpleDateFormat2.parse(time);
+                                    } catch (ParseException exc) {
+                                        exc.printStackTrace();
+                                    }
+                                    ex.printStackTrace();
+                                }
+                                e.printStackTrace();
+                            }
+                            //Log.d("data",Long.toString(date.getTime()));
+                            Long longDate = date.getTime();
+                            arrayregDate.add(TimeString.formatTimeString(longDate));
                             // Pulling items from the array
-                            arrayregDate.add(jsonObject.getString("reg_date"));
+                            //arrayregDate.add(jsonObject.getString("reg_date"));
                             arrayregUser.add(jsonObject.getString("reg_user"));
                             arrayctnt.add(jsonObject.getString("ctnt"));
                         }
