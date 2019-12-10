@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -33,6 +34,10 @@ public class BoardWriteActivity extends AppCompatActivity {
     private EditText title_ET;
     private EditText desc_ET;
     private CheckBox anony_CB;
+    private CheckBox all_CB;
+    private CheckBox health_CB;
+    private CheckBox ciga_CB;
+    private String tag="전체";
 
     //현재 유저 닉네임 받아오는 변수들
     SharedPreferences sp;
@@ -62,6 +67,55 @@ public class BoardWriteActivity extends AppCompatActivity {
         setView_titleEVView();
         setView_descETView();
         setView_anonyCBView();
+        setView_allCBView ();
+        setView_cigaCBView();
+        setView_healthCBView();
+    }
+
+    private void setView_allCBView() {
+
+        all_CB = (CheckBox) findViewById(R.id.check_tag_all);
+        all_CB.setOnClickListener(new CheckBox.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                all_CB.setChecked(true);
+                ciga_CB.setChecked(false);
+                health_CB.setChecked(false);
+                tag="전체";
+            }
+        }) ;
+    }
+
+    private void setView_cigaCBView() {
+
+        ciga_CB = (CheckBox) findViewById(R.id.check_tag_ciga);
+        ciga_CB.setOnClickListener(new CheckBox.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO : process the click event.
+                all_CB.setChecked(false);
+                ciga_CB.setChecked(true);
+                health_CB.setChecked(false);
+                tag="담배";
+
+            }
+        }) ;
+
+    }
+
+    private void setView_healthCBView() {
+        health_CB = (CheckBox) findViewById(R.id.check_tag_health);
+        health_CB.setOnClickListener(new CheckBox.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO : process the click event.
+                all_CB.setChecked(false);
+                ciga_CB.setChecked(false);
+                health_CB.setChecked(true);
+                tag="건강";
+
+            }
+        }) ;
     }
 
     private void setView_anonyCBView() {
@@ -135,7 +189,7 @@ public class BoardWriteActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             try {
-                board_data.put("tag", "담배");
+                board_data.put("tag",tag );
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -158,7 +212,7 @@ public class BoardWriteActivity extends AppCompatActivity {
             //액티비티 간 전환
             Intent intent = new Intent(getApplicationContext(), BoardActivity.class); //인탠트 객체는 액티비티 이동,데이터 입출력에 사용
             //게시판 액티비티 활성화
-            intent.putExtra("태그","전체");
+            intent.putExtra("태그", "전체");
             //글쓰기 완료 후 전환 시 액티비티가 남지 않게 함
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);

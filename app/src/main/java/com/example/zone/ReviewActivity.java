@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -42,7 +43,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class ReviewActivity extends AppCompatActivity {
+public class ReviewActivity extends AppCompatActivity  implements KeyboardHeightProvider.KeyboardHeightObserver{
+
+    private KeyboardHeightProvider keyboardHeightProvider;
+
+
+    private ViewGroup editTextLinearLayoutView;
+    private float initialY;
+
     private TextView smokingarea_name_TV;
     private TextView smokingarea_avg_star_point_TV;
     private CheckBox bench_CB;
@@ -78,7 +86,8 @@ public class ReviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         sp = getSharedPreferences("profile", Activity.MODE_PRIVATE);
         setContentView(R.layout.activity_review);
-
+        //editText 키보드 팝업 설정
+        setView_editText_KeyBoardView();
         //----------------------------
         /*        액션바 설정 부분    */
         //----------------------------
@@ -208,7 +217,46 @@ public class ReviewActivity extends AppCompatActivity {
         star_point_RB.setOnRatingBarChangeListener(new RatingbarListener());
     }
 
+    private void setView_editText_KeyBoardView() {
+        keyboardHeightProvider = new KeyboardHeightProvider(this);
 
+        editTextLinearLayoutView = findViewById(R.id.linearLayout4);
+        editTextLinearLayoutView.post(() -> initialY = editTextLinearLayoutView.getY());
+
+        View view = findViewById(R.id.review_layout);
+        view.post(() -> keyboardHeightProvider.start());
+    }
+
+    @Override
+    public void onKeyboardHeightChanged(int height, int orientation) {
+        if (height == 0) {
+            editTextLinearLayoutView.setY(initialY);
+            editTextLinearLayoutView.requestLayout();
+        } else {
+
+            float newPosition = initialY - height;
+            editTextLinearLayoutView.setY(newPosition);
+            editTextLinearLayoutView.requestLayout();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        keyboardHeightProvider.setKeyboardHeightObserver(null);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        keyboardHeightProvider.setKeyboardHeightObserver(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        keyboardHeightProvider.close();
+    }
     class RatingbarListener implements RatingBar.OnRatingBarChangeListener {
         @Override
         public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {

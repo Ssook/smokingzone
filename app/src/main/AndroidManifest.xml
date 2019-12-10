@@ -19,7 +19,7 @@
         <activity
             android:name=".ReviewActivity"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden">
+            android:windowSoftInputMode="adjustNothing|stateHidden">
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".MapActivity" />

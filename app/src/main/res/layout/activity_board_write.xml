@@ -25,39 +25,112 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:hint="내용 (1000자 이내)"
         android:gravity="top"
+        android:hint="내용 (1000자 이내)"
         android:lines="10"
         android:maxLength="1000"
         android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titletext"
-
         tools:ignore="MissingConstraints" />
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/contenttext">
+
+        <TextView
+            android:id="@+id/alltext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="전체"
+            android:textColor="#000"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/contenttext" />
+
+        <CheckBox
+            android:id="@+id/check_tag_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            app:layout_constraintLeft_toRightOf="@id/alltext"
+            app:layout_constraintTop_toBottomOf="@id/contenttext"
+
+            />
+
+        <TextView
+            android:id="@+id/cigatext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="담배"
+            android:textColor="#000"
+            android:textSize="20sp"
+            app:layout_constraintLeft_toRightOf="@id/check_tag_all"
+            app:layout_constraintTop_toBottomOf="@id/contenttext" />
+
+        <CheckBox
+            android:id="@+id/check_tag_ciga"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            app:layout_constraintLeft_toRightOf="@id/cigatext"
+            app:layout_constraintTop_toBottomOf="@id/contenttext"
+
+            />
+
+        <TextView
+            android:id="@+id/healthtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="건강"
+            android:textColor="#000"
+            android:textSize="20sp"
+            app:layout_constraintLeft_toRightOf="@id/check_tag_ciga"
+            app:layout_constraintTop_toBottomOf="@id/contenttext" />
+
+        <CheckBox
+            android:id="@+id/check_tag_health"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            app:layout_constraintLeft_toRightOf="@id/healthtext"
+            app:layout_constraintTop_toBottomOf="@id/contenttext"
+
+            />
+    </LinearLayout>
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@id/anonycheck"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:id="@+id/anonytext"
-        android:layout_marginBottom="14dp"
-        android:text="익명"
-        android:textSize="20sp"
-        android:textColor="#000"
-         />
-    <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="13dp"
         android:gravity="right"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintRight_toRightOf="@id/contenttext"
+        android:text="익명"
+        android:textColor="#000"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/anonycheck" />
+
+    <CheckBox
         android:id="@+id/anonycheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:checked="true"
+        android:gravity="right"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="@id/contenttext"
 
-         />
-
-
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
