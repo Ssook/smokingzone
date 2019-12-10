@@ -137,9 +137,9 @@ public class AddSmokingAreaActivity extends AppCompatActivity
             } catch (MalformedURLException e) {
             } catch (IOException e) {
             }
-            System.out.println("data" + response + "data");
+            System.out.println("data" + response + "입니다");
             //
-            if (response.equals("success")) {
+
                 Handler mHandler = new Handler(Looper.getMainLooper());
                 mHandler.postDelayed(new Runnable() {
                     @Override
@@ -149,7 +149,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                     }
                 }, 0);
 //
-            }
+
         }
     }
 
