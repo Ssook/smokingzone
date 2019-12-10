@@ -565,6 +565,7 @@ public class ReviewActivity extends AppCompatActivity  implements KeyboardHeight
             if(result.contains("success"))
             {
                 Log.d("data","tjdrhd");
+                //
                 Toast.makeText(ReviewActivity.this, "신고 등록 성공", Toast.LENGTH_SHORT).show();
             }
             else if (result.contains("fail")){
