@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -69,7 +70,6 @@ public class BoardActivity extends AppCompatActivity {
         /*      게시글을 전부 가져옴  */
         //----------------------------
         Intent intent = getIntent();
-        Log.d("getintent()",getIntent().toString());
         try {
             if(!(intent.getExtras().isEmpty()))
             {
@@ -146,7 +146,6 @@ public class BoardActivity extends AppCompatActivity {
             //----------------------------
 
             if (v.getId() == R.id.tagFab) {
-                Log.d("태그팹","터치");
                 if (!isFABOpen) {
                     showFABMenu();
                 } else {
@@ -291,12 +290,12 @@ public class BoardActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 //제일 최근에 담긴 게시글이 맨 위에 뜨도록 함
+
                 for (int i = boardJSONArray.length() - 1; i >= 0; i--) {
                     try {
                         JSONObject jsonObject = boardJSONArray.getJSONObject(i);
                         // Pulling items from the array
                         //Time Setting
-                        Log.d("data", jsonObject.getString("reg_date"));
                         String time = jsonObject.getString("reg_date");
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         Date date = null;
@@ -317,7 +316,6 @@ public class BoardActivity extends AppCompatActivity {
                             }
                             e.printStackTrace();
                         }
-                        //Log.d("data",Long.toString(date.getTime()));
                         Long longDate = date.getTime();
                         arrayregDate.add(TimeString.formatTimeString(longDate));
                         arrayregUser.add(jsonObject.getString("reg_user"));
@@ -351,7 +349,7 @@ public class BoardActivity extends AppCompatActivity {
             }//result not null
             //result is null
             else {
-                Log.d("data:", "게시글 없음!");
+                Toast.makeText(BoardActivity.this, "게시글 없음.", Toast.LENGTH_SHORT).show();
             }
         }
     } //NetWorkTask Class
@@ -382,7 +380,6 @@ public class BoardActivity extends AppCompatActivity {
             //--------------------------
             StringBuffer buffer = new StringBuffer();
             String regdata = "boardTag=" + values;
-            Log.d("게시글 태그 정보 ", values);
             buffer.append(regdata);                 // php 변수에 값 대입
 
             OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
@@ -404,7 +401,6 @@ public class BoardActivity extends AppCompatActivity {
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         }
-        System.out.println(result);
         return result; //onPostExcute()로 전달
     } // HttpPostDat
 }//Board Activity Class

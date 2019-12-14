@@ -37,10 +37,8 @@ public class SplashActivity extends Activity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
         if(requestCode==200 && grantResults.length>0){
             if(grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                Log.d("배열0","in");
             }
             if(grantResults[1]==PackageManager.PERMISSION_GRANTED){
-                Log.d("배열1","in");
             }
         }
     }

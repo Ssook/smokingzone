@@ -275,8 +275,6 @@ public class AddSmokingAreaActivity extends AppCompatActivity
             smokingareainfo.put("smoking_area_desc", areaDesc.getText().toString());
             smokingareainfo.put("smoking_area_type", getRadioGroup());
             smokingareainfo.put("smoking_area_url", img_url);
-            System.out.println(smokingareainfo.get("smoking_area_url") + "고유2");
-            System.out.println(smokingareainfo + "eldyd");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -415,7 +413,6 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                 }
 
                 img_url = sp.getString("token", "") + getCurrentTime();
-                System.out.println(img_url + "고유");
                 RequestAddThread requestAddThread = new RequestAddThread(); //흡연정보 전송
                 networkThread_img networkThread_img = new networkThread_img(); //흡연 이미지 전송
                 requestAddThread.start();
@@ -463,7 +460,6 @@ public class AddSmokingAreaActivity extends AppCompatActivity
 
         String urlStr;
         urlStr = sp.getString("image_url", "");
-        System.out.println("dhkt" + urlStr);
         new Thread() {
             public void run() {
                 try {
@@ -475,7 +471,6 @@ public class AddSmokingAreaActivity extends AppCompatActivity
                     final Bitmap bm = BitmapFactory.decodeStream(bis);
                     bis.close();
                     if (bm == null) {
-                        System.out.println("what");
                     }
                     Handler mHandler = new Handler(Looper.getMainLooper());
                     mHandler.postDelayed(new Runnable() {
@@ -542,7 +537,7 @@ public class AddSmokingAreaActivity extends AppCompatActivity
             int bufferSize = Math.min(bytesAvailable, maxBufferSize);
             byte[] buffer = new byte[bufferSize];
             int bytesRead = in_2.read(buffer, 0, bufferSize);
-            Log.d("Test", "image byte is " + bytesRead);
+
 
             // read image
             while (bytesRead > 0) {
@@ -555,15 +550,13 @@ public class AddSmokingAreaActivity extends AppCompatActivity
             dos.writeBytes(lineEnd);
             dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
-            // close streams
-            Log.e("Test", "File is written");
             in_2.close();
             dos.flush(); // finish upload...
 
             // get response
             int ch;
             InputStream is = conn.getInputStream();
-            Log.e("-----------", is.toString());
+
             StringBuffer b = new StringBuffer();
 
             while ((ch = is.read()) != -1) {
@@ -571,10 +564,8 @@ public class AddSmokingAreaActivity extends AppCompatActivity
             }
 
             String s = b.toString();
-            Log.e("Test", "result = " + s);
             dos.close();
         } catch (Exception e) {
-            Log.d("Test", "exception " + e.getMessage());
         }
     }
 

@@ -54,21 +54,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ///
-//        try {
-//            PackageInfo info = getPackageManager().getPackageInfo("com.example.zone", PackageManager.GET_SIGNATURES);
-//            for (Signature signature : info.signatures) {
-//                MessageDigest md = MessageDigest.getInstance("SHA");
-//                md.update(signature.toByteArray());
-//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-//            }
-//        } catch (PackageManager.NameNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchAlgorithmException e) {
-//            e.printStackTrace();
-//        }
-/////
-        System.out.println(loadShared() + "dasdas");
         if (loadShared().equals("")) {
             setContentView(R.layout.activity_login);
             btn_kakao_login =  findViewById(R.id.btn_kakao_login);
@@ -128,9 +113,6 @@ public class LoginActivity extends AppCompatActivity {
                 public void onSuccess(UserProfile userProfile) {
                     //로그인에 성공하면 로그인한 사용자의 일련번호, 닉네임, 이미지url등을 리턴합니다.
                     //사용자 ID는 보안상의 문제로 제공하지 않고 일련번호는 제공합니다.
-                    Log.e("UserProfile", userProfile.toString());
-                    // Log.e("UserProfile", userProfile.getId() + "");
-                    System.out.println("dmstjr");
                     saveShared(userProfile.getId() + "", userProfile.getNickname(), userProfile.getThumbnailImagePath());
                     long number = userProfile.getId();
                     Intent intent = new Intent(LoginActivity.this, MapActivity.class);

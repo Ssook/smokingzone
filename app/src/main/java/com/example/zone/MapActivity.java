@@ -244,7 +244,6 @@ public class MapActivity extends AppCompatActivity
         MapPoint.GeoCoordinate mapPointGeo = currentLocation.getMapPointGeoCoord();
         curlat = mapPointGeo.latitude;
         curlng = mapPointGeo.longitude;
-        System.out.println(curlat + "ddd" + curlng);
     }
 
     @Override
@@ -351,10 +350,9 @@ public class MapActivity extends AppCompatActivity
         public View getCalloutBalloon(MapPOIItem poiItem) {
             String[] arr = poiItem.getItemName().split(",");
             img_url = arr[7];
-            System.out.println(arr[0] + "??" + arr[1] + "??" + arr[2] + "??" + arr[3] + "??" + arr[4] + "??" + arr[5] + "??" + arr[6] + "??" + arr[7]);
 //            final ImageView imgicon = (ImageView) calloutBalloon.findViewById(R.id.badge);
-//            imgicon.setImageResource(R.drawable.defaultimg);
-//            final String urlStr = "http://18.222.175.17:8080/SmokingArea/img/" + arr[7] + ".jpg"; // 웹서버에 프로필사진이 없을시 예외처리
+////            imgicon.setImageResource(R.drawable.defaultimg);
+////            final String urlStr = "http://18.222.175.17:8080/SmokingArea/img/" + arr[7] + ".jpg"; // 웹서버에 프로필사진이 없을시 예외처리
 
 //
 //            if (img_url!=null||!img_url.equals(null)) {
@@ -420,7 +418,6 @@ public class MapActivity extends AppCompatActivity
                 + "," + smokingarea.getSmokinAreaNo()
                 + "," + smokingarea.getSmokingAreaImgUrl()
                 + "," + smokingarea.getSmokingAreaType());
-        System.out.println("장소" + smokingarea.getSmokingAreaRegUser());
         smokeMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
         smokeMarker.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
         smokeMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(smokingarea.getSmokingAreaLat(), smokingarea.getSmokingAreaLng()));
@@ -512,7 +509,6 @@ public class MapActivity extends AppCompatActivity
                         buffer.append(str);
                     }
                     smokeareainfo = buffer.toString();
-                    System.out.println(smokeareainfo + "결과");
                 } else {
                     System.out.println("에러 발생");
                 }
@@ -535,8 +531,6 @@ public class MapActivity extends AppCompatActivity
             InputStream is = url.openStream();
             drawable = Drawable.createFromStream(is, "none");
         } catch (Exception e) {
-            // Log.e("LOG_TAG", "error, in loadDrawable \n" + e.toString());
-            System.out.println("durltjdpfj");
             return null;
         }
 
@@ -545,11 +539,9 @@ public class MapActivity extends AppCompatActivity
 
     public String getNearestSmokingArea() throws JSONException {
         String nearSmokingArea = "";
-        System.out.println();
         JSONObject currentlocation = new JSONObject();
         currentlocation.put("lat", "" + curlat + "");
         currentlocation.put("lng", "" + curlng + "");
-        System.out.println("test" + currentlocation + "dd");
         //현재 위치 데이터를 서버에 보내서 가까운 값 갖고오는거
         try {
             //--------------------------
@@ -594,7 +586,6 @@ public class MapActivity extends AppCompatActivity
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         }
-        System.out.println(nearSmokingArea + "data");
         return nearSmokingArea;
     } // HttpPostDat
 
@@ -618,7 +609,7 @@ public class MapActivity extends AppCompatActivity
             e.printStackTrace();
         }
         if (smokeMarker == null) {
-            System.out.println("wndyd");
+            System.out.println("smokerMarker is NULL");
         }
         mapView.addPOIItems(smokeMarkerlist.toArray(new MapPOIItem[smokeMarkerlist.size()]));
     }
@@ -632,7 +623,7 @@ public class MapActivity extends AppCompatActivity
         finish();
     }
 
-    ///////////////////////
+
     public void OnClickHandler(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final ArrayList<String> selectedItems = new ArrayList<String>();
@@ -648,50 +639,6 @@ public class MapActivity extends AppCompatActivity
                             if(all_SmokeMarkerList.get(i).getSmokingAreaType()==pos) {
                                 all_SmokeMarkerList.get(i).getSmokeMarker().setAlpha(0.1f);
                             }
-
-//                        case SmokeHereConstants.CAFE:
-//                            for (int b = 0; b < cafe_SmokeMarkerList.size(); b++) {
-//                                cafe_SmokeMarkerList.get(b).setAlpha(0.1f);
-//                            }
-//                            isCheck[0] = false;
-//                            break;
-//                        case SmokeHereConstants.FOOD:
-//                            for (int b = 0; b < food_SmokeMarkerList.size(); b++) {
-//                                food_SmokeMarkerList.get(b).setAlpha(0.1f);
-//                            }
-//
-//                            isCheck[1] = false;
-//                            break;
-//                        case SmokeHereConstants.SCHOOL:
-//                            for (int b = 0; b < school_SmokeMarkerList.size(); b++) {
-//                                school_SmokeMarkerList.get(b).setAlpha(0.1f);
-//                            }
-//                            isCheck[2] = false;
-//                            break;
-//                        case SmokeHereConstants.COMPANY:
-//                            for (int b = 0; b < company_SmokeMarkerList.size(); b++) {
-//                                company_SmokeMarkerList.get(b).setAlpha(0.1f);
-//                            }
-//                            isCheck[3] = false;
-//                            break;
-//                        case SmokeHereConstants.STREET:
-//                            for (int b = 0; b < street_SmokeMarkerList.size(); b++) {
-//                                street_SmokeMarkerList.get(b).setAlpha(0.1f);
-//                            }
-//                            isCheck[4] = false;
-//                            break;
-//                        case SmokeHereConstants.OTHER:
-//                            for (int b = 0; b < other_SmokeMarkerList.size(); b++) {
-//                                other_SmokeMarkerList.get(b).setAlpha(0.1f);
-//                            }
-//                            isCheck[5] = false;
-//                            break;
-//                        case SmokeHereConstants.BANNED:
-//                            for (int b = 0; b < banned_SmokeMarkerList.size(); b++) {
-//                                banned_SmokeMarkerList.get(b).setAlpha(0.1f);
-//                            }
-//                            isCheck[6] = false;
-//                            break;
                     }
                 } else                  // Check 해제 되었을 때 제거
                 {
@@ -700,49 +647,6 @@ public class MapActivity extends AppCompatActivity
                             all_SmokeMarkerList.get(i).getSmokeMarker().setAlpha(1.0f);
                         }
 
-//                    switch (pos) {
-//                        case SmokeHereConstants.CAFE:
-//                            for (int b = 0; b < cafe_SmokeMarkerList.size(); b++) {
-//                                cafe_SmokeMarkerList.get(b).setAlpha(1.0f);
-//                            }
-//                            isCheck[SmokeHereConstants.CAFE] = true;
-//                            break;
-//                        case SmokeHereConstants.FOOD:
-//                            for (int b = 0; b < food_SmokeMarkerList.size(); b++) {
-//                                food_SmokeMarkerList.get(b).setAlpha(1.0f);
-//                            }
-//                            isCheck[1] = true;
-//                            break;
-//                        case SmokeHereConstants.SCHOOL:
-//                            for (int b = 0; b < school_SmokeMarkerList.size(); b++) {
-//                                school_SmokeMarkerList.get(b).setAlpha(1.0f);
-//                            }
-//                            isCheck[2] = true;
-//                            break;
-//                        case SmokeHereConstants.COMPANY:
-//                            for (int b = 0; b < company_SmokeMarkerList.size(); b++) {
-//                                company_SmokeMarkerList.get(b).setAlpha(1.0f);
-//                            }
-//                            isCheck[3] = true;
-//                            break;
-//                        case SmokeHereConstants.STREET:
-//                            for (int b = 0; b < street_SmokeMarkerList.size(); b++) {
-//                                street_SmokeMarkerList.get(b).setAlpha(1.0f);
-//                            }
-//                            isCheck[4] = true;
-//                            break;
-//                        case SmokeHereConstants.OTHER:
-//                            for (int b = 0; b < other_SmokeMarkerList.size(); b++) {
-//                                other_SmokeMarkerList.get(b).setAlpha(1.0f);
-//                            }
-//                            isCheck[5] = true;
-//                            break;
-//                        case SmokeHereConstants.BANNED:
-//                            for (int b = 0; b < banned_SmokeMarkerList.size(); b++) {
-//                                banned_SmokeMarkerList.get(b).setAlpha(1.0f);
-//                            }
-//                            isCheck[6] = true;
-//                            break;
                     }
                 }
             }
@@ -789,11 +693,8 @@ public class MapActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-//View nav_header_view = navigationView.inflateHeaderView(R.layout.nav_header_main);
         nav_header_view = navigationView.getHeaderView(0);
         nav_header_id_text = (TextView) nav_header_view.findViewById(R.id.user_name);
-//        Intent intent = getIntent();
-//        System.out.println(intent.getStringExtra("user_name") + "test");
 
         nav_header_id_text.setText(sp.getString("name", ""));
 
@@ -904,7 +805,6 @@ public class MapActivity extends AppCompatActivity
         String urlStr;
 
         urlStr = sp.getString("image_url", "");
-        System.out.println("dhkt" + urlStr);
         new Thread() {
             public void run() {
                 try {
@@ -916,7 +816,7 @@ public class MapActivity extends AppCompatActivity
                     final Bitmap bm = BitmapFactory.decodeStream(bis);
                     bis.close();
                     if (bm == null) {
-                        System.out.println("what");
+                        System.out.println("bitmap is null");
                     }
                     Handler mHandler = new Handler(Looper.getMainLooper());
                     mHandler.postDelayed(new Runnable() {

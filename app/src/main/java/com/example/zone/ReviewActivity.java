@@ -197,7 +197,6 @@ public class ReviewActivity extends AppCompatActivity  implements KeyboardHeight
                 /* 서버로 댓글 입력 클래스 생성 및 실행  */
                 //-------------------------------------
                 NetworkTaskWrite networkTaskWrite = new NetworkTaskWrite(sbParam.toString());
-                Log.d("reviewComment",sbParam.toString());
                 networkTaskWrite.execute();
 
 
@@ -294,7 +293,6 @@ public class ReviewActivity extends AppCompatActivity  implements KeyboardHeight
 
             try {
                 result = ServerReviewData(values);
-                Log.d("result",result);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -323,7 +321,6 @@ public class ReviewActivity extends AppCompatActivity  implements KeyboardHeight
                         }
                         else{
                             //Time Setting
-                            Log.d("data", jsonObject.getString("reg_date"));
                             String time = jsonObject.getString("reg_date");
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                             Date date = null;
@@ -344,11 +341,9 @@ public class ReviewActivity extends AppCompatActivity  implements KeyboardHeight
                                 }
                                 e.printStackTrace();
                             }
-                            //Log.d("data",Long.toString(date.getTime()));
                             Long longDate = date.getTime();
                             arrayregDate.add(TimeString.formatTimeString(longDate));
                             // Pulling items from the array
-                            //arrayregDate.add(jsonObject.getString("reg_date"));
                             arrayregUser.add(jsonObject.getString("reg_user"));
                             arrayctnt.add(jsonObject.getString("ctnt"));
                         }
@@ -376,7 +371,7 @@ public class ReviewActivity extends AppCompatActivity  implements KeyboardHeight
                 listView.setAdapter(adapter);
             }//result not null
             else {
-                Log.d("오류:", "정보 안넘어옴!");
+                Toast.makeText(ReviewActivity.this, "오류 발생.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -431,7 +426,6 @@ public class ReviewActivity extends AppCompatActivity  implements KeyboardHeight
         } catch (IOException e) {
         }
 
-       // System.out.println(result);
         return result;
     } // HttpPostDat
 
@@ -461,7 +455,6 @@ public class ReviewActivity extends AppCompatActivity  implements KeyboardHeight
                 if(result.equals("overlap")){
                     showDialogOverlap("이미 댓글과 별점을 등록하셨습니다.");
                 }
-                Log.d("reviewcommentIn",result);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -577,7 +570,6 @@ public class ReviewActivity extends AppCompatActivity  implements KeyboardHeight
             try {
                 //클라이언트로 받은 값들을 result에 넣어줌
                 result = sendReviewReport(values);
-                Log.d("sendReviewReportIN",result);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -588,22 +580,18 @@ public class ReviewActivity extends AppCompatActivity  implements KeyboardHeight
         protected void onPostExecute(String result) {
             // 통신이 완료되면 호출됩니다.
             // 결과에 따른 UI 수정 등은 여기서 합니다.
-            Log.d("data",result);
 
             if(result.contains("success"))
             {
-                Log.d("data","tjdrhd");
 
                 report_ctn_TV.setText(Integer.toString(Integer.parseInt(report_ctn_TV.getText().toString())+1));
 
                 Toast.makeText(ReviewActivity.this, "신고 등록 성공", Toast.LENGTH_SHORT).show();
             }
             else if (result.contains("fail")){
-                Log.d("data","tlfvo");
                 Toast.makeText(ReviewActivity.this, "신고 등록에 실패했습니다. 잠시 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
             }
             else if (result.contains("overlap")){
-                Log.d("data","wndqhrtlfvo");
                 Toast.makeText(ReviewActivity.this, "이미 신고한 흡연 장소입니다.", Toast.LENGTH_SHORT).show();
             }
         }
@@ -654,7 +642,6 @@ public class ReviewActivity extends AppCompatActivity  implements KeyboardHeight
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         }
-        System.out.println(result);
         return result;
     } // HttpPostDat
 
@@ -701,7 +688,6 @@ public class ReviewActivity extends AppCompatActivity  implements KeyboardHeight
                             e.printStackTrace();
                         }
                         NetworkTaskReport networkTaskReport = new NetworkTaskReport(sbParam.toString());
-                        Log.d("reviewComment", sbParam.toString());
                         networkTaskReport.execute();
                     }
                 });
@@ -709,7 +695,6 @@ public class ReviewActivity extends AppCompatActivity  implements KeyboardHeight
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        System.out.println("ddddd");
                     }
                 });
         builder.show();

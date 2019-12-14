@@ -52,7 +52,6 @@ public class RequestHttpURLConnection {
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         }
-        System.out.println(result);
         return result; //onPostExcute()로 전달
-    } // HttpPostDat
+    } // HttpPostDatㅋㅋ
 }

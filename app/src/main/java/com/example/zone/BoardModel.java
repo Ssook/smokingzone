@@ -11,9 +11,6 @@ public class BoardModel {
     int icon;
 
     //constructor
-
-
-
     public BoardModel(int board_no,String tag, String reg_date, String reg_user, String title, String desc, int icon)
     {
         this.board_no = board_no;

@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -229,8 +230,6 @@ public class BoardDetailActivity extends AppCompatActivity implements KeyboardHe
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-            Log.d("boardCommentData", sbParam.toString());
             //-------------------------------
             /*JSON형식 String 값을 서버에 보냄*/
             //-------------------------------
@@ -291,7 +290,6 @@ public class BoardDetailActivity extends AppCompatActivity implements KeyboardHe
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         // array에 해당 값들을 넣어줌.
                         //Time Setting
-                        Log.d("data", jsonObject.getString("reg_date"));
                         String time = jsonObject.getString("reg_date");
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         Date date = null;
@@ -312,7 +310,6 @@ public class BoardDetailActivity extends AppCompatActivity implements KeyboardHe
                             }
                             e.printStackTrace();
                         }
-                        //Log.d("data",Long.toString(date.getTime()));
                         Long longDate = date.getTime();
                         arrayregDate.add(TimeString.formatTimeString(longDate));
                         arrayregUser.add(jsonObject.getString("reg_user"));
@@ -340,7 +337,7 @@ public class BoardDetailActivity extends AppCompatActivity implements KeyboardHe
                 listView.setAdapter(adapter);
             }//result not null
             else {
-                Log.d("게시글 댓글:", "게시글 댓글 없음!");
+                Toast.makeText(BoardDetailActivity.this, "댓글 없음.", Toast.LENGTH_SHORT).show();
             }
         }//onPostExecute func()
     }//NetWorkTask Class
@@ -422,7 +419,6 @@ public class BoardDetailActivity extends AppCompatActivity implements KeyboardHe
             try {
                 //댓글 값들을 넘겨주는 함수를 호출
                 result = sendCommentWrite(values);
-                Log.d("result", result);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -480,7 +476,6 @@ public class BoardDetailActivity extends AppCompatActivity implements KeyboardHe
             //--------------------------
             StringBuffer buffer = new StringBuffer();
             String regdata = "json_boardReviewValue=" + values;
-            Log.d("게시글 댓글 입력 정보 ", values);
             buffer.append(regdata);                 // php 변수에 값 대입
 
             OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
@@ -503,7 +498,6 @@ public class BoardDetailActivity extends AppCompatActivity implements KeyboardHe
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         }
-        System.out.println(result);
         return result;
     } // HttpPostDat
 } //BoardDetailActivity Class
